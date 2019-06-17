@@ -13,7 +13,7 @@ class TaskManager {
     val task: SingleLiveEvent<Task> = SingleLiveEvent()
 
 
-    fun task(id: TaskId, data: Any = "", rule: Bundle = Bundle()) {
+    fun task(id: Int, data: Any = "", rule: Bundle = Bundle()) {
         task.value = Task(id,data,rule)
     }
 
@@ -21,7 +21,7 @@ class TaskManager {
 
 
 
-class Task(val id: TaskId, val data: Any = "", val rule: Bundle = Bundle())
+class Task(val id: Int, val data: Any = "", val rule: Bundle = Bundle())
 
 
 
