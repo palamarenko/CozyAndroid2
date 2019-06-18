@@ -33,6 +33,8 @@ fun AppCompatActivity.saveScreenDimensions() {
     }
 }
 
+
+
 fun EditText.listen(listener: (String) -> Unit) {
 
     addTextChangedListener(object : TextWatcher {
