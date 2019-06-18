@@ -5,6 +5,7 @@ import android.os.PersistableBundle
 import android.view.View
 import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.tbruyelle.rxpermissions2.RxPermissions
 import java.lang.Exception
@@ -17,13 +18,25 @@ open class NavigateActivity : AppCompatActivity() {
 
     var ignoreEnterBackground: Boolean = false
 
-    fun simpleInit() {
+    fun simpleInit(fragment: Fragment? = null) {
         frameLayout = FrameLayout(this)
         frameLayout.id = View.generateViewId()
         this.setContentView(frameLayout)
-        this.navigator =
-            Navigator(frameLayout.id, supportFragmentManager)
+        this.navigator = Navigator(frameLayout.id, supportFragmentManager)
+
+        if(fragment!=null){
+            setFragment(fragment)
+        }
+
+
     }
+
+
+    fun setFragment(fragment: Fragment) {
+        navigator.replaceFragment(fragment,true)
+    }
+
+
 
     override fun onBackPressed() {
         if (navigator.fragmentManager.fragments.isNotEmpty() && navigator.fragmentManager.fragments[navigator.fragmentManager.fragments.size - 1] is BackPress) {

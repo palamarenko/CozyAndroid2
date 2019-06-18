@@ -31,7 +31,7 @@ open class ApiFactory<T>(private val BASE_URL: String, val apiGet : Class<T>) {
 
     private var client: OkHttpClient? = null
 
-    open val apiService get() = getRest(this.BASE_URL).create(apiGet.javaClass) as T
+    open val apiService get() = getRest(this.BASE_URL).create(apiGet) as T
 
 
     fun getClient(): OkHttpClient {
