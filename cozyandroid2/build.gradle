@@ -22,11 +22,11 @@ ext {
     siteUrl = 'https://github.com/palamarenko/CozyAndroid2'
     gitUrl = 'https://github.com/palamarenko/CozyAndroid2'
 
-    libraryVersion = '0.2.3'
+    libraryVersion = '0.2.5'
 
     developerId = 'lissf'
-    developerName = 'Yegor Zatsepin'
-    developerEmail = 'Liss_F@ukr.net'
+    developerName = 'Andrey Palamarenko'
+    developerEmail = 'palamarenko.a.v@gmail.com'
 
     licenseName = 'The Apache Software License, Version 2.0'
     licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
