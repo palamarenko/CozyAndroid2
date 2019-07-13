@@ -6,7 +6,9 @@ import android.text.TextUtils
 import android.text.TextWatcher
 import android.util.DisplayMetrics
 import android.util.Log
+import android.widget.CheckBox
 import android.widget.EditText
+import android.widget.Switch
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
@@ -33,6 +35,21 @@ fun AppCompatActivity.saveScreenDimensions() {
     }
 }
 
+fun EditText.toText(): String {
+    return text.toString()
+}
+
+fun CheckBox.listen(listener: (Boolean) -> Unit) {
+    setOnCheckedChangeListener { _, isChecked ->
+        listener.invoke(isChecked)
+    }
+}
+
+fun Switch.listen(listener: (Boolean) -> Unit) {
+    setOnCheckedChangeListener { _, isChecked ->
+        listener.invoke(isChecked)
+    }
+}
 
 
 fun EditText.listen(listener: (String) -> Unit) {
@@ -52,7 +69,6 @@ fun EditText.listen(listener: (String) -> Unit) {
 }
 
 
-
 fun dpToPx(dp: Float): Int {
     val resources = appContext!!.resources
     val metrics = resources.displayMetrics
@@ -67,8 +83,6 @@ fun pxToDp(px: Float): Int {
     val dp = px / (metrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)
     return dp.toInt()
 }
-
-
 
 
 fun <T> Single<T>.setSchedulers(
@@ -117,11 +131,6 @@ fun String.isValidEmail(): Boolean {
     return !TextUtils.isEmpty(this) && android.util.Patterns.EMAIL_ADDRESS.matcher(this).matches()
 }
 
-fun Any.string(id: Int): String {
-    return appContext!!.string(id)
-}
-
-
 
 fun EditText.string(): String {
     return text.toString()
@@ -132,7 +141,7 @@ private fun LOG_THIS(key: String?, mes: Any?) {
     val useKey = key ?: "logos"
     val useMes = mes ?: "message == null"
 
-    if (BuildConfig.DEBUG) Log.d("MY_LOG_$useKey", useMes.toString())
+    Log.d("MY_LOG_$useKey", useMes.toString())
 }
 
 fun Any?.LOG(key: String = "TEST") {

@@ -72,8 +72,6 @@ abstract class CozyFragment<T : CozyViewModel> : BaseFragment<T>() {
 
 
     open fun changeActivity(data : Any, intentBundle: Bundle) {
-
-
         if(data is Class<*>){
             val intent = Intent(context, data)
             intent.putExtras(intentBundle)
@@ -81,7 +79,10 @@ abstract class CozyFragment<T : CozyViewModel> : BaseFragment<T>() {
         }else{
             startActivity(data as Intent)
         }
+    }
 
+    open fun getPopupRealization() : CozyReusePopup{
+        return CozyPopup()
     }
 
     private fun showPopup(data: Popup?) {
@@ -89,7 +90,7 @@ abstract class CozyFragment<T : CozyViewModel> : BaseFragment<T>() {
             throw java.lang.IllegalStateException("Use Popup class")
         }
 
-            val popup = CozyPopup()
+            val popup = getPopupRealization()
 
 
             if (data.positiveAction != null) {

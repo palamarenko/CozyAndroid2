@@ -8,7 +8,7 @@ import kotlinx.android.synthetic.main.popup_cozy.*
 import ua.palamarenko.cozyandroid2.R
 import java.lang.Exception
 
-class CozyPopup : CozyBasePopup<EmptyViewModel>() {
+class CozyPopup : CozyReusePopup() {
 
     override val layout: Int get() = R.layout.popup_cozy
 
@@ -76,24 +76,20 @@ class CozyPopup : CozyBasePopup<EmptyViewModel>() {
         }
     }
 
-    fun setPositiveCallBack(callback: (ResponseModel) -> Unit): CozyPopup {
+    override fun setPositiveCallBack(callback: (ResponseModel) -> Unit) {
         positiveCallback = callback
-        return this
     }
 
-    fun setFinishCallBack(callback: (ResponseModel) -> Unit): CozyPopup {
+    override fun setFinishCallBack(callback: (ResponseModel) -> Unit){
         finishAction = callback
-        return this
     }
 
-    fun setDissmisCallBack(callback: (ResponseModel) -> Unit): CozyPopup {
+    override fun setDissmisCallBack(callback: (ResponseModel) -> Unit) {
         dissmisCallback = callback
-        return this
     }
 
-    fun setNegativeCallBack(callback: (ResponseModel) -> Unit): CozyPopup {
+    override fun setNegativeCallBack(callback: (ResponseModel) -> Unit) {
         negativeCallback = callback
-        return this
     }
 
 

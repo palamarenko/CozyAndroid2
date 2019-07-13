@@ -31,10 +31,15 @@ open class CozyActivity<T : CozyViewModel>  : NavigateActivity(){
         }
     }
 
+
+    open fun getPopupRealization() : CozyReusePopup{
+        return CozyPopup()
+    }
+
     private fun showPopup(data: Any) {
 
         if (data is Popup) {
-            val popup = CozyPopup()
+            val popup = getPopupRealization()
 
 
             if (data.positiveAction != null) {
