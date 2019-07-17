@@ -61,8 +61,8 @@ abstract class CozyFragment<T : CozyViewModel> : BaseFragment<T>() {
         }
     }
 
-    open fun navigate(fragment: Fragment, bundle: Bundle = Bundle()) {
-        getNavigator().replaceFragment(fragment, true)
+    open fun navigate(fragment: Fragment, bundle: Bundle) {
+        getNavigator().replaceFragment(fragment, bundle)
     }
 
     open fun showToast(message: String) {

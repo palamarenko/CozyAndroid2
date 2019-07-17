@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.tbruyelle.rxpermissions2.RxPermissions
 import ua.palamarenko.cozyandroid2.BaseFragment.navigation.NavigateActivity
@@ -34,7 +35,7 @@ abstract class CjFullPopup<T : CozyViewModel> : CozyBasePopup<T>() {
 
         when (id) {
             SHOW_PROGRESS -> showProgress(data as Boolean)
-            NAVIGATE -> navigate(data as androidx.fragment.app.Fragment, bundle)
+            NAVIGATE -> navigate(data as Fragment, bundle)
             TOAST -> showToast(data as String)
             START_ACTIVITY -> changeActivity(data as Class<*>, bundle)
             BACK_PRESS ->  onBackPress(data as? Class<*>)
@@ -56,8 +57,8 @@ abstract class CjFullPopup<T : CozyViewModel> : CozyBasePopup<T>() {
     }
 
 
-    open fun navigate(fragment: androidx.fragment.app.Fragment, bundle: Bundle = Bundle()) {
-        getNavigator().replaceFragment(fragment, false)
+    open fun navigate(fragment: Fragment, bundle: Bundle = Bundle()) {
+        getNavigator().replaceFragment(fragment, bundle)
     }
 
     private fun getNavigator(): Navigator {

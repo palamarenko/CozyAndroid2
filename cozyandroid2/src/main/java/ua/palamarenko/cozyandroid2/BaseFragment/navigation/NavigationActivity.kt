@@ -1,5 +1,6 @@
 package ua.palamarenko.cozyandroid2.BaseFragment.navigation
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.os.PersistableBundle
 import android.view.View
@@ -9,6 +10,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.tbruyelle.rxpermissions2.RxPermissions
 import java.lang.Exception
+import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.FragmentTransaction
 
 
 open class NavigateActivity : AppCompatActivity() {
@@ -24,7 +27,7 @@ open class NavigateActivity : AppCompatActivity() {
         this.setContentView(frameLayout)
         this.navigator = Navigator(frameLayout.id, supportFragmentManager)
 
-        if(fragment!=null){
+        if (fragment != null) {
             setFragment(fragment)
         }
 
@@ -33,9 +36,8 @@ open class NavigateActivity : AppCompatActivity() {
 
 
     fun setFragment(fragment: Fragment) {
-        navigator.replaceFragment(fragment,true)
+        navigator.replaceFragment(fragment, Bundle())
     }
-
 
 
     override fun onBackPressed() {
@@ -71,28 +73,40 @@ open class NavigateActivity : AppCompatActivity() {
     }
 }
 
-class Navigator(val contId: Int, val fragmentManager: FragmentManager) {
+open class Navigator(val contId: Int, val fragmentManager: FragmentManager) {
 
     fun showDialog(dialog: androidx.fragment.app.DialogFragment) {
         dialog.show(this.fragmentManager, "")
     }
 
 
-    fun replaceFragment(fragment: androidx.fragment.app.Fragment, addToBackStack: Boolean = true) {
+    open fun replaceFragment(fragment: Fragment, bundle: Bundle) {
 
         try {
             val ft = this.fragmentManager.beginTransaction()
             ft.replace(this.contId, fragment)
-            if (addToBackStack) {
-                ft.addToBackStack(fragment.javaClass.simpleName)
-            }
-
+            ft.addToBackStack(fragment.javaClass.simpleName)
+            addCustomAnimation(ft)
             ft.commitAllowingStateLoss()
 
         } catch (e: Exception) {
         }
 
 
+    }
+
+
+    @SuppressLint("ResourceType")
+    open fun addCustomAnimation(
+        ft: FragmentTransaction
+    ) {
+        ft.setCustomAnimations(
+            android.R.attr.activityOpenEnterAnimation,
+            android.R.attr.activityOpenExitAnimation,
+            android.R.attr.activityCloseEnterAnimation,
+            android.R.attr.activityCloseExitAnimation
+        )
+        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
     }
 
 }

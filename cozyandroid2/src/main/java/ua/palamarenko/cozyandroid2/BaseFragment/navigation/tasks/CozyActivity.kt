@@ -21,7 +21,7 @@ open class CozyActivity<T : CozyViewModel>  : NavigateActivity(){
 
         when (id) {
             SHOW_PROGRESS -> showProgress(data as Boolean)
-            NAVIGATE -> navigate(data as Fragment)
+            NAVIGATE -> navigate(data as Fragment, bundle)
             TOAST -> showToast(data as String)
             START_ACTIVITY -> changeActivity(data as Class<*>, bundle)
             BACK_PRESS -> onBackPressed(data as? Class<*>)
@@ -97,8 +97,8 @@ open class CozyActivity<T : CozyViewModel>  : NavigateActivity(){
     }
 
 
-    open fun navigate(fragment: Fragment, addToBackStack : Boolean = true) {
-        navigator.replaceFragment(fragment,addToBackStack =  addToBackStack)
+    open fun navigate(fragment: Fragment, bundle: Bundle) {
+        navigator.replaceFragment(fragment,bundle)
     }
 
     open fun showToast(message: String) {
