@@ -109,6 +109,5 @@ open class CozyActivity<T : CozyViewModel>  : NavigateActivity(){
         val intent = Intent(this, activityClass)
         intent.putExtras(intentBundle)
         startActivity(intent)
-        finish()
     }
 }
