@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.view_recycler.view.*
@@ -22,14 +23,13 @@ fun RecyclerView.init(
             this.removeItemDecorationAt(0)
         }
         this.addItemDecoration(
-            androidx.recyclerview.widget.DividerItemDecoration(
+            DividerItemDecoration(
                 this.context,
-                androidx.recyclerview.widget.DividerItemDecoration.VERTICAL
+                DividerItemDecoration.VERTICAL
             )
         )
     }
 }
-
 
 
 class CozyRecyclerView : FrameLayout {
@@ -66,6 +66,30 @@ class CozyRecyclerView : FrameLayout {
         view.srRefresh.isEnabled = false
     }
 
+    fun needProgress(){
+        view.progress.visibility = View.VISIBLE
+    }
+
+
+    fun getRecyclerView(): RecyclerView {
+        return view.baseRecycler
+    }
+
+    fun setDivider(
+        need: Boolean = true,
+        decorator: RecyclerView.ItemDecoration = DividerItemDecoration(
+            this.context,
+            DividerItemDecoration.VERTICAL
+        )
+    ) {
+        while (view.baseRecycler.itemDecorationCount > 0) {
+            view.baseRecycler.removeItemDecorationAt(0)
+        }
+        if (need) {
+
+            view.baseRecycler.addItemDecoration(decorator)
+        }
+    }
 
 
     fun setRefreshing(refreshing: Boolean): CozyRecyclerView {
@@ -106,10 +130,11 @@ class CozyRecyclerView : FrameLayout {
 
     fun setCell(data: List<CozyCell>) {
         adapter.updateList(data)
-        view.tvPlaceHolder.visibility = if(adapter.itemCount==0 && needPlaceHolder) View.VISIBLE else View.GONE
+        view.tvPlaceHolder.visibility = if (adapter.itemCount == 0 && needPlaceHolder) View.VISIBLE else View.GONE
+        view.progress.visibility = View.GONE
     }
 
-    fun setPlaceHolder(id : Int){
+    fun setPlaceHolder(id: Int) {
         view.tvPlaceHolder.setText(id)
     }
 
@@ -119,7 +144,8 @@ class CozyRecyclerView : FrameLayout {
     }
 
 
-    class CjRecyclerAdapter(val adapterListener: (CozyCell) -> Unit) : RecyclerView.Adapter<CozyViewHolder<CozyCell>>() {
+    class CjRecyclerAdapter(val adapterListener: (CozyCell) -> Unit) :
+        RecyclerView.Adapter<CozyViewHolder<CozyCell>>() {
 
 
         private var list = ArrayList<CozyCell>()
