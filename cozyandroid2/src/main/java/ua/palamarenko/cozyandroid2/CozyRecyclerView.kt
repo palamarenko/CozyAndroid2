@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.view_recycler.view.*
@@ -105,6 +106,20 @@ class CozyRecyclerView : FrameLayout {
 
     fun refreshHide() {
         view.srRefresh.isRefreshing = false
+    }
+
+
+    fun setHorizontalLayoutManager(reverseLayout : Boolean = false){
+        view.baseRecycler.layoutManager = LinearLayoutManager(view.context,LinearLayoutManager.HORIZONTAL,reverseLayout)
+    }
+
+    fun setGridLayoutManager(spanCount : Int){
+        view.baseRecycler.layoutManager = GridLayoutManager(view.context,spanCount)
+
+    }
+
+    fun setLayoutManager(layoutManager: RecyclerView.LayoutManager){
+        view.baseRecycler.layoutManager = layoutManager
     }
 
 
