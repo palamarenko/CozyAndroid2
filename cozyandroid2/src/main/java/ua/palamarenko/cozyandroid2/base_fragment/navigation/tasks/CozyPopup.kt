@@ -1,4 +1,4 @@
-package ua.palamarenko.cozyandroid2.BaseFragment.navigation.tasks
+package ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks
 
 import android.content.DialogInterface
 import android.graphics.Color

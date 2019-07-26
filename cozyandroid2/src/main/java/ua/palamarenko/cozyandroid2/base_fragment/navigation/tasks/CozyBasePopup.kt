@@ -1,4 +1,4 @@
-package ua.palamarenko.cozyandroid2.BaseFragment.navigation.tasks
+package ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks
 
 import android.app.Dialog
 import android.content.Context
@@ -14,7 +14,7 @@ import android.widget.EditText
 import androidx.appcompat.app.AppCompatDialogFragment
 import androidx.lifecycle.ViewModelProviders
 import com.google.gson.Gson
-import ua.palamarenko.cozyandroid2.BaseFragment.navigation.ReflectionUtils
+import ua.palamarenko.cozyandroid2.base_fragment.navigation.ReflectionUtils
 
 abstract class CozyBasePopup<T : CozyViewModel> : AppCompatDialogFragment() {
 

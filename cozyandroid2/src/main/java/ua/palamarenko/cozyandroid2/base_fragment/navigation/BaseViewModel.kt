@@ -1,4 +1,4 @@
-package ua.palamarenko.cozyandroid2.BaseFragment.navigation
+package ua.palamarenko.cozyandroid2.base_fragment.navigation
 
 import androidx.lifecycle.ViewModel
 import io.reactivex.disposables.Disposable

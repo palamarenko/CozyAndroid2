@@ -1,4 +1,4 @@
-package ua.palamarenko.cozyandroid2.BaseFragment.navigation
+package ua.palamarenko.cozyandroid2.base_fragment.navigation
 
 /**
  * If Fragment implement this interface, Back  event first of all call method onBackPress()

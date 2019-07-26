@@ -1,17 +1,11 @@
-package ua.palamarenko.cozyandroid2.BaseFragment.navigation.tasks
+package ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks
 
 import android.os.Bundle
-import com.google.gson.GsonBuilder
-import com.google.gson.annotations.Expose
-import com.google.gson.annotations.SerializedName
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Observable
 import io.reactivex.Single
-import retrofit2.HttpException
-import ua.palamarenko.cozyandroid2.BaseFragment.navigation.BaseViewModel
-import java.lang.IllegalStateException
-import java.net.UnknownHostException
+import ua.palamarenko.cozyandroid2.base_fragment.navigation.BaseViewModel
 
 open class CozyViewModel : BaseViewModel() {
 

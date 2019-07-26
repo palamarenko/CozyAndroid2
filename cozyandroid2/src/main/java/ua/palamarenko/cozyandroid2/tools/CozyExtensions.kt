@@ -10,6 +10,7 @@ import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.Switch
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
@@ -45,14 +46,36 @@ fun CheckBox.listen(listener: (Boolean) -> Unit) {
     }
 }
 
+
+fun SearchView.listen(listener: (String) -> Unit, submitListener: ((String) -> Unit)? = null) {
+
+    setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+        override fun onQueryTextSubmit(query: String?): Boolean {
+            submitListener?.invoke(query ?: "")
+            return true
+        }
+
+        override fun onQueryTextChange(newText: String?): Boolean {
+            listener.invoke(newText ?: "")
+            return true
+        }
+    })
+
+}
+
+
 fun Switch.listen(listener: (Boolean) -> Unit) {
-    setOnCheckedChangeListener { _, isChecked ->
+
+    setOnClickListener {
         listener.invoke(isChecked)
     }
 }
 
 
 fun EditText.listen(listener: (String) -> Unit) {
+
+    var lastData: String = ""
+
 
     addTextChangedListener(object : TextWatcher {
         override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
@@ -63,7 +86,12 @@ fun EditText.listen(listener: (String) -> Unit) {
         }
 
         override fun afterTextChanged(s: Editable) {
-            listener.invoke(s.toString())
+            if (lastData == s.toString()) {
+            } else {
+                lastData = s.toString()
+                listener.invoke(s.toString())
+            }
+
         }
     })
 }

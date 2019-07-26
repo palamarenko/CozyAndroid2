@@ -1,4 +1,4 @@
-package ua.palamarenko.cozyandroid2.BaseFragment.navigation.tasks
+package ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks
 
 import android.content.Intent
 import android.os.Bundle
@@ -6,8 +6,8 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import ua.palamarenko.cozyandroid2.BaseFragment.navigation.NavigateActivity
-import ua.palamarenko.cozyandroid2.BaseFragment.navigation.ReflectionUtils
+import ua.palamarenko.cozyandroid2.base_fragment.navigation.NavigateActivity
+import ua.palamarenko.cozyandroid2.base_fragment.navigation.ReflectionUtils
 
 open class CozyActivity<T : CozyViewModel>  : NavigateActivity(){
     private val POPUP_TAG = "POPUP_TAG"

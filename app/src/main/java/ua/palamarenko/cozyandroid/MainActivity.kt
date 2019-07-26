@@ -1,13 +1,11 @@
 package ua.palamarenko.cozyandroid
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
-import kotlinx.android.synthetic.main.activity_main.*
-import ua.palamarenko.cozyandroid2.BaseFragment.navigation.tasks.CozyActivity
-import ua.palamarenko.cozyandroid2.BaseFragment.navigation.tasks.CozyFragment
-import ua.palamarenko.cozyandroid2.BaseFragment.navigation.tasks.EmptyViewModel
-import ua.palamarenko.cozyandroid2.BaseFragment.navigation.tasks.NAVIGATE
+import ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks.CozyActivity
+import ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks.CozyFragment
+import ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks.EmptyViewModel
+import ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks.NAVIGATE
 
 class MainActivity : CozyActivity<EmptyViewModel>() {
 

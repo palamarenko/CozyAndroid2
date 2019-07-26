@@ -1,8 +1,9 @@
-package ua.palamarenko.cozyandroid2.BaseFragment.navigation
+package ua.palamarenko.cozyandroid2.base_fragment.navigation
 
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,7 +20,7 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
 
     private var fragmentView: View? = null
     private var callViewCreated: Boolean = false
-    private var clearFocusView: EditText? = null
+
 
 
     fun vm(): T {
@@ -76,29 +77,28 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
         if (view != null) {
             try {
                 if (view.rootView != null && view.rootView is ViewGroup) {
-                    if (clearFocusView != null) {
-                        clearFocusView?.requestFocus()
-                    } else {
-                        val edit = EditText(context)
-                        edit.width = 0
-                        edit.height = 0
-                        edit.id = View.generateViewId()
-                        (view.rootView as ViewGroup).addView(edit)
-                        val params = edit.layoutParams
-                        params.height = 0
-                        params.width = 0
-                        edit.layoutParams = params
-                        edit.requestFocus()
-                        clearFocusView = edit
-                    }
-                }
 
+                    val edit = EditText(context)
+                    edit.width = 0
+                    edit.height = 0
+                    edit.id = View.generateViewId()
+                    (view.rootView as ViewGroup).addView(edit)
+                    val params = edit.layoutParams
+                    params.height = 0
+                    params.width = 0
+                    edit.layoutParams = params
+                    edit.requestFocus()
+                    Handler().postDelayed({
+                        try {
+                            (view.rootView as ViewGroup).removeView(edit)
+                        } catch (e: Exception) {
+                        }
+                    }, 300)
+                }
+                val imm = activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                imm.hideSoftInputFromWindow(view.windowToken, 0)
             } catch (e: Exception) {
             }
-
-
-            val imm = activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            imm.hideSoftInputFromWindow(view.windowToken, 0)
         }
     }
 

@@ -1,4 +1,4 @@
-package ua.palamarenko.cozyandroid2.BaseFragment.navigation.tasks
+package ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks
 
 
 const val TOAST = 0
@@ -11,3 +11,5 @@ const val DISMISS = 6
 const val REQUEST_PERMISSION = 7
 const val FINISH_ACTIVITY = 8
 const val SHOW_POPUP = 9
+const val START_ACTIVITY_FOR_RESAULT = 10
+const val SET_RESULT = 11

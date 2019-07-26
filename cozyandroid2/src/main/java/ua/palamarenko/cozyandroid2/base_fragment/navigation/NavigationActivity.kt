@@ -1,4 +1,4 @@
-package ua.palamarenko.cozyandroid2.BaseFragment.navigation
+package ua.palamarenko.cozyandroid2.base_fragment.navigation
 
 import android.annotation.SuppressLint
 import android.os.Bundle
@@ -10,7 +10,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.tbruyelle.rxpermissions2.RxPermissions
 import java.lang.Exception
-import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentTransaction
 
 
@@ -20,12 +19,15 @@ open class NavigateActivity : AppCompatActivity() {
     lateinit var frameLayout: FrameLayout
 
     var ignoreEnterBackground: Boolean = false
+    var animation = TRANSACTION_ANIMATION.DEFAULT_ANIMATION
 
-    fun simpleInit(fragment: Fragment? = null) {
+
+    fun simpleInit(fragment: Fragment? = null,animation : TRANSACTION_ANIMATION = TRANSACTION_ANIMATION.DEFAULT_ANIMATION) {
+        this.animation = animation
         frameLayout = FrameLayout(this)
         frameLayout.id = View.generateViewId()
         this.setContentView(frameLayout)
-        this.navigator = Navigator(frameLayout.id, supportFragmentManager)
+        this.navigator = Navigator(frameLayout.id, supportFragmentManager,this.animation)
 
         if (fragment != null) {
             setFragment(fragment)
@@ -73,7 +75,10 @@ open class NavigateActivity : AppCompatActivity() {
     }
 }
 
-open class Navigator(val contId: Int, val fragmentManager: FragmentManager) {
+enum class TRANSACTION_ANIMATION { DEFAULT_ANIMATION, CUSTON, NONE }
+
+open class Navigator(val contId: Int, val fragmentManager: FragmentManager, val animation: TRANSACTION_ANIMATION = TRANSACTION_ANIMATION.DEFAULT_ANIMATION) {
+
 
     fun showDialog(dialog: androidx.fragment.app.DialogFragment) {
         dialog.show(this.fragmentManager, "")
@@ -86,7 +91,14 @@ open class Navigator(val contId: Int, val fragmentManager: FragmentManager) {
             val ft = this.fragmentManager.beginTransaction()
             ft.replace(this.contId, fragment)
             ft.addToBackStack(fragment.javaClass.simpleName)
-            addCustomAnimation(ft)
+
+            when (animation) {
+                TRANSACTION_ANIMATION.DEFAULT_ANIMATION -> addCustomAnimation(ft)
+                TRANSACTION_ANIMATION.NONE -> {
+                }
+                TRANSACTION_ANIMATION.CUSTON -> setCustomAnimation(ft)
+            }
+
             ft.commitAllowingStateLoss()
 
         } catch (e: Exception) {
@@ -95,9 +107,11 @@ open class Navigator(val contId: Int, val fragmentManager: FragmentManager) {
 
     }
 
+    open fun setCustomAnimation(ft: FragmentTransaction) {}
+
 
     @SuppressLint("ResourceType")
-    open fun addCustomAnimation(
+    fun addCustomAnimation(
         ft: FragmentTransaction
     ) {
         ft.setCustomAnimations(

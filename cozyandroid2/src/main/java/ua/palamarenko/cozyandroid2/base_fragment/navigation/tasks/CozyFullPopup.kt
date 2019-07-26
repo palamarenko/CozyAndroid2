@@ -1,4 +1,4 @@
-package ua.palamarenko.cozyandroid2.BaseFragment.navigation.tasks
+package ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks
 
 import android.content.Context
 import android.content.Intent
@@ -9,8 +9,8 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.tbruyelle.rxpermissions2.RxPermissions
-import ua.palamarenko.cozyandroid2.BaseFragment.navigation.NavigateActivity
-import ua.palamarenko.cozyandroid2.BaseFragment.navigation.Navigator
+import ua.palamarenko.cozyandroid2.base_fragment.navigation.NavigateActivity
+import ua.palamarenko.cozyandroid2.base_fragment.navigation.Navigator
 
 abstract class CjFullPopup<T : CozyViewModel> : CozyBasePopup<T>() {
 
