@@ -68,9 +68,9 @@ open class CozyActivity<T : CozyViewModel>  : NavigateActivity(){
                 }
             }
 
+            popup.setShortPopup(data.generationShortPopup(this))
 
-            popup.setArgumentObject(CozyPopup.POPUP_MODEL,data.generationShortPopup())
-                .show(supportFragmentManager)
+            popup.show(supportFragmentManager)
 
         }
 

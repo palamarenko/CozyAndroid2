@@ -11,7 +11,7 @@ import android.text.style.UnderlineSpan
 enum class SPAN { BOLD, ITALIC, UNDERLINE, NORMAL }
 
 
-fun String.makeCharSequence(span: SPAN, color: Int?): CharSequence {
+fun String.makeCharSequence(span: SPAN = SPAN.NORMAL, color: Int? = null): CharSequence {
 
     return when (span) {
         SPAN.BOLD -> {

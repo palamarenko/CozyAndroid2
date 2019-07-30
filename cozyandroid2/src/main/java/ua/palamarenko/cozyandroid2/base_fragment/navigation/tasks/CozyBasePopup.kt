@@ -29,7 +29,7 @@ abstract class CozyBasePopup<T : CozyViewModel> : AppCompatDialogFragment() {
     }
 
 
-    fun takeViewModel(): T {
+    fun vm(): T {
         val cl : Class<T>  = ReflectionUtils.getGenericParameterClass(this::class.java,0) as Class<T>
         return ViewModelProviders.of(this).get(cl)
     }

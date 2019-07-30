@@ -153,9 +153,9 @@ abstract class CozyFragment<T : CozyViewModel> : BaseFragment<T>() {
             }
         }
 
+        popup.setShortPopup(data.generationShortPopup(context!!))
 
-        popup.setArgumentObject(CozyPopup.POPUP_MODEL, data.generationShortPopup())
-            .show(fragmentManager)
+        popup.show(fragmentManager)
     }
 
 

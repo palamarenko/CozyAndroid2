@@ -12,8 +12,7 @@ open class CozyViewModel : BaseViewModel() {
     val tm: TaskManager = TaskManager()
 
 
-   open fun errorHandler(throwable: Throwable) {}
-
+    open fun errorHandler(throwable: Throwable) {}
 
 
     fun CozyViewModel.task(id: Int, data: Any = "", rule: Bundle = Bundle()) {
@@ -62,9 +61,9 @@ open class CozyViewModel : BaseViewModel() {
 
     fun <T : Any> Observable<T>.bindSubscribe(
         bindName: String? = null,
-        onNext: (T) -> Unit = {},
         onError: (Throwable) -> Unit = { errorHandler(it) },
-        onComplete: () -> Unit = {}
+        onComplete: () -> Unit = {},
+        onNext: (T) -> Unit = {}
     ) = subscribe(onNext, onError, onComplete).apply {
         if (bindName == null) compositeDisposable.bind(this) else compositeDisposable.bind(bindName, this)
     }

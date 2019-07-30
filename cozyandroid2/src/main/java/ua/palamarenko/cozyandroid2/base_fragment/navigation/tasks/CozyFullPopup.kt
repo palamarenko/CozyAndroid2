@@ -12,12 +12,12 @@ import com.tbruyelle.rxpermissions2.RxPermissions
 import ua.palamarenko.cozyandroid2.base_fragment.navigation.NavigateActivity
 import ua.palamarenko.cozyandroid2.base_fragment.navigation.Navigator
 
-abstract class CjFullPopup<T : CozyViewModel> : CozyBasePopup<T>() {
+abstract class CozyFullPopup<T : CozyViewModel> : CozyBasePopup<T>() {
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        takeViewModel().tm.task.observe(this, Observer { observeTasks(it!!.id, it.data, it.rule) })
+        vm().tm.task.observe(this, Observer { observeTasks(it!!.id, it.data, it.rule) })
     }
 
 
@@ -83,11 +83,11 @@ abstract class CjFullPopup<T : CozyViewModel> : CozyBasePopup<T>() {
 
 
     fun task(id: Int, data: Any = "") {
-        takeViewModel().tm.task(id, data)
+        vm().tm.task(id, data)
     }
 
     fun task(id: Int, data: Any, rule: Bundle) {
-        takeViewModel().tm.task(id, data, rule)
+        vm().tm.task(id, data, rule)
     }
 
 
