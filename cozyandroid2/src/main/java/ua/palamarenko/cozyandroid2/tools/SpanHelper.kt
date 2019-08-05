@@ -4,11 +4,12 @@ import android.graphics.Typeface
 import android.text.SpannableString
 import android.text.TextUtils
 import android.text.style.ForegroundColorSpan
+import android.text.style.StrikethroughSpan
 import android.text.style.StyleSpan
 import android.text.style.UnderlineSpan
 
 
-enum class SPAN { BOLD, ITALIC, UNDERLINE, NORMAL }
+enum class SPAN { BOLD, ITALIC, UNDERLINE, NORMAL, STRIKE }
 
 
 fun String.makeCharSequence(span: SPAN = SPAN.NORMAL, color: Int? = null): CharSequence {
@@ -36,6 +37,12 @@ fun String.makeCharSequence(span: SPAN = SPAN.NORMAL, color: Int? = null): CharS
                 setSpan(UnderlineSpan(), 0, this.length, 0)
             }
         }
+        SPAN.STRIKE -> {
+            SpannableString(this).apply {
+                setSpan(StrikethroughSpan(), 0, this.length, 0)
+            }
+        }
+
 
     }.apply {
         if (color != null) {

@@ -11,9 +11,13 @@ import android.widget.EditText
 import android.widget.Switch
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
+import androidx.viewpager.widget.ViewPager
 import com.google.gson.Gson
 import io.reactivex.*
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -61,6 +65,51 @@ fun SearchView.listen(listener: (String) -> Unit, submitListener: ((String) -> U
         }
     })
 
+}
+
+
+fun ViewPager.listen(listener: (Int) -> Unit) {
+    addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+        override fun onPageScrollStateChanged(state: Int) {}
+        override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
+
+        }
+
+        override fun onPageSelected(position: Int) {
+            listener.invoke(position)
+        }
+    })
+}
+
+fun <T> ViewPager.simpleInit(fm: FragmentManager?, list: List<T>, bind: (T) -> Fragment) {
+
+
+
+    class CozyPagerAdapter(fm: FragmentManager, val adapterList: List<T>, val bindAdapter: (T) -> Fragment) : FragmentStatePagerAdapter(fm) {
+
+        override fun getItem(position: Int): Fragment {
+            return bindAdapter.invoke(adapterList[position])
+        }
+
+        override fun getCount(): Int {
+            return adapterList.size
+        }
+
+    }
+    if(fm!=null)
+    adapter = CozyPagerAdapter(fm,list,bind)
+}
+
+
+fun ViewPager.listenScroll(listener: (position: Int, positionOffset: Float, positionOffsetPixels: Int) -> Unit) {
+    addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+        override fun onPageScrollStateChanged(state: Int) {}
+        override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
+            listener.invoke(position, positionOffset, positionOffsetPixels)
+        }
+
+        override fun onPageSelected(position: Int) {}
+    })
 }
 
 

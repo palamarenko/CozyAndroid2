@@ -37,11 +37,20 @@ abstract class CozyFragment<T : CozyViewModel> : BaseFragment<T>() {
             BACK_PRESS -> onBackPress(data as? Class<*>)
             CUSTOM_ACTION -> customAction(data)
             FINISH_ACTIVITY -> activity?.finish()
-            SHOW_POPUP -> showPopup(data as? Popup)
+            SHOW_POPUP -> showPopup(data)
             START_ACTIVITY_FOR_RESAULT -> startResultActivity(data as ActivityResult, bundle)
             SET_RESULT -> setResult(data as Intent)
         }
     }
+
+    private fun showPopup(data: Any) {
+
+        when (data) {
+            is Popup -> showDefaultPopup(data)
+            is CozyFullPopup<*> -> data.show(fragmentManager)
+        }
+    }
+
 
 
     private fun onBackPress(fragment: Class<*>?) {
@@ -119,7 +128,7 @@ abstract class CozyFragment<T : CozyViewModel> : BaseFragment<T>() {
         return CozyPopup()
     }
 
-    private fun showPopup(data: Popup?) {
+    private fun showDefaultPopup(data: Popup?) {
         if (data == null) {
             throw java.lang.IllegalStateException("Use Popup class")
         }
