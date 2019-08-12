@@ -7,6 +7,10 @@
         android:layout_height="match_parent"
         tools:context=".MainActivity">
 
+    <Button android:layout_width="50dp"
+            android:id="@+id/btButton"
+            android:layout_height="50dp"/>
+
     <ua.palamarenko.cozyandroid2.CozyRecyclerView
             android:id="@+id/recycler"
             android:layout_width="match_parent"

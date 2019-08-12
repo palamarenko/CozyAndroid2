@@ -1,11 +1,15 @@
 package ua.palamarenko.cozyandroid2.tools
 
 import android.graphics.Point
+import android.os.SystemClock
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
 import android.util.DisplayMetrics
 import android.util.Log
+import android.util.TypedValue
+import android.view.MotionEvent
+import android.view.View
 import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.Switch
@@ -68,7 +72,9 @@ fun SearchView.listen(listener: (String) -> Unit, submitListener: ((String) -> U
 }
 
 
-fun ViewPager.listen(listener: (Int) -> Unit) {
+fun ViewPager.listen(clear: Boolean = true, listener: (Int) -> Unit) {
+    if (clear)
+        clearOnPageChangeListeners()
     addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
         override fun onPageScrollStateChanged(state: Int) {}
         override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
@@ -81,11 +87,50 @@ fun ViewPager.listen(listener: (Int) -> Unit) {
     })
 }
 
+fun View.click(clickBack: Boolean = true, click: () -> Unit) {
+    if (clickBack) {
+        try {
+            val outValue = TypedValue()
+            context.theme.resolveAttribute(android.R.attr.selectableItemBackgroundBorderless, outValue, true)
+            setBackgroundResource(outValue.resourceId)
+        } catch (e: Exception) {
+        }
+
+    }
+
+    setOnClickListener { click.invoke() }
+}
+
+fun EditText.openKeyboard() {
+    post {
+        dispatchTouchEvent(
+            MotionEvent.obtain(
+                SystemClock.uptimeMillis(),
+                SystemClock.uptimeMillis(),
+                MotionEvent.ACTION_DOWN,
+                10f,
+                10f,
+                0
+            )
+        )
+        dispatchTouchEvent(
+            MotionEvent.obtain(
+                SystemClock.uptimeMillis(),
+                SystemClock.uptimeMillis(),
+                MotionEvent.ACTION_UP,
+                10f,
+                10f,
+                0
+            )
+        )
+    }
+}
+
 fun <T> ViewPager.simpleInit(fm: FragmentManager?, list: List<T>, bind: (T) -> Fragment) {
 
 
-
-    class CozyPagerAdapter(fm: FragmentManager, val adapterList: List<T>, val bindAdapter: (T) -> Fragment) : FragmentStatePagerAdapter(fm) {
+    class CozyPagerAdapter(fm: FragmentManager, val adapterList: List<T>, val bindAdapter: (T) -> Fragment) :
+        FragmentStatePagerAdapter(fm) {
 
         override fun getItem(position: Int): Fragment {
             return bindAdapter.invoke(adapterList[position])
@@ -96,8 +141,8 @@ fun <T> ViewPager.simpleInit(fm: FragmentManager?, list: List<T>, bind: (T) -> F
         }
 
     }
-    if(fm!=null)
-    adapter = CozyPagerAdapter(fm,list,bind)
+    if (fm != null)
+        adapter = CozyPagerAdapter(fm, list, bind)
 }
 
 

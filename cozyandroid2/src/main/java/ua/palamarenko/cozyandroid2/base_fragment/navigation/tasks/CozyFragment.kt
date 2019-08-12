@@ -6,12 +6,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import ua.palamarenko.cozyandroid2.base_fragment.navigation.BaseFragment
 import ua.palamarenko.cozyandroid2.base_fragment.navigation.NavigateActivity
 import ua.palamarenko.cozyandroid2.base_fragment.navigation.Navigator
+import ua.palamarenko.cozyandroid2.tools.click
 
 
 abstract class CozyFragment<T : CozyViewModel> : BaseFragment<T>() {
@@ -52,7 +54,6 @@ abstract class CozyFragment<T : CozyViewModel> : BaseFragment<T>() {
     }
 
 
-
     private fun onBackPress(fragment: Class<*>?) {
         if (activity?.isDestroyed != true && activity is NavigateActivity) {
             (activity as NavigateActivity).onBackPressed(fragment)
@@ -62,8 +63,8 @@ abstract class CozyFragment<T : CozyViewModel> : BaseFragment<T>() {
     open fun customAction(obj: Any) {}
 
 
-    fun task(id: Int, data: Any = 0, rule: Bundle = Bundle()) {
-        vm().tm.task(id, data, rule)
+    fun task(id: Int, data: Any?, rule: Bundle = Bundle()) {
+        vm().tm.task(id, data ?: 0, rule)
     }
 
 
@@ -165,6 +166,13 @@ abstract class CozyFragment<T : CozyViewModel> : BaseFragment<T>() {
         popup.setShortPopup(data.generationShortPopup(context!!))
 
         popup.show(fragmentManager)
+    }
+
+
+    fun ImageView.backButton(cl: Class<*>? = null) {
+        click {
+            task(BACK_PRESS, cl)
+        }
     }
 
 

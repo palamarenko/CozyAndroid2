@@ -1,6 +1,7 @@
 package ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks
 
 import android.os.Bundle
+import androidx.lifecycle.MutableLiveData
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Observable
@@ -86,6 +87,20 @@ open class CozyViewModel : BaseViewModel() {
         if (bindName == null) compositeDisposable.bind(this) else compositeDisposable.bind(bindName, this)
     }
 
+
+    fun <T : Any> Single<T>.toLiveData(
+        bindName: String? = null,
+        onError: (Throwable) -> Unit = { errorHandler(it) }
+    ): MutableLiveData<T> {
+        val liveData = MutableLiveData<T>()
+        bindSubscribe(bindName = bindName, onNext = {
+            liveData.postValue(it)
+        }, onError = onError)
+
+        return liveData
+    }
+
+
     fun <T : Any> Single<T>.justSubscribe(onNext: (T) -> Unit = {}) = subscribe(onNext, {}).apply {
         compositeDisposable.bind(this)
     }
@@ -108,6 +123,9 @@ open class CozyViewModel : BaseViewModel() {
         if (bindName == null) compositeDisposable.bind(this) else compositeDisposable.bind(bindName, this)
     }
 
+    fun Completable.justSubscribe(
+        onNext: () -> Unit = {}
+    ) = subscribe(onNext, {})
 
 }
 

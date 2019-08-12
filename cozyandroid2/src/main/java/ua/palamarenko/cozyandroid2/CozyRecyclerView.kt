@@ -6,11 +6,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
-import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.*
 import kotlinx.android.synthetic.main.view_recycler.view.*
+import ua.palamarenko.cozyandroid2.recycler.CozyDiffCallBack
 
 fun RecyclerView.init(
     adapter: RecyclerView.Adapter<*>,
@@ -35,7 +33,7 @@ fun RecyclerView.init(
 
 class CozyRecyclerView : FrameLayout {
 
-    lateinit var adapter: CjRecyclerAdapter
+    lateinit var adapter: CozyRecyclerAdapter
 
     private var adapterListener: (CozyCell) -> Unit = {}
 
@@ -58,7 +56,7 @@ class CozyRecyclerView : FrameLayout {
 
 
     private fun init() {
-        adapter = CjRecyclerAdapter(adapterListener)
+        adapter = CozyRecyclerAdapter(adapterListener)
         view = View.inflate(context, R.layout.view_recycler, null)
         addView(view)
         view.baseRecycler.init(adapter)
@@ -67,7 +65,7 @@ class CozyRecyclerView : FrameLayout {
         view.srRefresh.isEnabled = false
     }
 
-    fun needProgress(){
+    fun needProgress() {
         view.progress.visibility = View.VISIBLE
     }
 
@@ -109,16 +107,17 @@ class CozyRecyclerView : FrameLayout {
     }
 
 
-    fun setHorizontalLayoutManager(reverseLayout : Boolean = false){
-        view.baseRecycler.layoutManager = LinearLayoutManager(view.context,LinearLayoutManager.HORIZONTAL,reverseLayout)
+    fun setHorizontalLayoutManager(reverseLayout: Boolean = false) {
+        view.baseRecycler.layoutManager =
+            LinearLayoutManager(view.context, LinearLayoutManager.HORIZONTAL, reverseLayout)
     }
 
-    fun setGridLayoutManager(spanCount : Int){
-        view.baseRecycler.layoutManager = GridLayoutManager(view.context,spanCount)
+    fun setGridLayoutManager(spanCount: Int) {
+        view.baseRecycler.layoutManager = GridLayoutManager(view.context, spanCount)
 
     }
 
-    fun setLayoutManager(layoutManager: RecyclerView.LayoutManager){
+    fun setLayoutManager(layoutManager: RecyclerView.LayoutManager) {
         view.baseRecycler.layoutManager = layoutManager
     }
 
@@ -159,7 +158,7 @@ class CozyRecyclerView : FrameLayout {
     }
 
 
-    class CjRecyclerAdapter(val adapterListener: (CozyCell) -> Unit) :
+    class CozyRecyclerAdapter(val adapterListener: (CozyCell) -> Unit) :
         RecyclerView.Adapter<CozyViewHolder<CozyCell>>() {
 
 
@@ -191,9 +190,11 @@ class CozyRecyclerView : FrameLayout {
 
 
         fun updateList(data: List<CozyCell>) {
+            val callBack = CozyDiffCallBack(list, data)
+            val diffResult = DiffUtil.calculateDiff(callBack)
             this.list.clear()
             this.list.addAll(data)
-            notifyDataSetChanged()
+            diffResult.dispatchUpdatesTo(this)
         }
     }
 
