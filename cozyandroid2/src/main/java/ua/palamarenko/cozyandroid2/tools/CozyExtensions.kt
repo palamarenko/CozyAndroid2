@@ -22,6 +22,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.viewpager.widget.ViewPager
+import com.google.android.material.tabs.TabLayout
 import com.google.gson.Gson
 import io.reactivex.*
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -90,9 +91,26 @@ fun ViewPager.listen(clear: Boolean = true, listener: (Int) -> Unit) {
 fun View.click(clickBack: Boolean = true, click: () -> Unit) {
     if (clickBack) {
         try {
-            val outValue = TypedValue()
-            context.theme.resolveAttribute(android.R.attr.selectableItemBackgroundBorderless, outValue, true)
-            setBackgroundResource(outValue.resourceId)
+            post {
+                try {
+                val outValue = TypedValue()
+
+                if (width / 2 > height) {
+                    context.theme.resolveAttribute(android.R.attr.selectableItemBackground, outValue, true)
+                    setBackgroundResource(outValue.resourceId)
+                } else {
+                    context.theme.resolveAttribute(
+                        android.R.attr.selectableItemBackgroundBorderless,
+                        outValue,
+                        true
+                    )
+                    setBackgroundResource(outValue.resourceId)
+                }
+                } catch (e: Exception) {
+                }
+            }
+
+
         } catch (e: Exception) {
         }
 
@@ -126,23 +144,60 @@ fun EditText.openKeyboard() {
     }
 }
 
-fun <T> ViewPager.simpleInit(fm: FragmentManager?, list: List<T>, bind: (T) -> Fragment) {
+fun <T> ViewPager.initSimple(fm: FragmentManager?, list: List<T>, bind: (T) -> Fragment) {
+    if (fm != null)
+        adapter = CozyPagerAdapter(fm, list, bind,{""})
+}
+
+fun <T> ViewPager.initWithTitles(fm: FragmentManager?, list: List<T>, bind: (T) -> Fragment,bindTitle: (Int) -> CharSequence = {""}) {
+    if (fm != null)
+        adapter = CozyPagerAdapter(fm, list, bind,bindTitle)
+}
+fun  ViewPager.initWithTitles(fm: FragmentManager?, count: Int, bind: (Int) -> Fragment,bindTitle: (Int) -> CharSequence = {""}) {
+
+    val list = ArrayList<Int>()
+
+    for ( i in 0 until  count){
+        list.add(i)
+    }
+
+    if (fm != null)
+        adapter = CozyPagerAdapter(fm, list, bind, bindTitle)
+}
 
 
-    class CozyPagerAdapter(fm: FragmentManager, val adapterList: List<T>, val bindAdapter: (T) -> Fragment) :
-        FragmentStatePagerAdapter(fm) {
 
-        override fun getItem(position: Int): Fragment {
-            return bindAdapter.invoke(adapterList[position])
-        }
+class CozyPagerAdapter<T>(fm: FragmentManager, val adapterList: List<T>, val bindAdapter: (T) -> Fragment, val bindTitle: (Int) -> CharSequence) :
+    FragmentStatePagerAdapter(fm) {
 
-        override fun getCount(): Int {
-            return adapterList.size
-        }
+    override fun getItem(position: Int): Fragment {
+        return bindAdapter.invoke(adapterList[position])
+    }
+
+    override fun getCount(): Int {
+        return adapterList.size
+    }
+
+    override fun getPageTitle(position: Int): CharSequence? {
+        return bindTitle.invoke(position)
 
     }
+}
+
+
+
+
+
+fun  ViewPager.initSimple(fm: FragmentManager?, count: Int, bind: (Int) -> Fragment) {
+
+    val list = ArrayList<Int>()
+
+    for ( i in 0 until  count){
+        list.add(i)
+    }
+
     if (fm != null)
-        adapter = CozyPagerAdapter(fm, list, bind)
+        adapter = CozyPagerAdapter(fm, list, bind, {""})
 }
 
 

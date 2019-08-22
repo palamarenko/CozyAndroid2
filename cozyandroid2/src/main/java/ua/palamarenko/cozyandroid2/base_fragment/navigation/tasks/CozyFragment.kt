@@ -37,12 +37,17 @@ abstract class CozyFragment<T : CozyViewModel> : BaseFragment<T>() {
             TOAST -> showToast(data as String)
             START_ACTIVITY -> changeActivity(data, bundle)
             BACK_PRESS -> onBackPress(data as? Class<*>)
-            CUSTOM_ACTION -> customAction(data)
+            CUSTOM_ACTION -> customAction(data as? ActivityCallBack)
             FINISH_ACTIVITY -> activity?.finish()
             SHOW_POPUP -> showPopup(data)
             START_ACTIVITY_FOR_RESAULT -> startResultActivity(data as ActivityResult, bundle)
             SET_RESULT -> setResult(data as Intent)
+            else -> observeCustomTasks(id,data,bundle)
         }
+    }
+
+    open fun observeCustomTasks(id: Int, data: Any, bundle: Bundle){
+
     }
 
     private fun showPopup(data: Any) {
@@ -60,10 +65,14 @@ abstract class CozyFragment<T : CozyViewModel> : BaseFragment<T>() {
         }
     }
 
-    open fun customAction(obj: Any) {}
+    open fun customAction(callBack: ActivityCallBack?) {
+        if (activity != null && activity is CozyActivity<*>) {
+            callBack?.listener?.invoke(activity as CozyActivity<*>)
+        }
+    }
 
 
-    fun task(id: Int, data: Any?, rule: Bundle = Bundle()) {
+    fun task(id: Int, data: Any? = 0, rule: Bundle = Bundle()) {
         vm().tm.task(id, data ?: 0, rule)
     }
 
@@ -194,3 +203,4 @@ abstract class CozyFragment<T : CozyViewModel> : BaseFragment<T>() {
 
 class PermissionModel(val permission: Array<String>, val callBack: (Boolean) -> Unit)
 class ActivityResult(val activity: Any, val callBack: (Intent) -> Unit)
+class ActivityCallBack(val listener: (CozyActivity<*>) -> Unit)

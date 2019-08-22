@@ -87,6 +87,19 @@ open class CozyViewModel : BaseViewModel() {
         if (bindName == null) compositeDisposable.bind(this) else compositeDisposable.bind(bindName, this)
     }
 
+    fun <T : Any> Flowable<T>.toLiveData(
+        bindName: String? = null,
+        onError: (Throwable) -> Unit = { errorHandler(it) },
+        onComplete: () -> Unit = {}
+    ): MutableLiveData<T> {
+        val liveData = MutableLiveData<T>()
+        bindSubscribe(bindName, onError, onComplete, {
+            liveData.postValue(it)
+        })
+
+        return liveData
+    }
+
 
     fun <T : Any> Single<T>.toLiveData(
         bindName: String? = null,

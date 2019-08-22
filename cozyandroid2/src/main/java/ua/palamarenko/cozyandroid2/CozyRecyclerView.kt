@@ -42,6 +42,7 @@ class CozyRecyclerView : FrameLayout {
 
     var needPlaceHolder = false
 
+
     constructor(context: Context) : this(context, null) {
         init()
     }
@@ -144,12 +145,17 @@ class CozyRecyclerView : FrameLayout {
 
     fun setCell(data: List<CozyCell>) {
         adapter.updateList(data)
-        view.tvPlaceHolder.visibility = if (adapter.itemCount == 0 && needPlaceHolder) View.VISIBLE else View.GONE
+        view.flPlaceHolder.visibility = if (adapter.itemCount == 0 && needPlaceHolder) View.VISIBLE else View.GONE
         view.progress.visibility = View.GONE
     }
 
-    fun setPlaceHolder(id: Int) {
-        view.tvPlaceHolder.setText(id)
+    fun setPlaceHolder(view : View) {
+        view.layoutParams = FrameLayout.LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT)
+        view.flPlaceHolder.addView(view)
+    }
+
+    fun removePlaceHolder(){
+        view.flPlaceHolder.removeAllViews()
     }
 
 
@@ -202,7 +208,7 @@ class CozyRecyclerView : FrameLayout {
 }
 
 
-abstract class CozyCell(val data: Any) {
+abstract class CozyCell(open val data: Any) {
     abstract val layout: Int
     abstract fun bind(view: View)
 }

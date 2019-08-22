@@ -11,12 +11,20 @@ import ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks.CozyActivity
 import ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks.CozyFragment
 import ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks.EmptyViewModel
 import ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks.NAVIGATE
+import ua.palamarenko.cozyandroid2.tools.CozyTimer
+import ua.palamarenko.cozyandroid2.tools.LOG_EVENT
 
 class MainActivity : CozyActivity<EmptyViewModel>() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         simpleInit(FragmenA())
+
+        CozyTimer().startTimer(5,unitCallBack = {
+            LOG_EVENT("HELLO",it)
+        },finishCallBack = {
+            LOG_EVENT("HELLO","FINISH")
+        })
 
     }
 }
