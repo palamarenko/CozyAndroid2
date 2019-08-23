@@ -55,6 +55,7 @@ abstract class CozyFragment<T : CozyViewModel> : BaseFragment<T>() {
         when (data) {
             is Popup -> showDefaultPopup(data)
             is CozyFullPopup<*> -> data.show(fragmentManager)
+            is BottomSheetsPopup<*> -> data.show(fragmentManager)
         }
     }
 

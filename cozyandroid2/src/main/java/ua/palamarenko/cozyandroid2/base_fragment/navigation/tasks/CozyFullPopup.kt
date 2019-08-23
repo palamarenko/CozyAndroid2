@@ -1,14 +1,25 @@
 package ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks
 
+import android.app.Dialog
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.os.Handler
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
+import android.view.Window
 import android.view.inputmethod.InputMethodManager
+import android.widget.FrameLayout
 import android.widget.Toast
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tbruyelle.rxpermissions2.RxPermissions
+import ua.palamarenko.cozyandroid2.R
 import ua.palamarenko.cozyandroid2.base_fragment.navigation.NavigateActivity
 import ua.palamarenko.cozyandroid2.base_fragment.navigation.Navigator
 
@@ -106,4 +117,72 @@ abstract class CozyFullPopup<T : CozyViewModel> : CozyBasePopup<T>() {
         startActivity(intent)
         activity?.finish()
     }
+}
+
+
+
+abstract class BottomSheetsPopup<T : CozyViewModel> : CozyFullPopup<T>() {
+    private var bottomSheet: View? = null
+    private var behavior: BottomSheetBehavior<*>? = null
+    var canDrag = true
+    var canCancelByClick = true
+    private val mBottomSheetBehaviorCallback = object : BottomSheetBehavior.BottomSheetCallback() {
+
+        override fun onStateChanged(bottomSheet: View, newState: Int) {
+            if (newState == BottomSheetBehavior.STATE_COLLAPSED || newState == BottomSheetBehavior.STATE_HIDDEN) {
+                dismissAllowingStateLoss()
+                collapsed()
+            }
+
+            if (!canDrag) {
+                if (newState == BottomSheetBehavior.STATE_DRAGGING) {
+                    behavior?.state = BottomSheetBehavior.STATE_EXPANDED
+                }
+            }
+        }
+
+        override fun onSlide(bottomSheet: View, slideOffset: Float) {}
+    }
+
+
+
+    open fun collapsed() {
+
+    }
+
+
+
+    override fun dismiss() {
+        behavior!!.state = BottomSheetBehavior.STATE_HIDDEN
+    }
+
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        if (dialog != null && dialog.window != null) {
+            dialog.window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        }
+        v = inflater.inflate(R.layout.popup_bottom_sheet, container, false)
+        val frameLayout = v.findViewById<FrameLayout>(R.id.container)
+        bottomSheet = v.findViewById(R.id.bottom_sheet)
+        frameLayout.addView(View.inflate(context, layout, null))
+        val params = bottomSheet!!.layoutParams as CoordinatorLayout.LayoutParams
+        behavior = params.behavior as BottomSheetBehavior<*>?
+        v.findViewById<View>(R.id.main_lay).setOnClickListener {
+            if(canCancelByClick)
+                behavior!!.setState(BottomSheetBehavior.STATE_HIDDEN)
+        }
+        behavior!!.setBottomSheetCallback(mBottomSheetBehaviorCallback)
+        Handler().postDelayed({ behavior!!.setState(BottomSheetBehavior.STATE_EXPANDED) }, 300)
+
+        return v
+    }
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val dialog = super.onCreateDialog(savedInstanceState)
+        dialog.window!!.requestFeature(Window.FEATURE_NO_TITLE)
+        return dialog
+    }
+
+
+
 }

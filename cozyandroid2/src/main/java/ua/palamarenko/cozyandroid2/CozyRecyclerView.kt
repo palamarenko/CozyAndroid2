@@ -150,8 +150,8 @@ class CozyRecyclerView : FrameLayout {
     }
 
     fun setPlaceHolder(view : View) {
-        view.layoutParams = FrameLayout.LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT)
-        view.flPlaceHolder.addView(view)
+        view.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT)
+        this.view.flPlaceHolder.addView(view)
     }
 
     fun removePlaceHolder(){

@@ -62,4 +62,9 @@ class CozyTimer {
     }
 
 
+    fun cancel(){
+        disposible?.dispose()
+    }
+
+
 }
