@@ -19,6 +19,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tbruyelle.rxpermissions2.RxPermissions
+import ua.palamarenko.cozyandroid2.CozyLibrarySettings
 import ua.palamarenko.cozyandroid2.R
 import ua.palamarenko.cozyandroid2.base_fragment.navigation.NavigateActivity
 import ua.palamarenko.cozyandroid2.base_fragment.navigation.Navigator
@@ -40,6 +41,12 @@ abstract class CozyFullPopup<T : CozyViewModel> : CozyBasePopup<T>() {
         throw IllegalStateException("Use navigate activity")
     }
 
+    open fun observeCustomTasks(id: Int, data: Any, bundle: Bundle) {
+        activity?.apply {
+            CozyLibrarySettings.customListener?.observeCustomTasks(this,id,data,bundle)
+        }
+    }
+
 
 
     private fun observeTasks(id: Int, data: Any, bundle: Bundle) {
@@ -48,15 +55,21 @@ abstract class CozyFullPopup<T : CozyViewModel> : CozyBasePopup<T>() {
             SHOW_PROGRESS -> showProgress(data as Boolean)
             NAVIGATE -> navigate(data as Fragment, bundle)
             TOAST -> showToast(data as String)
-            START_ACTIVITY -> changeActivity(data as Class<*>, bundle)
+            START_ACTIVITY -> changeActivity(data, bundle)
             BACK_PRESS ->  onBackPress(data as? Class<*>)
             DISMISS -> dismiss()
-            CUSTOM_ACTION -> customAction(data)
+            FINISH_ACTIVITY -> activity?.finish()
+            SHOW_POPUP -> showPopup(data,fragmentManager)
+            CUSTOM_ACTION -> customAction(data as? ActivityCallBack)
+            else -> observeCustomTasks(id,data,bundle)
         }
     }
 
-    open fun customAction(obj: Any) {
 
+    open fun customAction(callBack: ActivityCallBack?) {
+        if (activity != null && activity is CozyActivity<*>) {
+            callBack?.listener?.invoke(activity as CozyActivity<*>)
+        }
     }
 
     protected fun hideKeyboard() {
@@ -81,7 +94,6 @@ abstract class CozyFullPopup<T : CozyViewModel> : CozyBasePopup<T>() {
             throw IllegalStateException("Use only NAVIGATE Activity")
 
         }
-
     }
 
 
@@ -103,6 +115,7 @@ abstract class CozyFullPopup<T : CozyViewModel> : CozyBasePopup<T>() {
 
 
     open fun showProgress(progress: Boolean) {
+        showDefaultProgress(progress,activity)
     }
 
 
@@ -111,17 +124,20 @@ abstract class CozyFullPopup<T : CozyViewModel> : CozyBasePopup<T>() {
     }
 
 
-    open fun changeActivity(activityClass: Class<*>, intentBundle: Bundle) {
-        val intent = Intent(context, activityClass)
-        intent.putExtras(intentBundle)
-        startActivity(intent)
-        activity?.finish()
+    open fun changeActivity(data: Any, intentBundle: Bundle) {
+        if (data is Class<*>) {
+            val intent = Intent(context, data)
+            intent.putExtras(intentBundle)
+            startActivity(intent)
+        } else {
+            startActivity(data as Intent)
+        }
     }
 }
 
 
 
-abstract class BottomSheetsPopup<T : CozyViewModel> : CozyFullPopup<T>() {
+abstract class CozyBottomSheets<T : CozyViewModel> : CozyFullPopup<T>() {
     private var bottomSheet: View? = null
     private var behavior: BottomSheetBehavior<*>? = null
     var canDrag = true

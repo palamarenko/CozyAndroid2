@@ -3,13 +3,13 @@ package ua.palamarenko.cozyandroid2.tools
 import android.preference.PreferenceManager
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import ua.palamarenko.cozyandroid2.appContext
+import ua.palamarenko.cozyandroid2.CozyLibrarySettings
 import java.lang.reflect.Modifier.TRANSIENT
 
 class PreferencesProvider {
 
     companion object {
-        val manager = PreferenceManager.getDefaultSharedPreferences(appContext)
+        val manager = PreferenceManager.getDefaultSharedPreferences(CozyLibrarySettings.appContext)
 
         fun putString(key: String, value: String) {
             manager.edit().apply {

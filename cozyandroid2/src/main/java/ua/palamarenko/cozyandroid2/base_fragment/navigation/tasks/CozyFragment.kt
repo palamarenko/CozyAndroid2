@@ -10,6 +10,7 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import ua.palamarenko.cozyandroid2.CozyLibrarySettings
 import ua.palamarenko.cozyandroid2.base_fragment.navigation.BaseFragment
 import ua.palamarenko.cozyandroid2.base_fragment.navigation.NavigateActivity
 import ua.palamarenko.cozyandroid2.base_fragment.navigation.Navigator
@@ -23,7 +24,11 @@ abstract class CozyFragment<T : CozyViewModel> : BaseFragment<T>() {
     private var activityResultCallBack: ((Intent) -> Unit)? = null
 
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         vm().tm.task.observe(this, Observer { observeTasks(it!!.id, it.data, it.rule) })
         return super.onCreateView(inflater, container, savedInstanceState)
     }
@@ -39,23 +44,16 @@ abstract class CozyFragment<T : CozyViewModel> : BaseFragment<T>() {
             BACK_PRESS -> onBackPress(data as? Class<*>)
             CUSTOM_ACTION -> customAction(data as? ActivityCallBack)
             FINISH_ACTIVITY -> activity?.finish()
-            SHOW_POPUP -> showPopup(data)
+            SHOW_POPUP -> showPopup(data, fragmentManager)
             START_ACTIVITY_FOR_RESAULT -> startResultActivity(data as ActivityResult, bundle)
             SET_RESULT -> setResult(data as Intent)
-            else -> observeCustomTasks(id,data,bundle)
+            else -> observeCustomTasks(id, data, bundle)
         }
     }
 
-    open fun observeCustomTasks(id: Int, data: Any, bundle: Bundle){
-
-    }
-
-    private fun showPopup(data: Any) {
-
-        when (data) {
-            is Popup -> showDefaultPopup(data)
-            is CozyFullPopup<*> -> data.show(fragmentManager)
-            is BottomSheetsPopup<*> -> data.show(fragmentManager)
+    open fun observeCustomTasks(id: Int, data: Any, bundle: Bundle) {
+        activity?.apply {
+            CozyLibrarySettings.customListener?.observeCustomTasks(this,id,data,bundle)
         }
     }
 
@@ -79,11 +77,7 @@ abstract class CozyFragment<T : CozyViewModel> : BaseFragment<T>() {
 
 
     open fun showProgress(progress: Boolean) {
-        if (progress) {
-            ProgressView.displayProgressDialog(activity, false)
-        } else {
-            ProgressView.hideProgressDialog(activity)
-        }
+        showDefaultProgress(progress, activity)
     }
 
     open fun navigate(fragment: Fragment, bundle: Bundle) {
@@ -133,49 +127,6 @@ abstract class CozyFragment<T : CozyViewModel> : BaseFragment<T>() {
         } else {
             startActivity(data as Intent)
         }
-    }
-
-    open fun getPopupRealization(): CozyReusePopup {
-        return CozyPopup()
-    }
-
-    private fun showDefaultPopup(data: Popup?) {
-        if (data == null) {
-            throw java.lang.IllegalStateException("Use Popup class")
-        }
-
-        val popup = getPopupRealization()
-
-
-        if (data.positiveAction != null) {
-            popup.setPositiveCallBack {
-                data.positiveAction!!.invoke(it)
-            }
-        }
-
-        if (data.negativeAction != null) {
-            popup.setNegativeCallBack {
-                data.negativeAction!!.invoke(it)
-            }
-        }
-
-
-        if (data.dissmisAction != null) {
-            popup.setDissmisCallBack {
-                data.dissmisAction!!.invoke(it)
-            }
-        }
-
-
-        if (data.finishAction != null) {
-            popup.setFinishCallBack {
-                data.finishAction!!.invoke(it)
-            }
-        }
-
-        popup.setShortPopup(data.generationShortPopup(context!!))
-
-        popup.show(fragmentManager)
     }
 
 

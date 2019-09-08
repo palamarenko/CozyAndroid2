@@ -22,15 +22,11 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.viewpager.widget.ViewPager
-import com.google.android.material.tabs.TabLayout
 import com.google.gson.Gson
 import io.reactivex.*
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import ua.palamarenko.cozyandroid2.BuildConfig
-import ua.palamarenko.cozyandroid2.CozyLibrary
-import ua.palamarenko.cozyandroid2.appContext
-import java.lang.Exception
+import ua.palamarenko.cozyandroid2.CozyLibrarySettings
 
 
 var SCREEN_WIDTH = 0
@@ -78,7 +74,11 @@ fun ViewPager.listen(clear: Boolean = true, listener: (Int) -> Unit) {
         clearOnPageChangeListeners()
     addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
         override fun onPageScrollStateChanged(state: Int) {}
-        override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
+        override fun onPageScrolled(
+            position: Int,
+            positionOffset: Float,
+            positionOffsetPixels: Int
+        ) {
 
         }
 
@@ -93,19 +93,23 @@ fun View.click(clickBack: Boolean = true, click: () -> Unit) {
         try {
             post {
                 try {
-                val outValue = TypedValue()
+                    val outValue = TypedValue()
 
-                if (width / 2 > height) {
-                    context.theme.resolveAttribute(android.R.attr.selectableItemBackground, outValue, true)
-                    setBackgroundResource(outValue.resourceId)
-                } else {
-                    context.theme.resolveAttribute(
-                        android.R.attr.selectableItemBackgroundBorderless,
-                        outValue,
-                        true
-                    )
-                    setBackgroundResource(outValue.resourceId)
-                }
+                    if (width / 2 > height) {
+                        context.theme.resolveAttribute(
+                            android.R.attr.selectableItemBackground,
+                            outValue,
+                            true
+                        )
+                        setBackgroundResource(outValue.resourceId)
+                    } else {
+                        context.theme.resolveAttribute(
+                            android.R.attr.selectableItemBackgroundBorderless,
+                            outValue,
+                            true
+                        )
+                        setBackgroundResource(outValue.resourceId)
+                    }
                 } catch (e: Exception) {
                 }
             }
@@ -146,18 +150,29 @@ fun EditText.openKeyboard() {
 
 fun <T> ViewPager.initSimple(fm: FragmentManager?, list: List<T>, bind: (T) -> Fragment) {
     if (fm != null)
-        adapter = CozyPagerAdapter(fm, list, bind,{""})
+        adapter = CozyPagerAdapter(fm, list, bind, { "" })
 }
 
-fun <T> ViewPager.initWithTitles(fm: FragmentManager?, list: List<T>, bind: (T) -> Fragment,bindTitle: (Int) -> CharSequence = {""}) {
+fun <T> ViewPager.initWithTitles(
+    fm: FragmentManager?,
+    list: List<T>,
+    bind: (T) -> Fragment,
+    bindTitle: (Int) -> CharSequence = { "" }
+) {
     if (fm != null)
-        adapter = CozyPagerAdapter(fm, list, bind,bindTitle)
+        adapter = CozyPagerAdapter(fm, list, bind, bindTitle)
 }
-fun  ViewPager.initWithTitles(fm: FragmentManager?, count: Int, bind: (Int) -> Fragment,bindTitle: (Int) -> CharSequence = {""}) {
+
+fun ViewPager.initWithTitles(
+    fm: FragmentManager?,
+    count: Int,
+    bind: (Int) -> Fragment,
+    bindTitle: (Int) -> CharSequence = { "" }
+) {
 
     val list = ArrayList<Int>()
 
-    for ( i in 0 until  count){
+    for (i in 0 until count) {
         list.add(i)
     }
 
@@ -166,8 +181,12 @@ fun  ViewPager.initWithTitles(fm: FragmentManager?, count: Int, bind: (Int) -> F
 }
 
 
-
-class CozyPagerAdapter<T>(fm: FragmentManager, val adapterList: List<T>, val bindAdapter: (T) -> Fragment, val bindTitle: (Int) -> CharSequence) :
+class CozyPagerAdapter<T>(
+    fm: FragmentManager,
+    val adapterList: List<T>,
+    val bindAdapter: (T) -> Fragment,
+    val bindTitle: (Int) -> CharSequence
+) :
     FragmentStatePagerAdapter(fm) {
 
     override fun getItem(position: Int): Fragment {
@@ -185,26 +204,27 @@ class CozyPagerAdapter<T>(fm: FragmentManager, val adapterList: List<T>, val bin
 }
 
 
-
-
-
-fun  ViewPager.initSimple(fm: FragmentManager?, count: Int, bind: (Int) -> Fragment) {
+fun ViewPager.initSimple(fm: FragmentManager?, count: Int, bind: (Int) -> Fragment) {
 
     val list = ArrayList<Int>()
 
-    for ( i in 0 until  count){
+    for (i in 0 until count) {
         list.add(i)
     }
 
     if (fm != null)
-        adapter = CozyPagerAdapter(fm, list, bind, {""})
+        adapter = CozyPagerAdapter(fm, list, bind, { "" })
 }
 
 
 fun ViewPager.listenScroll(listener: (position: Int, positionOffset: Float, positionOffsetPixels: Int) -> Unit) {
     addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
         override fun onPageScrollStateChanged(state: Int) {}
-        override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
+        override fun onPageScrolled(
+            position: Int,
+            positionOffset: Float,
+            positionOffsetPixels: Int
+        ) {
             listener.invoke(position, positionOffset, positionOffsetPixels)
         }
 
@@ -247,7 +267,7 @@ fun EditText.listen(listener: (String) -> Unit) {
 
 
 fun dpToPx(dp: Float): Int {
-    val resources = appContext!!.resources
+    val resources = CozyLibrarySettings.appContext!!.resources
     val metrics = resources.displayMetrics
     val px = dp * (metrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)
     return px.toInt()
@@ -255,10 +275,14 @@ fun dpToPx(dp: Float): Int {
 
 
 fun pxToDp(px: Float): Int {
-    val resources = appContext!!.resources
+    val resources = CozyLibrarySettings.appContext!!.resources
     val metrics = resources.displayMetrics
     val dp = px / (metrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)
     return dp.toInt()
+}
+
+fun getSt(id: Int): String {
+    return CozyLibrarySettings.appContext!!.getString(id)
 }
 
 

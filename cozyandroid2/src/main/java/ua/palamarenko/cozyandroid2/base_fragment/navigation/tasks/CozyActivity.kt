@@ -6,10 +6,11 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import ua.palamarenko.cozyandroid2.CozyLibrarySettings
 import ua.palamarenko.cozyandroid2.base_fragment.navigation.NavigateActivity
 import ua.palamarenko.cozyandroid2.base_fragment.navigation.ReflectionUtils
 
-open class CozyActivity<T : CozyViewModel>  : NavigateActivity(){
+open class CozyActivity<T : CozyViewModel> : NavigateActivity() {
     private val POPUP_TAG = "POPUP_TAG"
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -25,67 +26,25 @@ open class CozyActivity<T : CozyViewModel>  : NavigateActivity(){
             TOAST -> showToast(data as String)
             START_ACTIVITY -> changeActivity(data as Class<*>, bundle)
             BACK_PRESS -> onBackPressed(data as? Class<*>)
-            CUSTOM_ACTION -> customAction(data)
-            SHOW_POPUP -> showPopup(data)
+            CUSTOM_ACTION -> customAction(data as? ActivityCallBack)
+            SHOW_POPUP -> showPopup(data, supportFragmentManager)
             FINISH_ACTIVITY -> finish()
+            else -> observeCustomTasks(id, data, bundle)
         }
     }
 
-
-    open fun getPopupRealization() : CozyReusePopup{
-        return CozyPopup()
+    open fun observeCustomTasks(id: Int, data: Any, bundle: Bundle) {
+        CozyLibrarySettings.customListener?.observeCustomTasks(this, id, data, bundle)
     }
-
-    private fun showPopup(data: Any) {
-
-        if (data is Popup) {
-            val popup = getPopupRealization()
-
-
-            if (data.positiveAction != null) {
-                popup.setPositiveCallBack {
-                    data.positiveAction!!.invoke(it)
-                }
-            }
-
-            if (data.negativeAction != null) {
-                popup.setNegativeCallBack {
-                    data.negativeAction!!.invoke(it)
-                }
-            }
-
-
-            if (data.dissmisAction != null) {
-                popup.setDissmisCallBack {
-                    data.dissmisAction!!.invoke(it)
-                }
-            }
-
-
-            if(data.finishAction!=null){
-                popup.setFinishCallBack {
-                    data.finishAction!!.invoke(it)
-                }
-            }
-
-            popup.setShortPopup(data.generationShortPopup(this))
-
-            popup.show(supportFragmentManager)
-
-        }
-
-
-    }
-
 
     fun task(id: Int, data: Any = 0, rule: Bundle = Bundle()) {
         vm().tm.task(id, data, rule)
     }
 
 
-
-    open fun customAction(obj: Any) {}
-
+    open fun customAction(callBack: ActivityCallBack?) {
+        callBack?.listener?.invoke(this)
+    }
 
 
     fun vm(): T {
@@ -94,11 +53,12 @@ open class CozyActivity<T : CozyViewModel>  : NavigateActivity(){
     }
 
     open fun showProgress(progress: Boolean) {
+        showDefaultProgress(progress, this)
     }
 
 
     open fun navigate(fragment: Fragment, bundle: Bundle) {
-        navigator.replaceFragment(fragment,bundle)
+        navigator.replaceFragment(fragment, bundle)
     }
 
     open fun showToast(message: String) {

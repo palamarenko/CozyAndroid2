@@ -29,8 +29,6 @@ class FragmenA : CozyFragment<EmptyViewModel>() {
     override fun onViewCreated() {
         super.onViewCreated()
 
-        task(SHOW_POPUP,HelloPopup())
-
 
         btButton.setOnClickListener {
             if (b) {
