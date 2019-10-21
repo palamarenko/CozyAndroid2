@@ -11,13 +11,14 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import ua.palamarenko.cozyandroid2.CozyLibrarySettings
+import ua.palamarenko.cozyandroid2.base_fragment.navigation.BackPress
 import ua.palamarenko.cozyandroid2.base_fragment.navigation.BaseFragment
 import ua.palamarenko.cozyandroid2.base_fragment.navigation.NavigateActivity
 import ua.palamarenko.cozyandroid2.base_fragment.navigation.Navigator
 import ua.palamarenko.cozyandroid2.tools.click
 
 
-abstract class CozyFragment<T : CozyViewModel> : BaseFragment<T>() {
+abstract class CozyFragment<T : CozyViewModel> : BaseFragment<T>(),BackPress  {
 
     private val POPUP_TAG = "POPUP_TAG"
     private val RESULT_ACTIVITY_CODE = 99
@@ -47,13 +48,15 @@ abstract class CozyFragment<T : CozyViewModel> : BaseFragment<T>() {
             SHOW_POPUP -> showPopup(data, fragmentManager)
             START_ACTIVITY_FOR_RESAULT -> startResultActivity(data as ActivityResult, bundle)
             SET_RESULT -> setResult(data as Intent)
+            SHOW_SNACKBAR -> view?.apply { showSnackbar(this, data as SnackbarPopup) }
             else -> observeCustomTasks(id, data, bundle)
         }
     }
 
+
     open fun observeCustomTasks(id: Int, data: Any, bundle: Bundle) {
         activity?.apply {
-            CozyLibrarySettings.customListener?.observeCustomTasks(this,id,data,bundle)
+            CozyLibrarySettings.customListener?.observeCustomTasks(this, id, data, bundle)
         }
     }
 

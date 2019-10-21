@@ -6,5 +6,7 @@ package ua.palamarenko.cozyandroid2.base_fragment.navigation
  */
 
 interface BackPress {
-    fun onBackPress() : Boolean
+    fun onBackPress() : Boolean{
+        return false
+    }
 }

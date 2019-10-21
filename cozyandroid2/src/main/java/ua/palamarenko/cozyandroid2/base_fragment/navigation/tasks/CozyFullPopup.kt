@@ -61,6 +61,7 @@ abstract class CozyFullPopup<T : CozyViewModel> : CozyBasePopup<T>() {
             FINISH_ACTIVITY -> activity?.finish()
             SHOW_POPUP -> showPopup(data,fragmentManager)
             CUSTOM_ACTION -> customAction(data as? ActivityCallBack)
+            SHOW_SNACKBAR -> view?.apply { showSnackbar(this, data as SnackbarPopup) }
             else -> observeCustomTasks(id,data,bundle)
         }
     }
@@ -174,8 +175,8 @@ abstract class CozyBottomSheets<T : CozyViewModel> : CozyFullPopup<T>() {
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        if (dialog != null && dialog.window != null) {
-            dialog.window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        if (dialog != null && dialog?.window != null) {
+            dialog!!.window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         }
         v = inflater.inflate(R.layout.popup_bottom_sheet, container, false)
         val frameLayout = v.findViewById<FrameLayout>(R.id.container)

@@ -11,9 +11,16 @@ import androidx.fragment.app.FragmentManager
 import com.tbruyelle.rxpermissions2.RxPermissions
 import java.lang.Exception
 import androidx.fragment.app.FragmentTransaction
+import ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks.CozyFragment
+import android.R
+
+
+
+const val FRAGMENT_TAG = "FRAGMENT_TAG"
 
 
 open class NavigateActivity : AppCompatActivity() {
+
 
     lateinit var navigator: Navigator
     lateinit var frameLayout: FrameLayout
@@ -22,12 +29,15 @@ open class NavigateActivity : AppCompatActivity() {
     var animation = TRANSACTION_ANIMATION.DEFAULT_ANIMATION
 
 
-    fun simpleInit(fragment: Fragment? = null,animation : TRANSACTION_ANIMATION = TRANSACTION_ANIMATION.DEFAULT_ANIMATION) {
+    fun simpleInit(
+        fragment: Fragment? = null,
+        animation: TRANSACTION_ANIMATION = TRANSACTION_ANIMATION.DEFAULT_ANIMATION
+    ) {
         this.animation = animation
         frameLayout = FrameLayout(this)
         frameLayout.id = View.generateViewId()
         this.setContentView(frameLayout)
-        this.navigator = Navigator(frameLayout.id, supportFragmentManager,this.animation)
+        this.navigator = Navigator(frameLayout.id, supportFragmentManager, this.animation)
 
         if (fragment != null) {
             setFragment(fragment)
@@ -43,12 +53,17 @@ open class NavigateActivity : AppCompatActivity() {
 
 
     override fun onBackPressed() {
-        if (navigator.fragmentManager.fragments.isNotEmpty() && navigator.fragmentManager.fragments[navigator.fragmentManager.fragments.size - 1] is BackPress) {
+        if (navigator.fragmentManager.fragments.isNotEmpty() && findCurrentFragment() is BackPress) {
             val back =
-                (navigator.fragmentManager.fragments[navigator.fragmentManager.fragments.size - 1] as BackPress).onBackPress()
+                (findCurrentFragment() as BackPress).onBackPress()
             if (back) return
         }
         onBackPressed(null)
+    }
+
+
+    private fun findCurrentFragment() : Fragment? {
+      return  navigator.fragmentManager.fragments.findLast { it.tag == FRAGMENT_TAG }
     }
 
 
@@ -64,7 +79,13 @@ open class NavigateActivity : AppCompatActivity() {
                 navigator.fragmentManager.popBackStack()
             }
         }
+        handleOnBackPressEvent()
     }
+
+    open fun handleOnBackPressEvent(){
+
+    }
+
 
     fun request(): RxPermissions {
         return RxPermissions(this)
@@ -77,7 +98,11 @@ open class NavigateActivity : AppCompatActivity() {
 
 enum class TRANSACTION_ANIMATION { DEFAULT_ANIMATION, CUSTON, NONE }
 
-open class Navigator(val contId: Int, val fragmentManager: FragmentManager, val animation: TRANSACTION_ANIMATION = TRANSACTION_ANIMATION.DEFAULT_ANIMATION) {
+open class Navigator(
+    val contId: Int,
+    val fragmentManager: FragmentManager,
+    val animation: TRANSACTION_ANIMATION = TRANSACTION_ANIMATION.DEFAULT_ANIMATION
+) {
 
 
     fun showDialog(dialog: androidx.fragment.app.DialogFragment) {
@@ -85,11 +110,18 @@ open class Navigator(val contId: Int, val fragmentManager: FragmentManager, val 
     }
 
 
+    fun getCurrentFragment() : CozyFragment<*>?{
+       return fragmentManager.findFragmentById(contId) as? CozyFragment<*>
+    }
+
+
+
+
     open fun replaceFragment(fragment: Fragment, bundle: Bundle) {
 
         try {
             val ft = this.fragmentManager.beginTransaction()
-            ft.replace(this.contId, fragment)
+            ft.replace(this.contId, fragment, FRAGMENT_TAG)
             ft.addToBackStack(fragment.javaClass.simpleName)
 
             when (animation) {

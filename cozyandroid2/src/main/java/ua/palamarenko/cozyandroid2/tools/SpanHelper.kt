@@ -7,12 +7,13 @@ import android.text.style.ForegroundColorSpan
 import android.text.style.StrikethroughSpan
 import android.text.style.StyleSpan
 import android.text.style.UnderlineSpan
+import androidx.annotation.ColorInt
 
 
 enum class SPAN { BOLD, ITALIC, UNDERLINE, NORMAL, STRIKE }
 
 
-fun String.makeCharSequence(span: SPAN = SPAN.NORMAL, color: Int? = null): CharSequence {
+fun String.makeCharSequence(span: SPAN = SPAN.NORMAL, @ColorInt color: Int? = null): CharSequence {
 
     return when (span) {
         SPAN.BOLD -> {

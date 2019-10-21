@@ -13,3 +13,4 @@ const val FINISH_ACTIVITY = 8
 const val SHOW_POPUP = 9
 const val START_ACTIVITY_FOR_RESAULT = 10
 const val SET_RESULT = 11
+const val SHOW_SNACKBAR = 12

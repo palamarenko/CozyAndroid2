@@ -17,12 +17,12 @@ ext {
     libraryName = 'CozyAndroid'
     artifact = 'cozy_android'
 
-    libraryDescription = 'This view is a container that supports diagonal scroll and fling gesture. It is based on AOSP HorizontalScrollView.'
+    libraryDescription = 'This is Cozy Android :)'
 
     siteUrl = 'https://github.com/palamarenko/CozyAndroid2'
     gitUrl = 'https://github.com/palamarenko/CozyAndroid2'
 
-    libraryVersion = '0.3.2'
+    libraryVersion = '0.3.55'
 
     developerId = 'lissf'
     developerName = 'Andrey Palamarenko'
@@ -73,7 +73,7 @@ dependencies {
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation 'androidx.appcompat:appcompat:1.0.2'
+    implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'androidx.recyclerview:recyclerview:1.0.0'
     implementation 'com.google.android.material:material:1.0.0'
     implementation 'androidx.cardview:cardview:1.0.0'
@@ -87,17 +87,17 @@ dependencies {
 
     implementation "com.squareup.okhttp3:okhttp:$okHttpVersion"
     implementation "com.squareup.okhttp3:logging-interceptor:$okHttpVersion"
-    implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0'
-    implementation 'androidx.room:room-rxjava2:2.0.0'
-    implementation 'androidx.room:room-runtime:2.0.0'
-    implementation 'androidx.room:room-testing:2.0.0'
-    implementation 'io.reactivex.rxjava2:rxjava:2.1.9'
-    implementation 'io.reactivex.rxjava2:rxandroid:2.0.2'
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.1.0'
+    implementation 'androidx.room:room-rxjava2:2.1.0'
+    implementation 'androidx.room:room-runtime:2.1.0'
+    implementation 'androidx.room:room-testing:2.1.0'
+    implementation 'io.reactivex.rxjava2:rxjava:2.2.9'
+    implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
     implementation 'com.squareup.picasso:picasso:2.71828'
     implementation 'ru.tinkoff.decoro:decoro:1.3.5'
     implementation 'com.tbruyelle.rxpermissions2:rxpermissions:0.9.5@aar'
     implementation "com.google.dagger:dagger:$daggerVersion"
-    kapt 'androidx.room:room-compiler:2.0.0'
+    kapt 'androidx.room:room-compiler:2.1.0'
     kapt "com.google.dagger:dagger-compiler:$daggerVersion"
 }
 

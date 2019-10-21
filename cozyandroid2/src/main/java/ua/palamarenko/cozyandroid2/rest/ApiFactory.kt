@@ -22,8 +22,12 @@ class Rest<T>(private val apiFactory: ApiFactory<T>) {
 }
 
 
+class MockApiFactory<T : Any>(mockClass: T) : ApiFactory<T>("", apiGet = mockClass::class.java) {
+    override val apiService = mockClass
+}
 
-open class ApiFactory<T>(private val BASE_URL: String, val apiGet : Class<T>) {
+
+open class ApiFactory<T>(private val BASE_URL: String, open val apiGet: Class<out T>) {
 
     private val connectTimeOut = 30L
     private val writeTimeOut = 30L
@@ -57,7 +61,6 @@ open class ApiFactory<T>(private val BASE_URL: String, val apiGet : Class<T>) {
     }
 
 
-
     open fun addInterceptors(builder: OkHttpClient.Builder) {
 
         builder.addInterceptor { chain ->
@@ -65,7 +68,7 @@ open class ApiFactory<T>(private val BASE_URL: String, val apiGet : Class<T>) {
             val contentType = original.headers().get("Content-Type")
             val requestBuilder = original.newBuilder()
                 .header("Accept", "application/json")
-                .header("Content-Type", contentType?:"application/json")
+                .header("Content-Type", contentType ?: "application/json")
                 .header("Cache-Control", "no-cache")
                 .header("Language", Locale.getDefault().language)
                 .method(original.method(), original.body())

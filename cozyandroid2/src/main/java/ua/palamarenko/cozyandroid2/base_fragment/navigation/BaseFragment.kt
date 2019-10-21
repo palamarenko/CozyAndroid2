@@ -50,6 +50,7 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         if (!callViewCreated) {
             onViewCreated()
+            onStartScreen()
         } else {
             onRestartScreen()
         }
@@ -123,10 +124,12 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
             })
     }
 
-
-
+    @Deprecated("")
     open fun onViewCreated() {}
 
+    open fun onStartScreen() {}
+
+    @Deprecated("Use putString")
     fun setArgumentString(key: String, value: String): BaseFragment<T> {
         if (arguments == null) {
             arguments = Bundle()
@@ -136,6 +139,17 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
         return this
     }
 
+
+    fun putString(key: String, value: String): BaseFragment<T> {
+        if (arguments == null) {
+            arguments = Bundle()
+        }
+
+        arguments?.putString(key, value)
+        return this
+    }
+
+    @Deprecated("Use putDouble")
     fun setArgumentDouble(key: String, value: Double): BaseFragment<T> {
         if (arguments == null) {
             arguments = Bundle()
@@ -145,7 +159,17 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
         return this
     }
 
+    fun putDouble(key: String, value: Double): BaseFragment<T> {
+        if (arguments == null) {
+            arguments = Bundle()
+        }
 
+        arguments?.putDouble(key, value)
+        return this
+    }
+
+
+    @Deprecated("Use putInt")
     fun setArgumentInt(key: String, value: Int): BaseFragment<T> {
         if (arguments == null) {
             arguments = Bundle()
@@ -155,7 +179,18 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
         return this
     }
 
-    fun setArgumentLong(key: String, value: Long): BaseFragment<T> {
+
+    fun putInt(key: String, value: Int): BaseFragment<T> {
+        if (arguments == null) {
+            arguments = Bundle()
+        }
+
+        arguments?.putInt(key, value)
+        return this
+    }
+
+
+    fun putLong(key: String, value: Long): BaseFragment<T> {
         if (arguments == null) {
             arguments = Bundle()
         }
@@ -164,7 +199,7 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
         return this
     }
 
-    fun setArgumentBool(key: String, value: Boolean): BaseFragment<T> {
+    fun putBool(key: String, value: Boolean): BaseFragment<T> {
         if (arguments == null) {
             arguments = Bundle()
         }
@@ -173,7 +208,7 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
         return this
     }
 
-    fun setArgumentObject(key: String, value: Any?): BaseFragment<T> {
+    fun putObject(key: String, value: Any?): BaseFragment<T> {
         if (arguments == null) {
             arguments = Bundle()
         }

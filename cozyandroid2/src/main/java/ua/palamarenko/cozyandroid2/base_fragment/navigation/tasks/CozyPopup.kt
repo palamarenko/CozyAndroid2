@@ -1,14 +1,13 @@
 package ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks
 
 import android.content.Context
-import android.content.DialogInterface
 import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import kotlinx.android.synthetic.main.popup_cozy.*
+import ua.palamarenko.cozyandroid2.CozyLibrarySettings
 import ua.palamarenko.cozyandroid2.R
 import ua.palamarenko.cozyandroid2.tools.makeCharSequence
-import java.lang.Exception
 
 open class CozyPopup : CozyReusePopup() {
 
@@ -64,7 +63,6 @@ open class CozyPopup : CozyReusePopup() {
     }
 
 
-
 }
 
 
@@ -82,26 +80,21 @@ class Popup(
 
 )
 
-fun Popup.generationShortPopup(context: Context): ShortPopup {
 
-    val newTitle = when (title) {
+fun convertAnyToTitle(title: Any): CharSequence {
+    return when (title) {
         is String -> title.makeCharSequence()
-        is Int -> context.getString(title).makeCharSequence()
+        is Int -> CozyLibrarySettings.appContext!!.getString(title).makeCharSequence()
         is CharSequence -> title
         else -> "".makeCharSequence()
     }
+}
 
-
-    val newBody = when (body) {
-        is String -> body.makeCharSequence()
-        is Int -> context.getString(body).makeCharSequence()
-        is CharSequence -> body
-        else -> "".makeCharSequence()
-    }
+fun Popup.generationShortPopup(): ShortPopup {
 
     return ShortPopup(
-        title = newTitle,
-        body = newBody,
+        title = convertAnyToTitle(title),
+        body = convertAnyToTitle(body),
         positiveButtonName = positiveButtonName,
         negativeButtonName = negativeButtonName,
         isCancelable = isCancelable,

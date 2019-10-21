@@ -29,6 +29,7 @@ open class CozyActivity<T : CozyViewModel> : NavigateActivity() {
             CUSTOM_ACTION -> customAction(data as? ActivityCallBack)
             SHOW_POPUP -> showPopup(data, supportFragmentManager)
             FINISH_ACTIVITY -> finish()
+            SHOW_SNACKBAR -> showSnackbar(findViewById(android.R.id.content), data as SnackbarPopup)
             else -> observeCustomTasks(id, data, bundle)
         }
     }

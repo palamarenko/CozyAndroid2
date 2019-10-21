@@ -13,7 +13,7 @@ abstract class CozyReusePopup : CozyBasePopup<EmptyViewModel>(), CozyPopupSetter
     var popupModel: ShortPopup? = null
 
 
-    override fun onDismiss(dialog: DialogInterface?) {
+    override fun onDismiss(dialog: DialogInterface) {
         super.onDismiss(dialog)
         try {
             dissmisCallback?.invoke(ResponseModel(cbCheckBox.isChecked))

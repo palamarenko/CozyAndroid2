@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import android.widget.Toast
 import androidx.recyclerview.widget.*
 import kotlinx.android.synthetic.main.view_recycler.view.*
 import ua.palamarenko.cozyandroid2.recycler.CozyDiffCallBack
@@ -37,6 +38,8 @@ class CozyRecyclerView : FrameLayout {
 
     private var adapterListener: (CozyCell) -> Unit = {}
 
+    private var comparatorItem: CompareItem = object : CompareItem {}
+
 
     private lateinit var view: View
 
@@ -51,7 +54,11 @@ class CozyRecyclerView : FrameLayout {
         init()
     }
 
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
+        context,
+        attrs,
+        defStyleAttr
+    ) {
         init()
     }
 
@@ -125,36 +132,85 @@ class CozyRecyclerView : FrameLayout {
 
     fun scrollToPosition(position: Int) {
 
-        val smoothScroller = object : androidx.recyclerview.widget.LinearSmoothScroller(context) {
-            override fun getVerticalSnapPreference(): Int {
-                return SNAP_TO_START
-            }
+        if (view.baseRecycler.layoutManager is LinearLayoutManager) {
+
+            val smoothScroller =
+                object : androidx.recyclerview.widget.LinearSmoothScroller(context) {
+                    override fun getVerticalSnapPreference(): Int {
+                        return SNAP_TO_START
+                    }
+                }
+            smoothScroller.targetPosition = position
+
+
+            (view.baseRecycler.layoutManager as LinearLayoutManager).startSmoothScroll(
+                smoothScroller
+            )
         }
-        smoothScroller.targetPosition = position
 
 
-        (view.baseRecycler.layoutManager as LinearLayoutManager).startSmoothScroll(smoothScroller);
+        if (view.baseRecycler.layoutManager is GridLayoutManager) {
+            (view.baseRecycler.layoutManager as GridLayoutManager).smoothScrollToPosition(
+                view.baseRecycler,
+                RecyclerView.State(),
+                0
+            )
+        }
 
 
+        if (view.baseRecycler.layoutManager is StaggeredGridLayoutManager) {
+            (view.baseRecycler.layoutManager as StaggeredGridLayoutManager).smoothScrollToPosition(
+                view.baseRecycler,
+                RecyclerView.State(),
+                0
+            )
+        }
+
+    }
+
+    fun listenEndList(listener: () -> Unit) {
+        view.baseRecycler.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                if (!recyclerView.canScrollVertically(1) && newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    listener.invoke()
+                }
+            }
+        })
     }
 
     fun refrshShow() {
         view.srRefresh.isRefreshing = true
     }
 
+    fun setComparator(comparatorItem: CompareItem) {
+        this.comparatorItem = comparatorItem
+    }
+
 
     fun setCell(data: List<CozyCell>) {
-        adapter.updateList(data)
-        view.flPlaceHolder.visibility = if (adapter.itemCount == 0 && needPlaceHolder) View.VISIBLE else View.GONE
+        adapter.updateList(data, comparatorItem)
+        view.flPlaceHolder.visibility =
+            if (adapter.itemCount == 0 && needPlaceHolder) View.VISIBLE else View.GONE
         view.progress.visibility = View.GONE
     }
 
-    fun setPlaceHolder(view : View) {
-        view.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT)
+    fun addProgressCell() {
+        adapter.addProgressCell(DefaultProgressCell(),comparatorItem)
+    }
+
+    fun removeProgressCell() {
+        adapter.removeProgressCell(comparatorItem)
+
+    }
+
+
+    fun setPlaceHolder(view: View) {
+        view.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
         this.view.flPlaceHolder.addView(view)
     }
 
-    fun removePlaceHolder(){
+    fun removePlaceHolder() {
         view.flPlaceHolder.removeAllViews()
     }
 
@@ -170,8 +226,17 @@ class CozyRecyclerView : FrameLayout {
 
         private var list = ArrayList<CozyCell>()
 
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CozyViewHolder<CozyCell> {
-            return CozyViewHolder(LayoutInflater.from(parent.context).inflate(viewType, parent, false))
+        override fun onCreateViewHolder(
+            parent: ViewGroup,
+            viewType: Int
+        ): CozyViewHolder<CozyCell> {
+            return CozyViewHolder(
+                LayoutInflater.from(parent.context).inflate(
+                    viewType,
+                    parent,
+                    false
+                )
+            )
         }
 
         override fun getItemCount(): Int {
@@ -195,20 +260,63 @@ class CozyRecyclerView : FrameLayout {
         }
 
 
-        fun updateList(data: List<CozyCell>) {
-            val callBack = CozyDiffCallBack(list, data)
+        fun updateList(data: List<CozyCell>, compareItem: CompareItem) {
+            val callBack = CozyDiffCallBack(list, data, compareItem)
             val diffResult = DiffUtil.calculateDiff(callBack)
             this.list.clear()
             this.list.addAll(data)
             diffResult.dispatchUpdatesTo(this)
         }
+
+        fun addProgressCell(cell: CozyCell, compareItem: CompareItem) {
+            val newList = ArrayList<CozyCell>()
+            newList.addAll(list)
+            newList.add(cell)
+            val callBack = CozyDiffCallBack(list, newList, compareItem)
+            val diffResult = DiffUtil.calculateDiff(callBack)
+            this.list.clear()
+            this.list.addAll(newList)
+            diffResult.dispatchUpdatesTo(this)
+        }
+
+        fun removeProgressCell(compareItem: CompareItem) {
+            val newList = ArrayList<CozyCell>()
+            newList.addAll(list)
+            newList.removeAt(newList.size - 1)
+            val callBack = CozyDiffCallBack(list, newList, compareItem)
+            val diffResult = DiffUtil.calculateDiff(callBack)
+            this.list.clear()
+            this.list.addAll(newList)
+            diffResult.dispatchUpdatesTo(this)
+        }
+
     }
 
     class CozyViewHolder<T : CozyCell>(itemView: View) : RecyclerView.ViewHolder(itemView)
+}
+
+interface CompareItem {
+    fun isSameId(data1: Any, data2: Any): Boolean {
+        return data1.hashCode() == data2.hashCode()
+    }
+
+    fun isSameContent(data1: Any, data2: Any): Boolean {
+        return data1.hashCode() == data2.hashCode()
+    }
 }
 
 
 abstract class CozyCell(open val data: Any) {
     abstract val layout: Int
     abstract fun bind(view: View)
+}
+
+
+const val PROGRESS_CELL = "_PROGRESS_CELL"
+
+class DefaultProgressCell : CozyCell(PROGRESS_CELL) {
+    override val layout: Int = R.layout.cell_progress
+
+    override fun bind(view: View) {}
+
 }

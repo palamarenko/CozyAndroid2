@@ -23,7 +23,7 @@ abstract class CozyBasePopup<T : CozyViewModel> : AppCompatDialogFragment() {
     private var clearFocusView: EditText? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        dialog.window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         v = inflater.inflate(layout, container, false)
         return v
     }

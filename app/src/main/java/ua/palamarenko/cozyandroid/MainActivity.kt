@@ -1,15 +1,16 @@
 package ua.palamarenko.cozyandroid
 
+import android.graphics.Color
 import android.os.Bundle
-import android.os.Handler
-import android.view.View
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.item_test.view.*
-import ua.palamarenko.cozyandroid2.CozyCell
-import ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks.*
-import ua.palamarenko.cozyandroid2.tools.CozyTimer
-import ua.palamarenko.cozyandroid2.tools.LOG_EVENT
+import kotlinx.android.synthetic.main.fragment_b.*
+import ua.palamarenko.cozyandroid2.base_fragment.navigation.BackPress
+import ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks.CozyActivity
+import ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks.CozyFragment
+import ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks.EmptyViewModel
+import ua.palamarenko.cozyandroid2.tools.initSimple
+import java.util.*
+
 
 class MainActivity : CozyActivity<EmptyViewModel>() {
 
@@ -17,66 +18,47 @@ class MainActivity : CozyActivity<EmptyViewModel>() {
         super.onCreate(savedInstanceState)
         simpleInit(FragmenA())
 
+
     }
 }
 
 
-class FragmenA : CozyFragment<EmptyViewModel>() {
-    override val layout = R.layout.activity_main
+class FragmenA : CozyFragment<EmptyViewModel>(), BackPress {
+    override fun onBackPress(): Boolean {
+        return true
+    }
 
-    var b = true
+    override val layout = R.layout.activity_main
+    
 
     override fun onViewCreated() {
         super.onViewCreated()
 
-
-        btButton.setOnClickListener {
-            if (b) {
-                recycler.setCell(make2())
-            } else {
-                recycler.setCell(make())
-            }
-            b = !b
+        viewPager.initSimple(fragmentManager,3) {
+            return@initSimple FragmentB()
         }
-
-
-        recycler.setLayoutManager(StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL))
-        recycler.setCell(make())
 
     }
 
-    fun make(): List<TestCell> {
-        return ArrayList<TestCell>().apply {
-            add(TestCell(Model("hello0")))
-            add(TestCell(Model("hello1")))
-            add(TestCell(Model("hello2")))
-            add(TestCell(Model("hello3")))
-            add(TestCell(Model("hello4")))
-            add(TestCell(Model("hello5")))
-        }
-    }
-
-    fun make2(): List<TestCell> {
-        return ArrayList<TestCell>().apply {
-            add(TestCell(Model("hello1")))
-            add(TestCell(Model("hello2")))
-            add(TestCell(Model("hello3")))
-            add(TestCell(Model("hello4")))
-            add(TestCell(Model("hello5")))
-        }
-    }
 
 }
-data class Model (val title : String)
+
+class FragmentB : CozyFragment<EmptyViewModel>() {
+    override val layout = R.layout.fragment_b
 
 
-class TestCell(val text: Model) : CozyCell(text) {
-    override val layout: Int = R.layout.item_test
-
-    override fun bind(view: View) {
-        view.tvText.text = text.title
+    override fun onViewCreated() {
+        super.onViewCreated()
+        val rnd = Random()
+        val color = Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256))
+        ivImage.setBackgroundColor(color)
     }
 
+
 }
+
+
+
+
 
 

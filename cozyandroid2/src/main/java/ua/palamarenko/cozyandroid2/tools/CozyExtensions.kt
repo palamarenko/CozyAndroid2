@@ -1,6 +1,8 @@
 package ua.palamarenko.cozyandroid2.tools
 
 import android.graphics.Point
+import android.graphics.drawable.Drawable
+import android.os.Build
 import android.os.SystemClock
 import android.text.Editable
 import android.text.TextUtils
@@ -10,11 +12,14 @@ import android.util.Log
 import android.util.TypedValue
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.Switch
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
@@ -24,9 +29,15 @@ import androidx.lifecycle.Observer
 import androidx.viewpager.widget.ViewPager
 import com.google.gson.Gson
 import io.reactivex.*
+import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import ua.palamarenko.cozyandroid2.CozyLibrarySettings
+import ua.palamarenko.cozyandroid2.R
+import ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks.CozyFragment
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 var SCREEN_WIDTH = 0
@@ -101,14 +112,18 @@ fun View.click(clickBack: Boolean = true, click: () -> Unit) {
                             outValue,
                             true
                         )
-                        setBackgroundResource(outValue.resourceId)
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                            foreground = getDrawable(outValue.resourceId)
+                        }
                     } else {
                         context.theme.resolveAttribute(
                             android.R.attr.selectableItemBackgroundBorderless,
                             outValue,
                             true
                         )
-                        setBackgroundResource(outValue.resourceId)
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                            foreground = getDrawable(outValue.resourceId)
+                        }
                     }
                 } catch (e: Exception) {
                 }
@@ -181,13 +196,31 @@ fun ViewPager.initWithTitles(
 }
 
 
+fun ViewPager.getCurrentFragment(): Fragment? {
+
+    if (adapter != null && adapter is CozyPagerAdapter<*>) {
+        return (adapter as CozyPagerAdapter<*>).instantiateItem(this, currentItem) as? Fragment
+    }
+    return null
+}
+
+fun Long.formatDate(format: String = "dd-M-yyyy hh:mm:ss"): String {
+    val formatter = SimpleDateFormat(format, Locale.US)
+    return formatter.format(Date(this))
+}
+
+fun Date.formatDate(format: String = "dd-M-yyyy hh:mm:ss"): String {
+    val formatter = SimpleDateFormat(format, Locale.US)
+    return formatter.format(this)
+}
+
+
 class CozyPagerAdapter<T>(
     fm: FragmentManager,
     val adapterList: List<T>,
     val bindAdapter: (T) -> Fragment,
     val bindTitle: (Int) -> CharSequence
-) :
-    FragmentStatePagerAdapter(fm) {
+) : FragmentStatePagerAdapter(fm) {
 
     override fun getItem(position: Int): Fragment {
         return bindAdapter.invoke(adapterList[position])
@@ -199,8 +232,9 @@ class CozyPagerAdapter<T>(
 
     override fun getPageTitle(position: Int): CharSequence? {
         return bindTitle.invoke(position)
-
     }
+
+
 }
 
 
@@ -240,7 +274,6 @@ fun Switch.listen(listener: (Boolean) -> Unit) {
     }
 }
 
-
 fun EditText.listen(listener: (String) -> Unit) {
 
     var lastData: String = ""
@@ -265,14 +298,12 @@ fun EditText.listen(listener: (String) -> Unit) {
     })
 }
 
-
 fun dpToPx(dp: Float): Int {
     val resources = CozyLibrarySettings.appContext!!.resources
     val metrics = resources.displayMetrics
     val px = dp * (metrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)
     return px.toInt()
 }
-
 
 fun pxToDp(px: Float): Int {
     val resources = CozyLibrarySettings.appContext!!.resources
@@ -281,8 +312,38 @@ fun pxToDp(px: Float): Int {
     return dp.toInt()
 }
 
-fun getSt(id: Int): String {
+
+fun View.visibleState(visible: Boolean, hideState: Int = View.GONE) {
+    visibility = if (visible) {
+        View.VISIBLE
+    } else {
+        hideState
+    }
+}
+
+fun getString(id: Int): String {
     return CozyLibrarySettings.appContext!!.getString(id)
+}
+
+fun getColor(id: Int): Int {
+    return ContextCompat.getColor(CozyLibrarySettings.appContext!!, id)
+}
+
+fun getDrawable(id: Int): Drawable {
+    return ContextCompat.getDrawable(CozyLibrarySettings.appContext!!, id)!!
+}
+
+
+fun <T> List<T>.trySubList(from: Int? = null, to: Int? = null): List<T> {
+    return if (size > from ?: 0 && size > to ?: 0) {
+        subList(from ?: 0, to ?: size)
+    } else {
+        return if (from == size) {
+            ArrayList()
+        } else {
+            this
+        }
+    }
 }
 
 
