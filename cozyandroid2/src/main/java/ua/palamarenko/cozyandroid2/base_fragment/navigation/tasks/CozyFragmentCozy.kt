@@ -9,16 +9,17 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
 import ua.palamarenko.cozyandroid2.CozyLibrarySettings
 import ua.palamarenko.cozyandroid2.base_fragment.navigation.BackPress
-import ua.palamarenko.cozyandroid2.base_fragment.navigation.BaseFragment
+import ua.palamarenko.cozyandroid2.base_fragment.navigation.CozyBaseFragment
 import ua.palamarenko.cozyandroid2.base_fragment.navigation.NavigateActivity
 import ua.palamarenko.cozyandroid2.base_fragment.navigation.Navigator
 import ua.palamarenko.cozyandroid2.tools.click
 
 
-abstract class CozyFragment<T : CozyViewModel> : BaseFragment<T>(),BackPress  {
+abstract class CozyFragment<T : CozyViewModel> : CozyBaseFragment<T>(), BackPress {
 
     private val POPUP_TAG = "POPUP_TAG"
     private val RESULT_ACTIVITY_CODE = 99
@@ -49,6 +50,8 @@ abstract class CozyFragment<T : CozyViewModel> : BaseFragment<T>(),BackPress  {
             START_ACTIVITY_FOR_RESAULT -> startResultActivity(data as ActivityResult, bundle)
             SET_RESULT -> setResult(data as Intent)
             SHOW_SNACKBAR -> view?.apply { showSnackbar(this, data as SnackbarPopup) }
+            REQUEST_PERMISSION -> checkPermission(data as PermissionModel)
+            CLEAR_FRAGMENTS -> fragmentManager?.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
             else -> observeCustomTasks(id, data, bundle)
         }
     }
@@ -65,6 +68,10 @@ abstract class CozyFragment<T : CozyViewModel> : BaseFragment<T>(),BackPress  {
         if (activity?.isDestroyed != true && activity is NavigateActivity) {
             (activity as NavigateActivity).onBackPressed(fragment)
         }
+    }
+
+    private fun checkPermission(data: PermissionModel) {
+        permission({ data.callBack.invoke(it) }, *data.permission)
     }
 
     open fun customAction(callBack: ActivityCallBack?) {

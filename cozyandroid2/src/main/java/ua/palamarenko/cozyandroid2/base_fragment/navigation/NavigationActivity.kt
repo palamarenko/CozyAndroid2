@@ -12,8 +12,6 @@ import com.tbruyelle.rxpermissions2.RxPermissions
 import java.lang.Exception
 import androidx.fragment.app.FragmentTransaction
 import ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks.CozyFragment
-import android.R
-
 
 
 const val FRAGMENT_TAG = "FRAGMENT_TAG"

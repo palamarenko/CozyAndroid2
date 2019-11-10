@@ -3,6 +3,7 @@ package ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
+import ua.palamarenko.cozyandroid2.tools.listen
 
 
 open class CozySingleViewModel<T> : CozyViewModel() {
@@ -19,12 +20,4 @@ open class CozySingleViewModel<T> : CozyViewModel() {
         this.data.postValue(o)
     }
 
-}
-
-fun <T> MutableLiveData<T>.listen(owner: LifecycleOwner, observe: (T) -> Unit) {
-    observe(owner, Observer {
-        if (it != null) {
-            observe.invoke(it)
-        }
-    })
 }

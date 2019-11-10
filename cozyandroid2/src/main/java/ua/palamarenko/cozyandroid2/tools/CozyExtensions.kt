@@ -12,10 +12,8 @@ import android.util.Log
 import android.util.TypedValue
 import android.view.MotionEvent
 import android.view.View
-import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.EditText
-import android.widget.ImageView
 import android.widget.Switch
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
@@ -33,8 +31,6 @@ import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import ua.palamarenko.cozyandroid2.CozyLibrarySettings
-import ua.palamarenko.cozyandroid2.R
-import ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks.CozyFragment
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
@@ -98,6 +94,15 @@ fun ViewPager.listen(clear: Boolean = true, listener: (Int) -> Unit) {
         }
     })
 }
+
+fun <T> T.toSingle() : Single<T> {
+    return Single.just(this)
+}
+
+fun <T> T.toFlowable() : Flowable<T> {
+    return Flowable.just(this)
+}
+
 
 fun View.click(clickBack: Boolean = true, click: () -> Unit) {
     if (clickBack) {

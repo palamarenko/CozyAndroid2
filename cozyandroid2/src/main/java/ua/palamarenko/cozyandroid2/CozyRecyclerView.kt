@@ -1,6 +1,7 @@
 package ua.palamarenko.cozyandroid2
 
 import android.content.Context
+import android.graphics.Canvas
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
@@ -9,7 +10,9 @@ import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.recyclerview.widget.*
 import kotlinx.android.synthetic.main.view_recycler.view.*
+import ua.palamarenko.cozyandroid2.recycler.ButtonSwipeCallBack
 import ua.palamarenko.cozyandroid2.recycler.CozyDiffCallBack
+import ua.palamarenko.cozyandroid2.tools.LOG_EVENT
 
 fun RecyclerView.init(
     adapter: RecyclerView.Adapter<*>,
@@ -96,6 +99,19 @@ class CozyRecyclerView : FrameLayout {
 
             view.baseRecycler.addItemDecoration(decorator)
         }
+    }
+
+
+
+    fun setSwipeView(view: View, click: (view: View, position: Int) -> Unit){
+        val swipeController = ButtonSwipeCallBack(view,click)
+        val itemTouchHelper = ItemTouchHelper(swipeController)
+        itemTouchHelper.attachToRecyclerView(baseRecycler)
+        baseRecycler.addItemDecoration(object : RecyclerView.ItemDecoration() {
+            override fun onDraw(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
+                swipeController.onDraw(c)
+            }
+        })
     }
 
 

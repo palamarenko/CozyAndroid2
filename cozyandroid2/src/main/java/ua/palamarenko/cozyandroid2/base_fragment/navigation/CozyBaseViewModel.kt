@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import io.reactivex.disposables.Disposable
 import java.util.HashMap
 
-open class BaseViewModel : ViewModel(){
+open class CozyBaseViewModel : ViewModel(){
     val compositeDisposable  = CompositeDisposableImpl()
 
 

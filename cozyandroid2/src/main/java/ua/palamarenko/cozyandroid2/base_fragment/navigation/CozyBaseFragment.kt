@@ -14,7 +14,7 @@ import androidx.lifecycle.ViewModelProviders
 import com.google.gson.Gson
 import com.tbruyelle.rxpermissions2.RxPermissions
 
-abstract class BaseFragment<T : BaseViewModel> : Fragment() {
+abstract class CozyBaseFragment<T : CozyBaseViewModel> : Fragment() {
 
     abstract val layout: Int
 
@@ -130,7 +130,7 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
     open fun onStartScreen() {}
 
     @Deprecated("Use putString")
-    fun setArgumentString(key: String, value: String): BaseFragment<T> {
+    fun setArgumentString(key: String, value: String): CozyBaseFragment<T> {
         if (arguments == null) {
             arguments = Bundle()
         }
@@ -140,7 +140,7 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
     }
 
 
-    fun putString(key: String, value: String): BaseFragment<T> {
+    fun putString(key: String, value: String): CozyBaseFragment<T> {
         if (arguments == null) {
             arguments = Bundle()
         }
@@ -150,7 +150,7 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
     }
 
     @Deprecated("Use putDouble")
-    fun setArgumentDouble(key: String, value: Double): BaseFragment<T> {
+    fun setArgumentDouble(key: String, value: Double): CozyBaseFragment<T> {
         if (arguments == null) {
             arguments = Bundle()
         }
@@ -159,7 +159,7 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
         return this
     }
 
-    fun putDouble(key: String, value: Double): BaseFragment<T> {
+    fun putDouble(key: String, value: Double): CozyBaseFragment<T> {
         if (arguments == null) {
             arguments = Bundle()
         }
@@ -170,7 +170,7 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
 
 
     @Deprecated("Use putInt")
-    fun setArgumentInt(key: String, value: Int): BaseFragment<T> {
+    fun setArgumentInt(key: String, value: Int): CozyBaseFragment<T> {
         if (arguments == null) {
             arguments = Bundle()
         }
@@ -180,7 +180,7 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
     }
 
 
-    fun putInt(key: String, value: Int): BaseFragment<T> {
+    fun putInt(key: String, value: Int): CozyBaseFragment<T> {
         if (arguments == null) {
             arguments = Bundle()
         }
@@ -190,7 +190,7 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
     }
 
 
-    fun putLong(key: String, value: Long): BaseFragment<T> {
+    fun putLong(key: String, value: Long): CozyBaseFragment<T> {
         if (arguments == null) {
             arguments = Bundle()
         }
@@ -199,7 +199,7 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
         return this
     }
 
-    fun putBool(key: String, value: Boolean): BaseFragment<T> {
+    fun putBool(key: String, value: Boolean): CozyBaseFragment<T> {
         if (arguments == null) {
             arguments = Bundle()
         }
@@ -208,7 +208,7 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
         return this
     }
 
-    fun putObject(key: String, value: Any?): BaseFragment<T> {
+    fun putObject(key: String, value: Any?): CozyBaseFragment<T> {
         if (arguments == null) {
             arguments = Bundle()
         }
