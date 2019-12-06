@@ -51,11 +51,6 @@ open class NavigateActivity : AppCompatActivity() {
 
 
     override fun onBackPressed() {
-        if (navigator.fragmentManager.fragments.isNotEmpty() && findCurrentFragment() is BackPress) {
-            val back =
-                (findCurrentFragment() as BackPress).onBackPress()
-            if (back) return
-        }
         onBackPressed(null)
     }
 
@@ -66,6 +61,13 @@ open class NavigateActivity : AppCompatActivity() {
 
 
     open fun onBackPressed(fragment: Class<*>?) {
+        if (navigator.fragmentManager.fragments.isNotEmpty() && findCurrentFragment() is BackPress) {
+            val back =
+                (findCurrentFragment() as BackPress).onBackPress()
+            if (back) return
+        }
+
+
         if (fragment != null) {
             navigator.fragmentManager.popBackStack(fragment.simpleName, 0)
         } else {

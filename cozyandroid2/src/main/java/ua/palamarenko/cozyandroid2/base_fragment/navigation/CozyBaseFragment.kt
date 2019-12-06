@@ -129,93 +129,6 @@ abstract class CozyBaseFragment<T : CozyBaseViewModel> : Fragment() {
 
     open fun onStartScreen() {}
 
-    @Deprecated("Use putString")
-    fun setArgumentString(key: String, value: String): CozyBaseFragment<T> {
-        if (arguments == null) {
-            arguments = Bundle()
-        }
-
-        arguments?.putString(key, value)
-        return this
-    }
-
-
-    fun putString(key: String, value: String): CozyBaseFragment<T> {
-        if (arguments == null) {
-            arguments = Bundle()
-        }
-
-        arguments?.putString(key, value)
-        return this
-    }
-
-    @Deprecated("Use putDouble")
-    fun setArgumentDouble(key: String, value: Double): CozyBaseFragment<T> {
-        if (arguments == null) {
-            arguments = Bundle()
-        }
-
-        arguments?.putDouble(key, value)
-        return this
-    }
-
-    fun putDouble(key: String, value: Double): CozyBaseFragment<T> {
-        if (arguments == null) {
-            arguments = Bundle()
-        }
-
-        arguments?.putDouble(key, value)
-        return this
-    }
-
-
-    @Deprecated("Use putInt")
-    fun setArgumentInt(key: String, value: Int): CozyBaseFragment<T> {
-        if (arguments == null) {
-            arguments = Bundle()
-        }
-
-        arguments?.putInt(key, value)
-        return this
-    }
-
-
-    fun putInt(key: String, value: Int): CozyBaseFragment<T> {
-        if (arguments == null) {
-            arguments = Bundle()
-        }
-
-        arguments?.putInt(key, value)
-        return this
-    }
-
-
-    fun putLong(key: String, value: Long): CozyBaseFragment<T> {
-        if (arguments == null) {
-            arguments = Bundle()
-        }
-
-        arguments?.putLong(key, value)
-        return this
-    }
-
-    fun putBool(key: String, value: Boolean): CozyBaseFragment<T> {
-        if (arguments == null) {
-            arguments = Bundle()
-        }
-
-        arguments?.putBoolean(key, value)
-        return this
-    }
-
-    fun putObject(key: String, value: Any?): CozyBaseFragment<T> {
-        if (arguments == null) {
-            arguments = Bundle()
-        }
-        if (value != null) arguments?.putString(key, Gson().toJson(value))
-        return this
-    }
-
 
     fun getArgumentString(key: String, fromActivity : Boolean = false): String {
         var value =  arguments?.getString(key) ?: ""
@@ -226,7 +139,6 @@ abstract class CozyBaseFragment<T : CozyBaseViewModel> : Fragment() {
 
         return value
     }
-
     fun getArgumentLong(key: String, fromActivity : Boolean = false): Long {
         var value = arguments?.getLong(key) ?: 0
 
@@ -235,7 +147,6 @@ abstract class CozyBaseFragment<T : CozyBaseViewModel> : Fragment() {
         }
         return value
     }
-
     fun getArgumentDouble(key: String, fromActivity : Boolean = false): Double {
         var value =  arguments?.getDouble(key) ?: 0.0
 
@@ -244,7 +155,6 @@ abstract class CozyBaseFragment<T : CozyBaseViewModel> : Fragment() {
         }
         return value
     }
-
     fun getArgumentInt(key: String, fromActivity : Boolean = false): Int {
         var value =  arguments?.getInt(key) ?: 0
 
@@ -253,7 +163,6 @@ abstract class CozyBaseFragment<T : CozyBaseViewModel> : Fragment() {
         }
         return value
     }
-
     fun getArgumentBool(key: String, fromActivity : Boolean = false): Boolean {
         var value = arguments?.getBoolean(key) ?: false
 
@@ -285,4 +194,52 @@ abstract class CozyBaseFragment<T : CozyBaseViewModel> : Fragment() {
         hideKeyboard()
     }
 
+}
+
+fun<B : CozyBaseViewModel,T : CozyBaseFragment<B>>  T.putString(key: String, value: String): T {
+    if (arguments == null) {
+        arguments = Bundle()
+    }
+
+    arguments?.putString(key, value)
+    return this
+}
+fun <B : CozyBaseViewModel,T : CozyBaseFragment<B>> T.putDouble(key: String, value: Double): T {
+    if (arguments == null) {
+        arguments = Bundle()
+    }
+
+    arguments?.putDouble(key, value)
+    return this
+}
+fun <B : CozyBaseViewModel,T : CozyBaseFragment<B>> T.putInt(key: String, value: Int): T {
+    if (arguments == null) {
+        arguments = Bundle()
+    }
+
+    arguments?.putInt(key, value)
+    return this
+}
+fun <B : CozyBaseViewModel,T : CozyBaseFragment<B>> T.putLong(key: String, value: Long): T {
+    if (arguments == null) {
+        arguments = Bundle()
+    }
+
+    arguments?.putLong(key, value)
+    return this
+}
+fun <B : CozyBaseViewModel,T : CozyBaseFragment<B>> T.putBool(key: String, value: Boolean): T {
+    if (arguments == null) {
+        arguments = Bundle()
+    }
+
+    arguments?.putBoolean(key, value)
+    return this
+}
+fun <B : CozyBaseViewModel,T : CozyBaseFragment<B>> T.putObject(key: String, value: Any?): T {
+    if (arguments == null) {
+        arguments = Bundle()
+    }
+    if (value != null) arguments?.putString(key, Gson().toJson(value))
+    return this
 }

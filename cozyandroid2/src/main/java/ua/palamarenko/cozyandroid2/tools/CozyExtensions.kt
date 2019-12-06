@@ -30,7 +30,11 @@ import io.reactivex.*
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import okhttp3.MediaType
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import ua.palamarenko.cozyandroid2.CozyLibrarySettings
+import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
@@ -95,11 +99,11 @@ fun ViewPager.listen(clear: Boolean = true, listener: (Int) -> Unit) {
     })
 }
 
-fun <T> T.toSingle() : Single<T> {
+fun <T> T.toSingle(): Single<T> {
     return Single.just(this)
 }
 
-fun <T> T.toFlowable() : Flowable<T> {
+fun <T> T.toFlowable(): Flowable<T> {
     return Flowable.just(this)
 }
 
@@ -255,6 +259,23 @@ fun ViewPager.initSimple(fm: FragmentManager?, count: Int, bind: (Int) -> Fragme
         adapter = CozyPagerAdapter(fm, list, bind, { "" })
 }
 
+fun <T> List<T>.add(item: T) : List<T> {
+    if (this is ArrayList<T>) {
+        add(item)
+        return this
+    }
+    if (this is LinkedList<T>) {
+        add(item)
+        return this
+    }
+
+    val list = ArrayList<T>()
+    list.addAll(this)
+    list.add(item)
+    return list
+
+}
+
 
 fun ViewPager.listenScroll(listener: (position: Int, positionOffset: Float, positionOffsetPixels: Int) -> Unit) {
     addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
@@ -278,6 +299,12 @@ fun Switch.listen(listener: (Boolean) -> Unit) {
         listener.invoke(isChecked)
     }
 }
+
+fun File.toMultipartBody(name: String): MultipartBody.Part {
+    val requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), this)
+    return MultipartBody.Part.createFormData(name, this.name, requestFile)
+}
+
 
 fun EditText.listen(listener: (String) -> Unit) {
 

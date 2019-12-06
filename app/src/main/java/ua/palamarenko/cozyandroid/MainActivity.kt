@@ -4,14 +4,13 @@ import android.graphics.Canvas
 import android.os.Bundle
 import android.view.View
 import kotlinx.android.synthetic.main.activity_main.*
-import ua.palamarenko.cozyandroid2.CozyCell
 import ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks.CozyActivity
 import ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks.CozyFragment
 import ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks.EmptyViewModel
 import androidx.recyclerview.widget.ItemTouchHelper
-import ua.palamarenko.cozyandroid2.recycler.ButtonSwipeCallBack
 import androidx.recyclerview.widget.RecyclerView
-import ua.palamarenko.cozyandroid2.CozyLibrary
+import ua.palamarenko.cozyandroid2.*
+import ua.palamarenko.cozyandroid2.recycler.ButtonSwipeCallBack
 import ua.palamarenko.cozyandroid2.tools.LOG_EVENT
 
 
@@ -33,6 +32,7 @@ class FragmenA : CozyFragment<EmptyViewModel>(){
 
     override fun onStartScreen() {
         super.onStartScreen()
+
         recycler.setCell(arrayListOf(TestCell("asdcsad"),TestCell("231e"),TestCell("231e"),TestCell("231e"),TestCell("231e"),TestCell("231e"),TestCell("231e"),TestCell("231e"),TestCell("231e"),TestCell("231e"),TestCell("231e"),TestCell("231e"),TestCell("231e"),TestCell("231e"),TestCell("231e"),TestCell("231e"),TestCell("231e"),TestCell("231e"),TestCell("231e"),TestCell("231e"),TestCell("231e"),TestCell("231e")))
 
         recycler.setSwipeView(View.inflate(context,R.layout.item_test_back,null)){ view, position ->

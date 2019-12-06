@@ -1,9 +1,7 @@
 package ua.palamarenko.cozyandroid2.recycler
 
 import android.view.View
-import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
-import ua.palamarenko.cozyandroid2.tools.LOG_EVENT
 import android.view.MotionEvent
 import androidx.recyclerview.widget.ItemTouchHelper.*
 import android.graphics.*
@@ -11,14 +9,14 @@ import android.graphics.Bitmap
 import androidx.annotation.NonNull
 import android.view.ViewGroup
 import ua.palamarenko.cozyandroid2.tools.dpToPx
-
-
+import androidx.recyclerview.widget.ItemTouchHelper.Callback
+import android.R.attr.left
 
 
 class ButtonSwipeCallBack(
     val view: View,
     val click: (view: View, position: Int) -> Unit
-) : ItemTouchHelper.Callback() {
+) : Callback() {
 
     private var mainY = 0
     private var mainX = 0
@@ -78,7 +76,7 @@ class ButtonSwipeCallBack(
         if (actionState == ACTION_STATE_SWIPE) {
             if (buttonShowedState) {
 //               dX = Math.max(dX, buttonWidth)
-               dX = Math.min(dX, -buttonWidth)
+                dX = Math.min(dX, -buttonWidth)
                 super.onChildDraw(
                     c,
                     recyclerView,
@@ -217,23 +215,12 @@ class ButtonSwipeCallBack(
     private fun findViewAt(viewGroup: ViewGroup, x: Int, y: Int): View? {
         for (i in 0 until viewGroup.childCount) {
             val child = viewGroup.getChildAt(i)
-            if (child is ViewGroup) {
-                val foundView = findViewAt(child, x, y)
-                if (foundView != null && foundView.isShown) {
-                    return foundView
-                }
-            } else {
-                val location = IntArray(2)
-                child.getLocationOnScreen(location)
-                val rect = Rect(
-                    location[0],
-                    location[1],
-                    location[0] + child.width,
-                    location[1] + child.height
-                )
-                if (rect.contains(x, y)) {
-                    return child
-                }
+            val offsetViewBounds = Rect()
+            child.getDrawingRect(offsetViewBounds)
+            viewGroup.offsetDescendantRectToMyCoords(child, offsetViewBounds)
+
+            if (offsetViewBounds.contains(x, y)) {
+                return child
             }
         }
 
@@ -246,16 +233,23 @@ class ButtonSwipeCallBack(
             recyclerView.getChildAt(i).isClickable = isClickable
         }
     }
+
     private fun drawButtons(c: Canvas, viewHolder: RecyclerView.ViewHolder) {
         val buttonWidthWithoutPadding = buttonWidth - dpToPx(5f)
         val itemView = viewHolder.itemView
         val bm = createBitmapFromView(view)
 
-        c.drawBitmap(bm, itemView.right - buttonWidthWithoutPadding, itemView.top.toFloat() + itemView.height/2 - bm.height/2, null)
-        mainY = (itemView.top.toFloat() + itemView.height/2 - bm.height/2).toInt()
+        c.drawBitmap(
+            bm,
+            itemView.right - buttonWidthWithoutPadding,
+            itemView.top.toFloat() + itemView.height / 2 - bm.height / 2,
+            null
+        )
+        mainY = (itemView.top.toFloat() + itemView.height / 2 - bm.height / 2).toInt()
         mainX = itemView.right - buttonWidth.toInt()
 
     }
+
     private fun createBitmapFromView(@NonNull view: View): Bitmap {
 
         view.layout(0, 0, view.measuredWidth, view.measuredHeight)
@@ -272,6 +266,7 @@ class ButtonSwipeCallBack(
 
         return bitmap
     }
+
     fun onDraw(c: Canvas) {
         if (currentItemViewHolder != null) {
             drawButtons(c, currentItemViewHolder!!)

@@ -25,15 +25,15 @@ open class CozyPopup : CozyReusePopup() {
 
             tvText.text = body
 
-            if (positiveButtonName != 0) {
-                tvOk.setText(positiveButtonName)
+            if (positiveButtonName.isNotEmpty()) {
+                tvOk.text = positiveButtonName
             } else {
                 tvOk.text = "Ok"
             }
 
-            if (negativeButtonName != 0) {
+            if (negativeButtonName.isNotEmpty()) {
                 tvCancel.visibility = View.VISIBLE
-                tvCancel.setText(negativeButtonName)
+                tvCancel.text = negativeButtonName
             }
 
             if (checkBoxTitle != 0) {
@@ -69,8 +69,8 @@ open class CozyPopup : CozyReusePopup() {
 class Popup(
     val title: Any = "",
     val body: Any,
-    val positiveButtonName: Int = 0,
-    val negativeButtonName: Int = 0,
+    val positiveButtonName: Any = "",
+    val negativeButtonName: Any = "",
     var isCancelable: Boolean = false,
     var checkBoxTitle: Int = 0,
     var positiveAction: ((ResponseModel) -> Unit)? = null,
@@ -95,8 +95,8 @@ fun Popup.generationShortPopup(): ShortPopup {
     return ShortPopup(
         title = convertAnyToTitle(title),
         body = convertAnyToTitle(body),
-        positiveButtonName = positiveButtonName,
-        negativeButtonName = negativeButtonName,
+        positiveButtonName =convertAnyToTitle(positiveButtonName),
+        negativeButtonName = convertAnyToTitle(negativeButtonName),
         isCancelable = isCancelable,
         checkBoxTitle = checkBoxTitle
     )
@@ -106,8 +106,8 @@ fun Popup.generationShortPopup(): ShortPopup {
 class ShortPopup(
     val title: CharSequence,
     val body: CharSequence,
-    val positiveButtonName: Int = 0,
-    val negativeButtonName: Int = 0,
+    val positiveButtonName: CharSequence,
+    val negativeButtonName: CharSequence,
     var isCancelable: Boolean = false,
     var checkBoxTitle: Int = 0
 )

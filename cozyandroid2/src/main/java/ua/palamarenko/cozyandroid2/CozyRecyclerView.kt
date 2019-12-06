@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.*
 import kotlinx.android.synthetic.main.view_recycler.view.*
 import ua.palamarenko.cozyandroid2.recycler.ButtonSwipeCallBack
 import ua.palamarenko.cozyandroid2.recycler.CozyDiffCallBack
-import ua.palamarenko.cozyandroid2.tools.LOG_EVENT
+import androidx.recyclerview.widget.ItemTouchHelper
 
 fun RecyclerView.init(
     adapter: RecyclerView.Adapter<*>,
@@ -102,12 +102,11 @@ class CozyRecyclerView : FrameLayout {
     }
 
 
-
-    fun setSwipeView(view: View, click: (view: View, position: Int) -> Unit){
-        val swipeController = ButtonSwipeCallBack(view,click)
+    fun setSwipeView(view: View, click: (view: View, position: Int) -> Unit) {
+        val swipeController = ButtonSwipeCallBack(view, click)
         val itemTouchHelper = ItemTouchHelper(swipeController)
-        itemTouchHelper.attachToRecyclerView(baseRecycler)
-        baseRecycler.addItemDecoration(object : RecyclerView.ItemDecoration() {
+        itemTouchHelper.attachToRecyclerView(getRecyclerView())
+        getRecyclerView().addItemDecoration(object : RecyclerView.ItemDecoration() {
             override fun onDraw(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
                 swipeController.onDraw(c)
             }
@@ -134,6 +133,11 @@ class CozyRecyclerView : FrameLayout {
     fun setHorizontalLayoutManager(reverseLayout: Boolean = false) {
         view.baseRecycler.layoutManager =
             LinearLayoutManager(view.context, LinearLayoutManager.HORIZONTAL, reverseLayout)
+    }
+
+    fun setVerticalLayoutManager(reverseLayout: Boolean = false) {
+        view.baseRecycler.layoutManager =
+            LinearLayoutManager(view.context, LinearLayoutManager.VERTICAL, reverseLayout)
     }
 
     fun setGridLayoutManager(spanCount: Int) {
@@ -212,7 +216,7 @@ class CozyRecyclerView : FrameLayout {
     }
 
     fun addProgressCell() {
-        adapter.addProgressCell(DefaultProgressCell(),comparatorItem)
+        adapter.addProgressCell(DefaultProgressCell(), comparatorItem)
     }
 
     fun removeProgressCell() {
@@ -322,7 +326,8 @@ interface CompareItem {
 }
 
 
-abstract class CozyCell(open val data: Any) {
+abstract class CozyCell {
+    abstract val data: Any
     abstract val layout: Int
     abstract fun bind(view: View)
 }
@@ -330,9 +335,7 @@ abstract class CozyCell(open val data: Any) {
 
 const val PROGRESS_CELL = "_PROGRESS_CELL"
 
-class DefaultProgressCell : CozyCell(PROGRESS_CELL) {
+class DefaultProgressCell(override val data: Any = PROGRESS_CELL) : CozyCell() {
     override val layout: Int = R.layout.cell_progress
-
     override fun bind(view: View) {}
-
 }
