@@ -1,6 +1,7 @@
 package ua.palamarenko.cozyandroid2.tools
 
 import android.graphics.*
+import android.graphics.drawable.Drawable
 import android.widget.ImageView
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Transformation
@@ -21,8 +22,14 @@ fun ImageView.load(file: File, transformater: Transformation? = null, viewSize: 
 }
 
 
-fun ImageView.load(url: String, transformater: Transformation? = null, viewSize: Int? = null) {
+fun ImageView.load(url: String, transformater: Transformation? = null, viewSize: Int? = null, errorIcon : Any? = null) {
     if (url.isNullOrEmpty()) {
+
+        if(errorIcon!=null){
+          if(errorIcon is Int) this.setImageResource(errorIcon)
+          if(errorIcon is Drawable) this.setImageDrawable(errorIcon)
+        }
+
         return
     }
 
@@ -35,9 +42,32 @@ fun ImageView.load(url: String, transformater: Transformation? = null, viewSize:
         if (transformater != null) {
             pick.transform(transformater)
         }
+        if(errorIcon!=null){
+            if(errorIcon is Int) pick.error(errorIcon)
+            if(errorIcon is Drawable) pick.error(errorIcon)
+        }
+
+
         pick.into(this)
     }
 }
+
+
+
+
+
+
+fun ImageView.loadFromAssets(path : String){
+    try {
+        val d = Drawable.createFromStream(
+            this.context!!.assets.open(path), null)
+    this.setImageDrawable(d)
+    }catch (e : Exception){}
+
+
+}
+
+
 
 class CircleTransform : Transformation {
     override fun key(): String {

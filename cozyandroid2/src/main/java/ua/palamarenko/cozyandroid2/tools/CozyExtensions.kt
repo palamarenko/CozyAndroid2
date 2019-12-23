@@ -25,6 +25,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.viewpager.widget.ViewPager
+import com.google.android.material.tabs.TabLayout
 import com.google.gson.Gson
 import io.reactivex.*
 import io.reactivex.Observable
@@ -258,6 +259,25 @@ fun ViewPager.initSimple(fm: FragmentManager?, count: Int, bind: (Int) -> Fragme
     if (fm != null)
         adapter = CozyPagerAdapter(fm, list, bind, { "" })
 }
+
+
+fun TabLayout.listen(listener: (tab: TabLayout.Tab) -> Unit){
+    this.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+        override fun onTabSelected(tab: TabLayout.Tab) {
+            listener.invoke(tab)
+        }
+
+        override fun onTabUnselected(tab: TabLayout.Tab) {
+
+        }
+
+        override fun onTabReselected(tab: TabLayout.Tab) {
+
+        }
+    })
+}
+
+
 
 fun <T> List<T>.add(item: T) : List<T> {
     if (this is ArrayList<T>) {

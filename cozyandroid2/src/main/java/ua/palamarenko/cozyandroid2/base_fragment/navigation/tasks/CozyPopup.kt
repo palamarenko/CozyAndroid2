@@ -20,7 +20,6 @@ open class CozyPopup : CozyReusePopup() {
             if (title.isNotEmpty()) {
                 tvTitle.text = title
                 tvTitle.visibility = View.VISIBLE
-                tvText.setTextColor(Color.GRAY)
             }
 
             tvText.text = body

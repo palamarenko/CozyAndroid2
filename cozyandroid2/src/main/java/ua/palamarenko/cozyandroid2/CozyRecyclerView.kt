@@ -14,25 +14,21 @@ import ua.palamarenko.cozyandroid2.recycler.ButtonSwipeCallBack
 import ua.palamarenko.cozyandroid2.recycler.CozyDiffCallBack
 import androidx.recyclerview.widget.ItemTouchHelper
 
-fun RecyclerView.init(
-    adapter: RecyclerView.Adapter<*>,
-    manager: RecyclerView.LayoutManager = LinearLayoutManager(this.context),
-    divider: Boolean = false
-) {
-    this.adapter = adapter
-    this.layoutManager = manager
-    if (divider) {
-        while (this.itemDecorationCount > 0) {
-            this.removeItemDecorationAt(0)
-        }
-        this.addItemDecoration(
-            DividerItemDecoration(
-                this.context,
-                DividerItemDecoration.VERTICAL
-            )
-        )
+
+
+fun RecyclerView.setCell(list : List<CozyCell>, layoutManager: RecyclerView.LayoutManager? = null){
+
+    if(layoutManager!=null){
+        this.layoutManager = layoutManager
     }
+    val adapter = CozyRecyclerView.CozyRecyclerAdapter {}
+    val comparatorItem: CompareItem = object : CompareItem {}
+
+    this.adapter = adapter
+    adapter.updateList(list,comparatorItem)
+
 }
+
 
 
 class CozyRecyclerView : FrameLayout {
@@ -74,6 +70,26 @@ class CozyRecyclerView : FrameLayout {
 
         view.srRefresh.isRefreshing = false
         view.srRefresh.isEnabled = false
+    }
+
+    fun RecyclerView.init(
+        adapter: RecyclerView.Adapter<*>,
+        manager: RecyclerView.LayoutManager = LinearLayoutManager(this.context),
+        divider: Boolean = false
+    ) {
+        this.adapter = adapter
+        this.layoutManager = manager
+        if (divider) {
+            while (this.itemDecorationCount > 0) {
+                this.removeItemDecorationAt(0)
+            }
+            this.addItemDecoration(
+                DividerItemDecoration(
+                    this.context,
+                    DividerItemDecoration.VERTICAL
+                )
+            )
+        }
     }
 
     fun needProgress() {
@@ -184,6 +200,24 @@ class CozyRecyclerView : FrameLayout {
                 RecyclerView.State(),
                 0
             )
+        }
+
+    }
+
+
+
+    fun moveToPosition(position: Int) {
+
+        if (view.baseRecycler.layoutManager is LinearLayoutManager) {
+            (view.baseRecycler.layoutManager as LinearLayoutManager).scrollToPosition(position)
+        }
+
+        if (view.baseRecycler.layoutManager is GridLayoutManager) {
+            (view.baseRecycler.layoutManager as GridLayoutManager).scrollToPosition(0)
+        }
+
+        if (view.baseRecycler.layoutManager is StaggeredGridLayoutManager) {
+            (view.baseRecycler.layoutManager as StaggeredGridLayoutManager).scrollToPosition(0)
         }
 
     }
