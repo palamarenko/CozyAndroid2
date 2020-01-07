@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:orientation="vertical">
+
+
+    <androidx.cardview.widget.CardView
+            android:layout_width="300dp"
+            app:cardCornerRadius="8dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center">
+
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:paddingTop="16dp">
+
+            <TextView
+                    android:id="@+id/tvTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Choice source"
+                    android:textStyle="bold"
+                    android:textColor="@android:color/black"
+                    android:layout_marginStart="12dp"
+                    android:textSize="18sp" />
+
+
+            <LinearLayout
+                    android:id="@+id/llCamera"
+                    android:layout_width="match_parent"
+                    android:layout_marginTop="16dp"
+                    android:paddingStart="8dp"
+                    android:paddingTop="8dp"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:paddingBottom="8dp"
+                    android:paddingEnd="8dp"
+                    android:layout_height="wrap_content">
+
+                <ImageView
+                        android:layout_width="48dp"
+                        android:layout_gravity="center"
+                        android:layout_height="48dp"
+                        android:padding="8dp"
+                        android:background="@drawable/back_pick_image_icon"
+                        android:src="@drawable/ic_camera" />
+
+                <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginStart="8dp"
+                        android:layout_height="wrap_content">
+
+                    <TextView
+                            android:id="@+id/tvCameraTitle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Camera"
+                            android:textColor="@android:color/black"
+                            android:textStyle="bold"
+                            android:textSize="16sp" />
+
+                    <TextView
+                            android:id="@+id/tvCameraSubTitle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Make photo"
+                            android:textSize="14sp" />
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                    android:id="@+id/llGallery"
+                    android:layout_width="match_parent"
+                    android:layout_marginTop="8dp"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="8dp"
+                    android:paddingTop="8dp"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:paddingBottom="8dp"
+                    android:layout_height="wrap_content">
+
+                <ImageView
+                        android:layout_width="48dp"
+                        android:layout_gravity="center"
+                        android:layout_height="48dp"
+                        android:padding="8dp"
+                        android:background="@drawable/back_pick_image_icon"
+                        android:src="@drawable/ic_image" />
+
+                <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginStart="8dp"
+                        android:layout_height="wrap_content">
+
+                <TextView
+                        android:id="@+id/tvGalleryTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Gallery"
+                        android:textColor="@android:color/black"
+                        android:textStyle="bold"
+                        android:textSize="16sp" />
+
+                    <TextView
+                            android:id="@+id/tvGallerySubTitle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Pick your image from gallery, Google disc and etc."
+                            android:textSize="14sp" />
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+
+            <TextView
+                    android:id="@+id/tvCancel"
+                    android:layout_width="wrap_content"
+                    android:text="Cancel"
+                    android:textSize="18sp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="16dp"
+                    android:padding="8dp"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:textColor="@android:color/holo_red_dark"
+                    android:layout_marginEnd="8dp"
+                    android:layout_gravity="end"
+                    android:layout_height="wrap_content"/>
+
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+
+</FrameLayout>

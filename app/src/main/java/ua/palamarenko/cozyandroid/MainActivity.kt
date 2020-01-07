@@ -1,6 +1,7 @@
 package ua.palamarenko.cozyandroid
 
 import android.graphics.Canvas
+import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import kotlinx.android.synthetic.main.activity_main.*
@@ -11,8 +12,12 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import ua.palamarenko.cozyandroid2.*
+import ua.palamarenko.cozyandroid2.image_picker.ImagePickPopupStrings
+import ua.palamarenko.cozyandroid2.image_picker.ImagePicker
 import ua.palamarenko.cozyandroid2.recycler.ButtonSwipeCallBack
 import ua.palamarenko.cozyandroid2.tools.LOG_EVENT
+import ua.palamarenko.cozyandroid2.tools.click
+import ua.palamarenko.cozyandroid2.tools.makeCharSequence
 
 
 class MainActivity : CozyActivity<EmptyViewModel>() {
@@ -33,8 +38,12 @@ class FragmenA : CozyFragment<EmptyViewModel>(){
 
     override fun onStartScreen() {
         super.onStartScreen()
+        bt.click {
+            ImagePicker.pickImage(this, ImagePickPopupStrings(title = "Жопа".makeCharSequence(color = Color.MAGENTA),cancel = R.string.appbar_scrolling_view_behavior,cameraTitle = "Камера")) {
 
-        recycler.setCell(arrayListOf(TestCell("asdcsad"),TestCell("231e")),LinearLayoutManager(context))
+
+            }
+        }
 
 
     }

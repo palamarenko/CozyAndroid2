@@ -22,8 +22,8 @@ import ua.palamarenko.cozyandroid2.tools.click
 abstract class CozyFragment<T : CozyViewModel> : CozyBaseFragment<T>(), BackPress {
 
     private val POPUP_TAG = "POPUP_TAG"
-    private val RESULT_ACTIVITY_CODE = 99
-    private var activityResultCallBack: ((Intent) -> Unit)? = null
+    val RESULT_ACTIVITY_CODE = 99
+    var activityResultCallBack: ((Intent) -> Unit)? = null
 
 
     override fun onCreateView(

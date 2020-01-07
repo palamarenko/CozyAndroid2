@@ -247,6 +247,29 @@ class CozyPagerAdapter<T>(
 
 }
 
+fun Long.isToday() : Boolean{
+    val time = Calendar.getInstance()
+    time.timeInMillis = this
+
+    val now = Calendar.getInstance()
+
+    return now.get(Calendar.DAY_OF_YEAR) == time.get(Calendar.DAY_OF_YEAR) && now.get(Calendar.YEAR) == time.get(Calendar.YEAR)
+
+}
+
+fun Date.isToday() : Boolean{
+    val time = Calendar.getInstance()
+    time.timeInMillis = this.time
+
+    val now = Calendar.getInstance()
+
+    return now.get(Calendar.DAY_OF_YEAR) == time.get(Calendar.DAY_OF_YEAR) && now.get(Calendar.YEAR) == time.get(Calendar.YEAR)
+
+}
+
+
+
+
 
 fun ViewPager.initSimple(fm: FragmentManager?, count: Int, bind: (Int) -> Fragment) {
 
