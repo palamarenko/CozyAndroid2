@@ -7,7 +7,7 @@
 
 
     <androidx.cardview.widget.CardView
-            android:layout_width="300dp"
+            android:layout_width="350dp"
             app:cardCornerRadius="8dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center">
@@ -34,11 +34,11 @@
                     android:id="@+id/llCamera"
                     android:layout_width="match_parent"
                     android:layout_marginTop="16dp"
-                    android:paddingStart="8dp"
+                    android:paddingStart="12dp"
                     android:paddingTop="8dp"
                     android:background="?android:attr/selectableItemBackground"
                     android:paddingBottom="8dp"
-                    android:paddingEnd="8dp"
+                    android:paddingEnd="12dp"
                     android:layout_height="wrap_content">
 
                 <ImageView
@@ -80,8 +80,8 @@
                     android:id="@+id/llGallery"
                     android:layout_width="match_parent"
                     android:layout_marginTop="8dp"
-                    android:paddingStart="8dp"
-                    android:paddingEnd="8dp"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
                     android:paddingTop="8dp"
                     android:background="?android:attr/selectableItemBackground"
                     android:paddingBottom="8dp"

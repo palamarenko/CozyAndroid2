@@ -6,7 +6,6 @@ import android.os.Bundle
 import androidx.fragment.app.FragmentActivity
 import ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks.CozyPopup
 import ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks.CozyReusePopup
-import ua.palamarenko.cozyandroid2.cozy_settings.MigrationStrategy
 
 
 object CozyLibrarySettings {

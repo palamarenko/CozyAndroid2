@@ -22,7 +22,7 @@ ext {
     siteUrl = 'https://github.com/palamarenko/CozyAndroid2'
     gitUrl = 'https://github.com/palamarenko/CozyAndroid2'
 
-    libraryVersion = '0.4.16'
+    libraryVersion = '0.4.19'
 
     developerId = 'lissf'
     developerName = 'Andrey Palamarenko'
