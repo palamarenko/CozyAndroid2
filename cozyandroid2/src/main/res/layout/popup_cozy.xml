@@ -45,7 +45,7 @@
                     android:paddingEnd="20dp"
                     android:textColor="@android:color/black"
                     android:textSize="16sp"
-                    tools:text="Hellolkmcl;ksmdl;csdcmkasdlcma;sdlcma;sdmca;sdcmas;dcma;sdcm" />
+                    tools:text="@tools:sample/lorem/random" />
 
 
             <CheckBox
@@ -73,7 +73,7 @@
                         android:layout_height="wrap_content"
                         android:foreground="?android:attr/selectableItemBackground"
                         android:padding="18dp"
-                        android:text="OK"
+                        tools:text="Cancel"
                         tools:visibility="visible"
                         android:textAllCaps="true"
                         android:textColor="@android:color/black"

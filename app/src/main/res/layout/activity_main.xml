@@ -4,11 +4,14 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:id="@+id/back"
+        android:background="@android:color/holo_red_dark"
         tools:context=".MainActivity">
 
-    <Button
-        android:id="@+id/bt"
+    <ua.palamarenko.cozyandroid2.CozyRecyclerView
+        android:id="@+id/recycler"
             android:layout_width="match_parent"
+            app:Sliding="true"
             android:layout_height="match_parent"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

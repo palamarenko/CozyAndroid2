@@ -1,5 +1,6 @@
 package ua.palamarenko.cozyandroid2.tools
 
+import android.content.Context
 import android.graphics.Point
 import android.graphics.drawable.Drawable
 import android.os.Build
@@ -12,6 +13,7 @@ import android.util.Log
 import android.util.TypedValue
 import android.view.MotionEvent
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.Switch
@@ -214,13 +216,15 @@ fun ViewPager.getCurrentFragment(): Fragment? {
     return null
 }
 
-fun Long.formatDate(format: String = "dd-M-yyyy hh:mm:ss"): String {
-    val formatter = SimpleDateFormat(format, Locale.US)
+fun Long.formatDate(format: String = "dd-M-yyyy hh:mm:ss", locale : Locale = Locale.US): String {
+    val formatter = SimpleDateFormat(format, locale)
     return formatter.format(Date(this))
 }
 
-fun Date.formatDate(format: String = "dd-M-yyyy hh:mm:ss"): String {
-    val formatter = SimpleDateFormat(format, Locale.US)
+
+
+fun Date.formatDate(format: String = "dd-M-yyyy hh:mm:ss", locale : Locale = Locale.US): String {
+    val formatter = SimpleDateFormat(format, locale)
     return formatter.format(this)
 }
 
@@ -247,28 +251,38 @@ class CozyPagerAdapter<T>(
 
 }
 
-fun Long.isToday() : Boolean{
+fun Long.isToday(): Boolean {
     val time = Calendar.getInstance()
     time.timeInMillis = this
 
     val now = Calendar.getInstance()
 
-    return now.get(Calendar.DAY_OF_YEAR) == time.get(Calendar.DAY_OF_YEAR) && now.get(Calendar.YEAR) == time.get(Calendar.YEAR)
+    return now.get(Calendar.DAY_OF_YEAR) == time.get(Calendar.DAY_OF_YEAR) && now.get(Calendar.YEAR) == time.get(
+        Calendar.YEAR
+    )
 
 }
 
-fun Date.isToday() : Boolean{
+
+fun EditText.requestFocusAndShowKeyboard() {
+    requestFocus()
+    postDelayed({
+        val keyboard = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
+        keyboard!!.showSoftInput(this, 0)
+    }, 200)
+}
+
+fun Date.isToday(): Boolean {
     val time = Calendar.getInstance()
     time.timeInMillis = this.time
 
     val now = Calendar.getInstance()
 
-    return now.get(Calendar.DAY_OF_YEAR) == time.get(Calendar.DAY_OF_YEAR) && now.get(Calendar.YEAR) == time.get(Calendar.YEAR)
+    return now.get(Calendar.DAY_OF_YEAR) == time.get(Calendar.DAY_OF_YEAR) && now.get(Calendar.YEAR) == time.get(
+        Calendar.YEAR
+    )
 
 }
-
-
-
 
 
 fun ViewPager.initSimple(fm: FragmentManager?, count: Int, bind: (Int) -> Fragment) {
@@ -284,7 +298,7 @@ fun ViewPager.initSimple(fm: FragmentManager?, count: Int, bind: (Int) -> Fragme
 }
 
 
-fun TabLayout.listen(listener: (tab: TabLayout.Tab) -> Unit){
+fun TabLayout.listen(listener: (tab: TabLayout.Tab) -> Unit) {
     this.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
         override fun onTabSelected(tab: TabLayout.Tab) {
             listener.invoke(tab)
@@ -301,8 +315,7 @@ fun TabLayout.listen(listener: (tab: TabLayout.Tab) -> Unit){
 }
 
 
-
-fun <T> List<T>.add(item: T) : List<T> {
+fun <T> List<T>.add(item: T): List<T> {
     if (this is ArrayList<T>) {
         add(item)
         return this
@@ -480,6 +493,26 @@ private fun LOG_THIS(key: String?, mes: Any?) {
 
     Log.d("MY_LOG_$useKey", useMes.toString())
 }
+private fun getDislay(any : Any?) : String{
+    try {
+        if(any is String){
+            return any
+        }
+        if(any is Number){
+            return any.toString()
+        }
+        if(any == null){
+            return "NULL"
+        }
+
+        return Gson().toJson(any)
+    }catch (e : java.lang.Exception){
+        return e.message?:""
+    }
+
+
+
+}
 
 fun Any?.LOG(key: String = "TEST") {
     if (this == null) {
@@ -498,8 +531,11 @@ fun Any?.LOG(key: String = "TEST") {
 fun LOG_EVENT(key: String, vararg mes: Any?) {
     var message = ""
     for (i in mes.indices) {
-        message += " (" + i + " - " + if (mes[i] == null) "null" else mes[i].toString()
+        message += " (" + i + " - " + getDislay(mes[i])
         message += ") "
     }
+
+
+
     LOG_THIS(key, message)
 }

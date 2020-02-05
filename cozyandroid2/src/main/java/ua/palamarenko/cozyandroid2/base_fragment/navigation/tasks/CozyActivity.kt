@@ -24,7 +24,7 @@ open class CozyActivity<T : CozyViewModel> : NavigateActivity() {
             SHOW_PROGRESS -> showProgress(data as Boolean)
             NAVIGATE -> navigate(data as Fragment, bundle)
             TOAST -> showToast(data as String)
-            START_ACTIVITY -> changeActivity(data as Class<*>, bundle)
+            START_ACTIVITY -> changeActivity(data, bundle)
             BACK_PRESS -> onBackPressed(data as? Class<*>)
             CUSTOM_ACTION -> customAction(data as? ActivityCallBack)
             SHOW_POPUP -> showPopup(data, supportFragmentManager)
@@ -66,9 +66,14 @@ open class CozyActivity<T : CozyViewModel> : NavigateActivity() {
         Toast.makeText(this, message, Toast.LENGTH_LONG).show()
     }
 
-    open fun changeActivity(activityClass: Class<*>, intentBundle: Bundle) {
-        val intent = Intent(this, activityClass)
-        intent.putExtras(intentBundle)
-        startActivity(intent)
+    open fun changeActivity(data: Any, intentBundle: Bundle) {
+        if (data is Class<*>) {
+            val intent = Intent(this, data)
+            intent.putExtras(intentBundle)
+            startActivity(intent)
+        } else {
+            startActivity(data as Intent)
+        }
     }
+
 }

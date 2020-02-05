@@ -1,9 +1,12 @@
 package ua.palamarenko.cozyandroid
 
+import android.animation.Animator
 import android.graphics.Canvas
 import android.graphics.Color
 import android.os.Bundle
 import android.view.View
+import android.view.animation.Animation
+import androidx.core.view.ViewCompat
 import kotlinx.android.synthetic.main.activity_main.*
 import ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks.CozyActivity
 import ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks.CozyFragment
@@ -11,7 +14,11 @@ import ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks.EmptyViewModel
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.android.synthetic.main.cell_test.view.*
+import kotlinx.android.synthetic.main.cell_test_sliding.view.*
 import ua.palamarenko.cozyandroid2.*
+import ua.palamarenko.cozyandroid2.base_fragment.navigation.TRANSACTION_ANIMATION
+import ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks.NAVIGATE
 import ua.palamarenko.cozyandroid2.image_picker.ImagePickPopupStrings
 import ua.palamarenko.cozyandroid2.image_picker.ImagePicker
 import ua.palamarenko.cozyandroid2.recycler.ButtonSwipeCallBack
@@ -25,7 +32,7 @@ class MainActivity : CozyActivity<EmptyViewModel>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         CozyLibrary.init(this)
-        simpleInit(FragmenA())
+        simpleInit(FragmenA(),TRANSACTION_ANIMATION.SLIDE_ANIMATION)
 
 
     }
@@ -38,24 +45,81 @@ class FragmenA : CozyFragment<EmptyViewModel>(){
 
     override fun onStartScreen() {
         super.onStartScreen()
-        bt.click {
-            ImagePicker.pickImage(this, ImagePickPopupStrings(title = "Жопа".makeCharSequence(color = Color.MAGENTA),cancel = R.string.appbar_scrolling_view_behavior,cameraTitle = "Камера")) {
+
+        val list = ArrayList<CozyCell>().apply {
+            add(TestCell2("sacasddscasd"))
+            add(TestCell("1"))
+            add(TestCell("1"))
+            add(TestCell2("1"))
+            add(TestCell("2"))
+            add(TestCell("2"))
+        }
+
+        val list2 = ArrayList<CozyCell>().apply {
+            add(TestCell2("1"))
+            add(TestCell2("1"))
+            add(TestCell("2"))
+            add(TestCell("2"))
+            add(TestCell("2"))
+        }
 
 
-            }
+        recycler.setCell(list)
+        recycler.setRefreshing(true)
+        recycler.refreshListener {
+            recycler.setCell(list2)
         }
 
 
     }
 }
 
-class TestCell(override val data : String) : CozyCell(){
-    override val layout = R.layout.item_test
 
-    override fun bind(view: View) {}
+class FragmenB : CozyFragment<EmptyViewModel>(){
 
+    override val layout = R.layout.activity_main
+
+    override fun onStartScreen() {
+        super.onStartScreen()
+
+
+    }
 
 }
+
+class TestCell(override val data: String) : SlidingCozyCell(){
+    override val slidingLayout = R.layout.cell_test_sliding
+
+    override val layout = R.layout.cell_test
+
+    override fun bind(view: View) {
+        if(data == "1"){
+            startSliding(view)
+        }else{
+            stopSliding(view)
+        }
+
+        view.text.text = data
+        view.btTest.click {
+            LOG_EVENT("HELLO","CLICK")
+        }
+    }
+}
+
+
+class TestCell2(override val data: String) : CozyCell(){
+
+    override val layout = R.layout.cell_test2
+
+    override fun bind(view: View) {
+        view.text.text = data
+//        view.btTest.click {
+//        }
+    }
+}
+
+
+
 
 
 

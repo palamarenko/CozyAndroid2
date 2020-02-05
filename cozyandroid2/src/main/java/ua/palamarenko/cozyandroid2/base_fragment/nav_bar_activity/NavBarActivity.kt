@@ -25,13 +25,26 @@ abstract class NavBarActivity<T : CozyViewModel> : CozyActivity<T>() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_nav_bar)
         this.frameLayout = flFragments
-        this.navigator = NavBarNavigator(R.id.flFragments, supportFragmentManager, vNavigation,items)
-        vNavigation.initView(items.map { NavigationItem(it.id,it.iconSelect,it.iconUnSelect,it.title) })
+        this.navigator =
+            NavBarNavigator(R.id.flFragments, supportFragmentManager, vNavigation, items)
+        vNavigation.initView(items.map {
+            NavigationItem(
+                it.id,
+                it.iconSelect,
+                it.iconUnSelect,
+                it.title
+            )
+        })
 
 
-        vNavigation.listnener = {item ->
-            task(NAVIGATE,items.find { it.id ==  item.id}!!.choiceFragment)
+        vNavigation.listnener = { item ->
+            task(NAVIGATE, items.find { it.id == item.id }!!.choiceFragment)
         }
+        vNavigation.setItem(true, items.first().id)
+    }
+
+    fun getNavigationView(): CozyNavigateView {
+        return vNavigation
     }
 
 
@@ -39,7 +52,7 @@ abstract class NavBarActivity<T : CozyViewModel> : CozyActivity<T>() {
         super.handleOnBackPressEvent()
         Handler().postDelayed({
             items.forEach {
-                if(navigator.getCurrentFragment()!=null && navigator.getCurrentFragment()!!::class.java.simpleName == it.choiceFragment::class.java.simpleName){
+                if (navigator.getCurrentFragment() != null && navigator.getCurrentFragment()!!::class.java.simpleName == it.choiceFragment::class.java.simpleName) {
                     vNavigation.setItem(false, it.id)
                 }
             }

@@ -11,6 +11,7 @@ import androidx.fragment.app.FragmentManager
 import com.tbruyelle.rxpermissions2.RxPermissions
 import java.lang.Exception
 import androidx.fragment.app.FragmentTransaction
+import ua.palamarenko.cozyandroid2.R
 import ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks.CozyFragment
 
 
@@ -24,18 +25,17 @@ open class NavigateActivity : AppCompatActivity() {
     lateinit var frameLayout: FrameLayout
 
     var ignoreEnterBackground: Boolean = false
-    var animation = TRANSACTION_ANIMATION.DEFAULT_ANIMATION
 
 
     fun simpleInit(
         fragment: Fragment? = null,
-        animation: TRANSACTION_ANIMATION = TRANSACTION_ANIMATION.DEFAULT_ANIMATION
+        animation: TRANSACTION_ANIMATION = TRANSACTION_ANIMATION.DEFAULT_ANIMATION,
+        customAnimation: ((ft: FragmentTransaction) -> Unit)? = null
     ) {
-        this.animation = animation
         frameLayout = FrameLayout(this)
         frameLayout.id = View.generateViewId()
         this.setContentView(frameLayout)
-        this.navigator = Navigator(frameLayout.id, supportFragmentManager, this.animation)
+        this.navigator = Navigator(frameLayout.id, supportFragmentManager, animation,customAnimation)
 
         if (fragment != null) {
             setFragment(fragment)
@@ -48,18 +48,12 @@ open class NavigateActivity : AppCompatActivity() {
     fun setFragment(fragment: Fragment) {
         navigator.replaceFragment(fragment, Bundle())
     }
-
-
     override fun onBackPressed() {
         onBackPressed(null)
     }
-
-
     private fun findCurrentFragment() : Fragment? {
       return  navigator.fragmentManager.fragments.findLast { it.tag == FRAGMENT_TAG }
     }
-
-
     open fun onBackPressed(fragment: Class<*>?) {
         if (navigator.fragmentManager.fragments.isNotEmpty() && findCurrentFragment() is BackPress) {
             val back =
@@ -81,33 +75,24 @@ open class NavigateActivity : AppCompatActivity() {
         }
         handleOnBackPressEvent()
     }
-
     open fun handleOnBackPressEvent(){
 
     }
-
-
     fun request(): RxPermissions {
         return RxPermissions(this)
     }
 
-    override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
-        super.onCreate(savedInstanceState, persistentState)
-    }
 }
 
-enum class TRANSACTION_ANIMATION { DEFAULT_ANIMATION, CUSTON, NONE }
+enum class TRANSACTION_ANIMATION { DEFAULT_ANIMATION, SLIDE_ANIMATION, NONE}
 
 open class Navigator(
     val contId: Int,
     val fragmentManager: FragmentManager,
-    val animation: TRANSACTION_ANIMATION = TRANSACTION_ANIMATION.DEFAULT_ANIMATION
+    val animation: TRANSACTION_ANIMATION = TRANSACTION_ANIMATION.DEFAULT_ANIMATION,
+    val customAnimation : ((ft: FragmentTransaction) -> Unit)? = null
 ) {
 
-
-    fun showDialog(dialog: androidx.fragment.app.DialogFragment) {
-        dialog.show(this.fragmentManager, "")
-    }
 
 
     fun getCurrentFragment() : CozyFragment<*>?{
@@ -115,21 +100,31 @@ open class Navigator(
     }
 
 
-
-
     open fun replaceFragment(fragment: Fragment, bundle: Bundle) {
 
         try {
             val ft = this.fragmentManager.beginTransaction()
-            ft.replace(this.contId, fragment, FRAGMENT_TAG)
-            ft.addToBackStack(fragment.javaClass.simpleName)
 
-            when (animation) {
-                TRANSACTION_ANIMATION.DEFAULT_ANIMATION -> addCustomAnimation(ft)
-                TRANSACTION_ANIMATION.NONE -> {
+            if(customAnimation!=null){
+                ft.replace(this.contId, fragment, FRAGMENT_TAG)
+                customAnimation.invoke(ft)
+            }else{
+                when (animation) {
+                    TRANSACTION_ANIMATION.DEFAULT_ANIMATION -> {
+                        ft.replace(this.contId, fragment, FRAGMENT_TAG)
+                        defaultAnimation(ft)
+                    }
+                    TRANSACTION_ANIMATION.SLIDE_ANIMATION -> {
+                        addSlideAnimation(ft)
+                        ft.replace(this.contId, fragment, FRAGMENT_TAG)
+                    }
+                    TRANSACTION_ANIMATION.NONE ->{
+                        ft.replace(this.contId, fragment, FRAGMENT_TAG)
+                    }
                 }
-                TRANSACTION_ANIMATION.CUSTON -> setCustomAnimation(ft)
             }
+
+            ft.addToBackStack(fragment.javaClass.simpleName)
 
             ft.commitAllowingStateLoss()
 
@@ -139,11 +134,18 @@ open class Navigator(
 
     }
 
-    open fun setCustomAnimation(ft: FragmentTransaction) {}
+    private fun addSlideAnimation( ft: FragmentTransaction){
+        ft.setCustomAnimations(
+            R.anim.enter_from_right,
+            R.anim.exit_to_left,
+            R.anim.enter_from_left,
+            R.anim.exit_to_right)
 
+        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+    }
 
     @SuppressLint("ResourceType")
-    fun addCustomAnimation(
+    private fun defaultAnimation(
         ft: FragmentTransaction
     ) {
         ft.setCustomAnimations(
