@@ -50,7 +50,8 @@ class CozyNavigateView : FrameLayout {
             itemView.ivIcon.setImageResource(it.iconUnSelect)
             itemView.flClick.click(false) { setItem(true, it.id) }
 
-            val params = LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.MATCH_PARENT)
+            val params =
+                LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT)
             params.weight = 1f
             itemView.layoutParams = params
             if (it.title != null) {
@@ -73,22 +74,42 @@ class CozyNavigateView : FrameLayout {
             return
         }
         itemList.forEach {
-            it.view.ivIcon.setImageResource(it.item.iconUnSelect)
-            if (it.item.title != null) {
-                it.view.tvTitle.text = it.item.title.unSelect
+            if (it.item.id != id) {
+                it.view.ivIcon.setImageResource(it.item.iconUnSelect)
+                if (it.item.title != null) {
+                    it.view.tvTitle.text = it.item.title.unSelect
+                }
+                animateView(it.view.llAnimate,false)
+            } else {
+                it.view.ivIcon.setImageResource(it.item.iconSelect)
+                if (it.item.title != null) {
+                    it.view.tvTitle.text = it.item.title.select
+                }
+                animateView(it.view.llAnimate,true)
+                lastItem = it
+                if (needCallBack) {
+                    listnener.invoke(it.item)
+                }
             }
         }
-        val checkItem = itemList.find { it.item.id == id }
-        checkItem?.apply {
-            view.ivIcon.setImageResource(item.iconSelect)
-            if (item.title != null) {
-                view.tvTitle.text = item.title.select
-            }
-            lastItem = this
-            if (needCallBack) {
-                listnener.invoke(checkItem.item)
-            }
+    }
+
+    private fun animateView(view : View, selected : Boolean){
+        if(selected){
+            view.animate()
+                .scaleX(1.1f)
+                .scaleY(1.1f)
+                .setDuration(100)
+                .start()
+        }else{
+            view.animate()
+                .scaleX(1.0f)
+                .scaleY(1.0f)
+                .setDuration(100)
+                .start()
         }
+
+
     }
 
 

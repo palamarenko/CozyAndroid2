@@ -9,16 +9,16 @@
 
 
     <LinearLayout
+            android:id="@+id/llAnimate"
             android:layout_width="match_parent"
-            android:src="@drawable/abc_vector_test"
             android:orientation="vertical"
             android:layout_gravity="center"
             android:layout_height="wrap_content">
     <ImageView
             android:id="@+id/ivIcon"
-            android:layout_width="30dp"
+            android:layout_width="28dp"
             android:layout_gravity="center"
-            android:layout_height="30dp"
+            android:layout_height="28dp"
          />
 
     <TextView

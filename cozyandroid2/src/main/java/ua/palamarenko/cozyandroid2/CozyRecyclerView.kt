@@ -148,6 +148,7 @@ class CozyRecyclerView : FrameLayout {
     }
 
     fun refreshListener(refreshListener: () -> Unit) {
+        setRefreshing(true)
         view.srRefresh.setOnRefreshListener {
             refreshListener.invoke()
         }
@@ -268,6 +269,15 @@ class CozyRecyclerView : FrameLayout {
 
 
     fun setPlaceHolder(view: View) {
+        needPlaceHolder = true
+        view.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
+        this.view.flPlaceHolder.addView(view)
+    }
+
+
+    fun setPlaceHolder(id: Int) {
+        needPlaceHolder = true
+        val view  = View.inflate(context,id,null)
         view.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
         this.view.flPlaceHolder.addView(view)
     }

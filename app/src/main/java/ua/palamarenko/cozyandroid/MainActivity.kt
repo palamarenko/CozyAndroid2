@@ -17,8 +17,11 @@ import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.cell_test.view.*
 import kotlinx.android.synthetic.main.cell_test_sliding.view.*
 import ua.palamarenko.cozyandroid2.*
+import ua.palamarenko.cozyandroid2.base_fragment.nav_bar_activity.NavBarActivity
+import ua.palamarenko.cozyandroid2.base_fragment.nav_bar_activity.NavigationActivityItem
 import ua.palamarenko.cozyandroid2.base_fragment.navigation.TRANSACTION_ANIMATION
 import ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks.NAVIGATE
+import ua.palamarenko.cozyandroid2.cozy_view.TitleItem
 import ua.palamarenko.cozyandroid2.image_picker.ImagePickPopupStrings
 import ua.palamarenko.cozyandroid2.image_picker.ImagePicker
 import ua.palamarenko.cozyandroid2.recycler.ButtonSwipeCallBack
@@ -27,15 +30,25 @@ import ua.palamarenko.cozyandroid2.tools.click
 import ua.palamarenko.cozyandroid2.tools.makeCharSequence
 
 
-class MainActivity : CozyActivity<EmptyViewModel>() {
+class MainActivity : NavBarActivity<EmptyViewModel>() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         CozyLibrary.init(this)
-        simpleInit(FragmenA(),TRANSACTION_ANIMATION.SLIDE_ANIMATION)
 
 
     }
+
+    override val items =
+            ArrayList<NavigationActivityItem>().apply {
+                add(NavigationActivityItem(1,R.drawable.ic_important2,R.drawable.ic_important,
+                    TitleItem("Срака","байрака"),FragmenA()
+                ))
+                add(NavigationActivityItem(2,R.drawable.ic_important2,R.drawable.ic_important,
+                    TitleItem("Срака","байрака"),FragmenB()
+                ))
+            }
+
 }
 
 
@@ -77,7 +90,7 @@ class FragmenA : CozyFragment<EmptyViewModel>(){
 
 class FragmenB : CozyFragment<EmptyViewModel>(){
 
-    override val layout = R.layout.activity_main
+    override val layout = R.layout.fragment_b
 
     override fun onStartScreen() {
         super.onStartScreen()
