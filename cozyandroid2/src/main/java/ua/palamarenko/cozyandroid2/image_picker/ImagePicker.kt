@@ -12,7 +12,13 @@ import ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks.convertAnyToTi
 import ua.palamarenko.cozyandroid2.tools.click
 import java.io.File
 
+class ImagePickerRequest(val strings : ImagePickPopupStrings = ImagePickPopupStrings(),val callback: (File) -> Unit)
+
+
 object ImagePicker {
+
+
+
 
     fun pickImage(cozyFragment: CozyFragment<*>, strings : ImagePickPopupStrings = ImagePickPopupStrings(),callback: (File) -> Unit) {
         ImagePickPopup(

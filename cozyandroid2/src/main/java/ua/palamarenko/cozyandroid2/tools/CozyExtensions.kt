@@ -216,18 +216,6 @@ fun ViewPager.getCurrentFragment(): Fragment? {
     return null
 }
 
-fun Long.formatDate(format: String = "dd-M-yyyy hh:mm:ss", locale : Locale = Locale.US): String {
-    val formatter = SimpleDateFormat(format, locale)
-    return formatter.format(Date(this))
-}
-
-
-
-fun Date.formatDate(format: String = "dd-M-yyyy hh:mm:ss", locale : Locale = Locale.US): String {
-    val formatter = SimpleDateFormat(format, locale)
-    return formatter.format(this)
-}
-
 
 class CozyPagerAdapter<T>(
     fm: FragmentManager,

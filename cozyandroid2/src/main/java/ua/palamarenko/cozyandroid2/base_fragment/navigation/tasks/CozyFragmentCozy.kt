@@ -16,7 +16,12 @@ import ua.palamarenko.cozyandroid2.base_fragment.navigation.BackPress
 import ua.palamarenko.cozyandroid2.base_fragment.navigation.CozyBaseFragment
 import ua.palamarenko.cozyandroid2.base_fragment.navigation.NavigateActivity
 import ua.palamarenko.cozyandroid2.base_fragment.navigation.Navigator
+import ua.palamarenko.cozyandroid2.image_picker.ImagePickPopup
+import ua.palamarenko.cozyandroid2.image_picker.ImagePickPopupStrings
+import ua.palamarenko.cozyandroid2.image_picker.ImagePicker
+import ua.palamarenko.cozyandroid2.image_picker.ImagePickerRequest
 import ua.palamarenko.cozyandroid2.tools.click
+import java.io.File
 
 
 abstract class CozyFragment<T : CozyViewModel> : CozyBaseFragment<T>(), BackPress {
@@ -52,6 +57,7 @@ abstract class CozyFragment<T : CozyViewModel> : CozyBaseFragment<T>(), BackPres
             SHOW_SNACKBAR -> view?.apply { showSnackbar(this, data as SnackbarPopup) }
             REQUEST_PERMISSION -> checkPermission(data as PermissionModel)
             CLEAR_FRAGMENTS -> fragmentManager?.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+            PICK_IMAGE -> ImagePicker.pickImage(this, (data as ImagePickerRequest).strings, data.callback)
             else -> observeCustomTasks(id, data, bundle)
         }
     }
@@ -62,6 +68,9 @@ abstract class CozyFragment<T : CozyViewModel> : CozyBaseFragment<T>(), BackPres
             CozyLibrarySettings.customListener?.observeCustomTasks(this, id, data, bundle)
         }
     }
+
+
+
 
 
     private fun onBackPress(fragment: Class<*>?) {
