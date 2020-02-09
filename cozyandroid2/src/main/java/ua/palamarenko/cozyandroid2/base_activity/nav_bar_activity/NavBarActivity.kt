@@ -1,4 +1,4 @@
-package ua.palamarenko.cozyandroid2.base_fragment.nav_bar_activity
+package ua.palamarenko.cozyandroid2.base_activity.nav_bar_activity
 
 import android.os.Bundle
 import android.os.Handler
@@ -6,6 +6,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import kotlinx.android.synthetic.main.activity_nav_bar.*
 import ua.palamarenko.cozyandroid2.R
+import ua.palamarenko.cozyandroid2.base_fragment.navigation.BackPress
+import ua.palamarenko.cozyandroid2.base_fragment.navigation.FRAGMENT_TAG
 import ua.palamarenko.cozyandroid2.base_fragment.navigation.Navigator
 import ua.palamarenko.cozyandroid2.base_fragment.navigation.TRANSACTION_ANIMATION
 import ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks.CozyActivity
@@ -16,10 +18,19 @@ import ua.palamarenko.cozyandroid2.cozy_view.CozyNavigateView
 import ua.palamarenko.cozyandroid2.cozy_view.NavigationItem
 import ua.palamarenko.cozyandroid2.cozy_view.TitleItem
 
+
+enum class BackClickStrategy { DEFAULT, GO_TO_FIRST }
+
 abstract class NavBarActivity<T : CozyViewModel> : CozyActivity<T>() {
 
-
+    private var backClickStrategy = BackClickStrategy.DEFAULT
     abstract val items: List<NavigationActivityItem>
+
+
+    fun setBackClickStrategy(strategy : BackClickStrategy){
+        backClickStrategy = strategy
+    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,12 +58,63 @@ abstract class NavBarActivity<T : CozyViewModel> : CozyActivity<T>() {
         return vNavigation
     }
 
+    override fun onBackPressed(fragment: Class<*>?) {
+        when (backClickStrategy) {
+            BackClickStrategy.DEFAULT -> {
+                super.onBackPressed(fragment)
+            }
+            BackClickStrategy.GO_TO_FIRST -> {
+                onBackPressedGoToFirst()
+            }
+        }
+    }
+
+    private fun onBackPressedGoToFirst() {
+        if (navigator.fragmentManager.fragments.isNotEmpty() && findCurrentFragment() is BackPress) {
+            val back = (findCurrentFragment() as BackPress).onBackPress()
+            if (back) return
+        }
+
+        val currentFragment = navigator.fragmentManager.fragments.lastOrNull()
+        val name = if(currentFragment!=null)currentFragment::class.java.simpleName else ""
+
+
+       val choiceItem =  items.find {it.choiceFragment::class.java.simpleName == name }
+
+
+        when {
+            choiceItem == null -> {
+                val manager = navigator.fragmentManager
+                val count = manager.backStackEntryCount
+                if (count <= 1) {
+                    finish()
+                } else {
+                    navigator.fragmentManager.popBackStack()
+                }
+
+            }
+            choiceItem.defaultItem -> {
+                finish()
+            }
+            !choiceItem.defaultItem ->{
+                for (i in 0 until navigator.fragmentManager.backStackEntryCount - 1) {
+                    navigator.fragmentManager.popBackStack()
+                }
+            }
+
+        }
+
+
+        handleOnBackPressEvent()
+    }
 
     override fun handleOnBackPressEvent() {
         super.handleOnBackPressEvent()
         Handler().postDelayed({
             items.forEach {
-                if (navigator.getCurrentFragment() != null && navigator.getCurrentFragment()!!::class.java.simpleName == it.choiceFragment::class.java.simpleName) {
+                if (navigator.getCurrentFragment() != null &&
+                    navigator.getCurrentFragment()!!::class.java.simpleName == it.choiceFragment::class.java.simpleName
+                ) {
                     vNavigation.setItem(false, it.id)
                 }
             }
@@ -66,7 +128,8 @@ class NavigationActivityItem(
     val iconUnSelect: Int,
     val title: TitleItem? = null,
     val choiceFragment: CozyFragment<*>,
-    vararg val grooupFragmens: Class<CozyFragment<*>>
+    vararg val grooupFragmens: Class<CozyFragment<*>>,
+    val defaultItem : Boolean = false
 )
 
 

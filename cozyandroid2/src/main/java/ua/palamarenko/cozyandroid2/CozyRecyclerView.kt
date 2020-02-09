@@ -2,6 +2,7 @@ package ua.palamarenko.cozyandroid2
 
 import android.content.Context
 import android.graphics.Canvas
+import android.os.Handler
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
@@ -63,10 +64,8 @@ class CozyRecyclerView : FrameLayout {
 
     private fun init(context: Context, attrs: AttributeSet?) {
         val ta = context.obtainStyledAttributes(attrs, R.styleable.CozyRecyclerView, 0, 0)
-        LOG_EVENT("HELLO", "INIT")
         view = if (ta.hasValue(R.styleable.CozyRecyclerView_Sliding)) {
             if (ta.getBoolean(R.styleable.CozyRecyclerView_Sliding, false)) {
-                LOG_EVENT("HELLO", "SLIDING")
                 View.inflate(context, R.layout.view_recycler_sliding, null)
             } else {
                 View.inflate(context, R.layout.view_recycler, null)
@@ -254,8 +253,15 @@ class CozyRecyclerView : FrameLayout {
 
     fun setCell(data: List<CozyCell>) {
         adapter.updateList(data, comparatorItem)
-        view.flPlaceHolder.visibility =
-            if (adapter.itemCount == 0 && needPlaceHolder) View.VISIBLE else View.GONE
+
+        Handler().postDelayed({
+            if (adapter.itemCount == 0 && needPlaceHolder) {
+                view.flPlaceHolder.visibility = View.VISIBLE
+            } else {
+                view.flPlaceHolder.visibility = View.GONE
+            }
+        }, 300)
+
         view.progress.visibility = View.GONE
     }
 
@@ -277,9 +283,13 @@ class CozyRecyclerView : FrameLayout {
 
     fun setPlaceHolder(id: Int) {
         needPlaceHolder = true
-        val view  = View.inflate(context,id,null)
+        val view = View.inflate(context, id, null)
         view.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
         this.view.flPlaceHolder.addView(view)
+    }
+
+    fun getPlaceHolder(): FrameLayout {
+        return view.flPlaceHolder
     }
 
     fun removePlaceHolder() {
@@ -405,15 +415,23 @@ abstract class SlidingCozyCell : CozyCell() {
         return object : ViewBuilder(layout + slidingLayout) {
             override fun buildView(parent: ViewGroup): View {
                 val visibleView = LayoutInflater.from(parent.context).inflate(layout, parent, false)
-                val slidingView = LayoutInflater.from(parent.context).inflate(slidingLayout, parent, false)
-                visibleView.layoutParams =LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.WRAP_CONTENT)
+                val slidingView =
+                    LayoutInflater.from(parent.context).inflate(slidingLayout, parent, false)
+                visibleView.layoutParams = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                )
                 val mainView = LinearLayout(parent.context)
-                mainView.layoutParams =LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.WRAP_CONTENT)
+                mainView.layoutParams = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                )
                 mainView.orientation = LinearLayout.HORIZONTAL
                 mainView.addView(visibleView)
                 val mainFraim = FrameLayout(parent.context)
                 mainFraim.tag = "SLIDING_VIEW"
-                mainFraim.layoutParams = LinearLayout.LayoutParams(dpToPx(1000f),LinearLayout.LayoutParams.MATCH_PARENT)
+                mainFraim.layoutParams =
+                    LinearLayout.LayoutParams(dpToPx(1000f), LinearLayout.LayoutParams.MATCH_PARENT)
                 mainView.addView(mainFraim)
                 val firstFrame = FrameLayout(parent.context)
                 firstFrame.addView(slidingView)
@@ -423,12 +441,12 @@ abstract class SlidingCozyCell : CozyCell() {
         }
     }
 
-    fun stopSliding(view : View){
+    fun stopSliding(view: View) {
         view.findViewWithTag<View>("SLIDING_VIEW").visibility = View.GONE
 
     }
 
-    fun startSliding(view : View){
+    fun startSliding(view: View) {
         view.findViewWithTag<View>("SLIDING_VIEW").visibility = View.VISIBLE
     }
 }

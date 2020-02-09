@@ -71,16 +71,16 @@ class PreferencesProvider {
             return manager.getString(key, defValue)?:""
         }
 
-        fun readBool(key: String, default : Boolean = false): Boolean {
-            return manager.getBoolean(key, default)
+        fun readBool(key: String, defValue : Boolean = false): Boolean {
+            return manager.getBoolean(key, defValue)
         }
 
-        fun readInt(key: String): Int {
-            return manager.getInt(key, 0)
+        fun readInt(key: String, defValue : Int = 0): Int {
+            return manager.getInt(key, defValue)
         }
 
-        fun readLong(key: String): Long {
-            return manager.getLong(key, 0L)
+        fun readLong(key: String, defValue : Long = 0L): Long {
+            return manager.getLong(key, defValue)
         }
     }
 

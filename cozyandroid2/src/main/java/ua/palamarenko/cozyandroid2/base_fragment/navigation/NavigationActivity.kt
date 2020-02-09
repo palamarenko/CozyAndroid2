@@ -13,6 +13,7 @@ import java.lang.Exception
 import androidx.fragment.app.FragmentTransaction
 import ua.palamarenko.cozyandroid2.R
 import ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks.CozyFragment
+import ua.palamarenko.cozyandroid2.tools.LOG_EVENT
 
 
 const val FRAGMENT_TAG = "FRAGMENT_TAG"
@@ -51,13 +52,12 @@ open class NavigateActivity : AppCompatActivity() {
     override fun onBackPressed() {
         onBackPressed(null)
     }
-    private fun findCurrentFragment() : Fragment? {
+    fun findCurrentFragment() : Fragment? {
       return  navigator.fragmentManager.fragments.findLast { it.tag == FRAGMENT_TAG }
     }
     open fun onBackPressed(fragment: Class<*>?) {
         if (navigator.fragmentManager.fragments.isNotEmpty() && findCurrentFragment() is BackPress) {
-            val back =
-                (findCurrentFragment() as BackPress).onBackPress()
+            val back = (findCurrentFragment() as BackPress).onBackPress()
             if (back) return
         }
 
