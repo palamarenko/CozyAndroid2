@@ -16,3 +16,4 @@ const val SET_RESULT = 11
 const val SHOW_SNACKBAR = 12
 const val CLEAR_FRAGMENTS = 13
 const val PICK_IMAGE = 14
+const val OPEN_LINK = 15

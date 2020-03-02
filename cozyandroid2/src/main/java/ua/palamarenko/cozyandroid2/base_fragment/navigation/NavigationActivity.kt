@@ -36,7 +36,8 @@ open class NavigateActivity : AppCompatActivity() {
         frameLayout = FrameLayout(this)
         frameLayout.id = View.generateViewId()
         this.setContentView(frameLayout)
-        this.navigator = Navigator(frameLayout.id, supportFragmentManager, animation,customAnimation)
+        this.navigator =
+            Navigator(frameLayout.id, supportFragmentManager, animation, customAnimation)
 
         if (fragment != null) {
             setFragment(fragment)
@@ -49,12 +50,15 @@ open class NavigateActivity : AppCompatActivity() {
     fun setFragment(fragment: Fragment) {
         navigator.replaceFragment(fragment, Bundle())
     }
+
     override fun onBackPressed() {
         onBackPressed(null)
     }
-    fun findCurrentFragment() : Fragment? {
-      return  navigator.fragmentManager.fragments.findLast { it.tag == FRAGMENT_TAG }
+
+    fun findCurrentFragment(): Fragment? {
+        return navigator.fragmentManager.fragments.findLast { it.tag == FRAGMENT_TAG || it.tag == it::class.java.simpleName }
     }
+
     open fun onBackPressed(fragment: Class<*>?) {
         if (navigator.fragmentManager.fragments.isNotEmpty() && findCurrentFragment() is BackPress) {
             val back = (findCurrentFragment() as BackPress).onBackPress()
@@ -75,28 +79,29 @@ open class NavigateActivity : AppCompatActivity() {
         }
         handleOnBackPressEvent()
     }
-    open fun handleOnBackPressEvent(){
+
+    open fun handleOnBackPressEvent() {
 
     }
+
     fun request(): RxPermissions {
         return RxPermissions(this)
     }
 
 }
 
-enum class TRANSACTION_ANIMATION { DEFAULT_ANIMATION, SLIDE_ANIMATION, NONE}
+enum class TRANSACTION_ANIMATION { DEFAULT_ANIMATION, SLIDE_ANIMATION, NONE }
 
 open class Navigator(
     val contId: Int,
     val fragmentManager: FragmentManager,
     val animation: TRANSACTION_ANIMATION = TRANSACTION_ANIMATION.DEFAULT_ANIMATION,
-    val customAnimation : ((ft: FragmentTransaction) -> Unit)? = null
+    val customAnimation: ((ft: FragmentTransaction) -> Unit)? = null
 ) {
 
 
-
-    fun getCurrentFragment() : CozyFragment<*>?{
-       return fragmentManager.findFragmentById(contId) as? CozyFragment<*>
+    fun getCurrentFragment(): CozyFragment<*>? {
+        return fragmentManager.findFragmentById(contId) as? CozyFragment<*>
     }
 
 
@@ -105,23 +110,28 @@ open class Navigator(
         try {
             val ft = this.fragmentManager.beginTransaction()
 
-            if(customAnimation!=null){
+            if (customAnimation != null) {
                 ft.replace(this.contId, fragment, FRAGMENT_TAG)
                 customAnimation.invoke(ft)
-            }else{
-                when (animation) {
-                    TRANSACTION_ANIMATION.DEFAULT_ANIMATION -> {
-                        ft.replace(this.contId, fragment, FRAGMENT_TAG)
-                        defaultAnimation(ft)
-                    }
-                    TRANSACTION_ANIMATION.SLIDE_ANIMATION -> {
-                        addSlideAnimation(ft)
-                        ft.replace(this.contId, fragment, FRAGMENT_TAG)
-                    }
-                    TRANSACTION_ANIMATION.NONE ->{
-                        ft.replace(this.contId, fragment, FRAGMENT_TAG)
+            } else {
+                if (getCurrentFragment() == null) {
+                    ft.replace(this.contId, fragment, FRAGMENT_TAG)
+                } else {
+                    when (animation) {
+                        TRANSACTION_ANIMATION.DEFAULT_ANIMATION -> {
+                            ft.replace(this.contId, fragment, FRAGMENT_TAG)
+                            defaultAnimation(ft)
+                        }
+                        TRANSACTION_ANIMATION.SLIDE_ANIMATION -> {
+                            addSlideAnimation(ft)
+                            ft.replace(this.contId, fragment, FRAGMENT_TAG)
+                        }
+                        TRANSACTION_ANIMATION.NONE -> {
+                            ft.replace(this.contId, fragment, FRAGMENT_TAG)
+                        }
                     }
                 }
+
             }
 
             ft.addToBackStack(fragment.javaClass.simpleName)
@@ -134,12 +144,13 @@ open class Navigator(
 
     }
 
-    private fun addSlideAnimation( ft: FragmentTransaction){
+    private fun addSlideAnimation(ft: FragmentTransaction) {
         ft.setCustomAnimations(
             R.anim.enter_from_right,
             R.anim.exit_to_left,
             R.anim.enter_from_left,
-            R.anim.exit_to_right)
+            R.anim.exit_to_right
+        )
 
         ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
     }

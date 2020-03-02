@@ -254,13 +254,11 @@ class CozyRecyclerView : FrameLayout {
     fun setCell(data: List<CozyCell>) {
         adapter.updateList(data, comparatorItem)
 
-        Handler().postDelayed({
-            if (adapter.itemCount == 0 && needPlaceHolder) {
-                view.flPlaceHolder.visibility = View.VISIBLE
-            } else {
-                view.flPlaceHolder.visibility = View.GONE
-            }
-        }, 300)
+        if (adapter.itemCount == 0 && needPlaceHolder) {
+            view.flPlaceHolder.visibility = View.VISIBLE
+        } else {
+            view.flPlaceHolder.visibility = View.GONE
+        }
 
         view.progress.visibility = View.GONE
     }

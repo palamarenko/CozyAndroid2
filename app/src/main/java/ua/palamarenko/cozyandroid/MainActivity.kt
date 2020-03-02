@@ -1,6 +1,9 @@
 package ua.palamarenko.cozyandroid
 
+import android.annotation.SuppressLint
+import android.graphics.Color
 import android.os.Bundle
+import android.text.method.LinkMovementMethod
 import android.view.View
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.cell_test.view.*
@@ -14,12 +17,13 @@ import ua.palamarenko.cozyandroid2.base_activity.nav_bar_activity.NavigationActi
 import ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks.CozyFragment
 import ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks.EmptyViewModel
 import ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks.NAVIGATE
+import ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks.PICK_IMAGE
 import ua.palamarenko.cozyandroid2.cozy_view.TitleItem
+import ua.palamarenko.cozyandroid2.image_picker.ImagePickerRequest
 import ua.palamarenko.cozyandroid2.tools.*
 
 
 class MainActivity : NavBarActivity<EmptyViewModel>() {
-
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,44 +35,54 @@ class MainActivity : NavBarActivity<EmptyViewModel>() {
     }
 
     override val items =
-            ArrayList<NavigationActivityItem>().apply {
-                add(NavigationActivityItem(1,R.drawable.ic_important2,R.drawable.ic_important,
-                    TitleItem("Срака","байрака"),FragmenA(),defaultItem = true
-                ))
-                add(NavigationActivityItem(2,R.drawable.ic_important2,R.drawable.ic_important,
-                    TitleItem("Срака","байрака"),FragmenB()
-                ))
-            }
+        ArrayList<NavigationActivityItem>().apply {
+            add(
+                NavigationActivityItem(
+                    1, R.drawable.ic_important2, R.drawable.ic_important,
+                    TitleItem("Срака", "байрака"), FragmenA(), defaultItem = true
+                )
+            )
+            add(
+                NavigationActivityItem(
+                    2, R.drawable.ic_important2, R.drawable.ic_important,
+                    TitleItem("Срака", "байрака"), FragmenB()
+                )
+            )
+        }
 
 }
 
 
-class FragmenA : CozyFragment<EmptyViewModel>(){
+class FragmenA : CozyFragment<EmptyViewModel>() {
 
     override val layout = R.layout.activity_main
 
+    @SuppressLint("SetTextI18n")
     override fun onStartScreen() {
         super.onStartScreen()
-        recycler.setPlaceHolder(R.layout.holder_test)
-        recycler.setCell(ArrayList<CozyCell>().apply {
-            add(TestCell("sdvcsdcdsd"))
-            add(TestCell("sdvcsdcdsd"))
-            add(TestCell("sdvcsdcdsd"))
-            add(TestCell("sdvcsdcdsd"))
-            add(TestCell("sdvcsdcdsd"))
-        })
+
+        tvClick.text = "sacsdcsad"
+            .makeCharSequence(SPAN.BOLD)
+            .setClick(Color.RED) {
+                LOG_EVENT("HELLO", "CLIcK")
+            }
+
+        tvClick.movementMethod = LinkMovementMethod.getInstance();
+        tvClick.highlightColor = Color.TRANSPARENT;
 
         btButton.click {
-            task(NAVIGATE,FragmenC())
+            task(PICK_IMAGE, ImagePickerRequest() {
+                ivTest.load(it)
+            })
         }
 
     }
 }
 
-class FragmenC : CozyFragment<EmptyViewModel>(){
+class FragmenC : CozyFragment<EmptyViewModel>() {
 
     override fun onBackPress(): Boolean {
-        LOG_EVENT("HELLO","BACK_PRESS")
+        LOG_EVENT("HELLO", "BACK_PRESS")
         return false
     }
 
@@ -81,8 +95,7 @@ class FragmenC : CozyFragment<EmptyViewModel>(){
 }
 
 
-
-class FragmenB : CozyFragment<EmptyViewModel>(){
+class FragmenB : CozyFragment<EmptyViewModel>() {
 
     override val layout = R.layout.fragment_b
 
@@ -94,7 +107,7 @@ class FragmenB : CozyFragment<EmptyViewModel>(){
 
 }
 
-class TestCell(override val data: String) : SlidingCozyCell(){
+class TestCell(override val data: String) : SlidingCozyCell() {
     override val slidingLayout = R.layout.cell_test_sliding
 
     override val layout = R.layout.cell_test
@@ -102,9 +115,9 @@ class TestCell(override val data: String) : SlidingCozyCell(){
     override fun bind(view: View) {
 
 
-        if(data == "1"){
+        if (data == "1") {
             startSliding(view)
-        }else{
+        } else {
             stopSliding(view)
         }
 
@@ -112,7 +125,7 @@ class TestCell(override val data: String) : SlidingCozyCell(){
 
         view.text.text = data
         view.btTest.click {
-            LOG_EVENT("HELLO","CLICK")
+            LOG_EVENT("HELLO", "CLICK")
         }
     }
 }

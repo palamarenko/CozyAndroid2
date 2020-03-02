@@ -17,9 +17,6 @@ class ImagePickerRequest(val strings : ImagePickPopupStrings = ImagePickPopupStr
 
 object ImagePicker {
 
-
-
-
     fun pickImage(cozyFragment: CozyFragment<*>, strings : ImagePickPopupStrings = ImagePickPopupStrings(),callback: (File) -> Unit) {
         ImagePickPopup(
             cozyFragment = cozyFragment,

@@ -1,7 +1,9 @@
 package ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks
 
+import android.Manifest
 import android.app.Activity
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -16,12 +18,9 @@ import ua.palamarenko.cozyandroid2.base_fragment.navigation.BackPress
 import ua.palamarenko.cozyandroid2.base_fragment.navigation.CozyBaseFragment
 import ua.palamarenko.cozyandroid2.base_fragment.navigation.NavigateActivity
 import ua.palamarenko.cozyandroid2.base_fragment.navigation.Navigator
-import ua.palamarenko.cozyandroid2.image_picker.ImagePickPopup
-import ua.palamarenko.cozyandroid2.image_picker.ImagePickPopupStrings
 import ua.palamarenko.cozyandroid2.image_picker.ImagePicker
 import ua.palamarenko.cozyandroid2.image_picker.ImagePickerRequest
 import ua.palamarenko.cozyandroid2.tools.click
-import java.io.File
 
 
 abstract class CozyFragment<T : CozyViewModel> : CozyBaseFragment<T>(), BackPress {
@@ -67,6 +66,17 @@ abstract class CozyFragment<T : CozyViewModel> : CozyBaseFragment<T>(), BackPres
         activity?.apply {
             CozyLibrarySettings.customListener?.observeCustomTasks(this, id, data, bundle)
         }
+    }
+
+
+    private fun openLink(link : String){
+      val formattedLink = if (!link.startsWith("http://") && !link.startsWith("https://")){
+          "http://$link";
+        }else{
+            link
+        }
+        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(formattedLink))
+        startActivity(browserIntent)
     }
 
 

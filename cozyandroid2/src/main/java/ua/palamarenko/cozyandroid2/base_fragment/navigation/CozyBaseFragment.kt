@@ -176,7 +176,7 @@ abstract class CozyBaseFragment<T : CozyBaseViewModel> : Fragment() {
         val typeObject = arguments?.getString(key)
         var value = if (typeObject != null) Gson().fromJson(typeObject, T::class.java) else null
 
-        if(value != null && fromActivity){
+        if(value == null && fromActivity){
             val json = activity?.intent?.getStringExtra(key)
             value = if (json != null) Gson().fromJson(json, T::class.java) else null
 
