@@ -60,7 +60,7 @@ class PreferencesProvider {
 
         fun <T> getObject(key: String, cl: Class<T>): T? {
             val st = manager.getString(key, "")
-            if (st.isEmpty()) {
+            if (st.isNullOrEmpty()) {
                 return null
             }
             return Gson().fromJson(st, cl)

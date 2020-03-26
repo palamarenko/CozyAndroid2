@@ -1,26 +1,27 @@
 package ua.palamarenko.cozyandroid
 
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
-import android.view.View
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.cell_test.view.*
-import kotlinx.android.synthetic.main.cell_test_sliding.view.*
-import ua.palamarenko.cozyandroid2.CozyCell
 import ua.palamarenko.cozyandroid2.CozyLibrary
-import ua.palamarenko.cozyandroid2.SlidingCozyCell
 import ua.palamarenko.cozyandroid2.base_activity.nav_bar_activity.BackClickStrategy
 import ua.palamarenko.cozyandroid2.base_activity.nav_bar_activity.NavBarActivity
 import ua.palamarenko.cozyandroid2.base_activity.nav_bar_activity.NavigationActivityItem
+import ua.palamarenko.cozyandroid2.base_fragment.navigation.ReflectionUtils
+import ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks.ActivityResultResponse
 import ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks.CozyFragment
 import ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks.EmptyViewModel
-import ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks.NAVIGATE
 import ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks.PICK_IMAGE
 import ua.palamarenko.cozyandroid2.cozy_view.TitleItem
 import ua.palamarenko.cozyandroid2.image_picker.ImagePickerRequest
 import ua.palamarenko.cozyandroid2.tools.*
+import java.lang.reflect.Type
 
 
 class MainActivity : NavBarActivity<EmptyViewModel>() {
@@ -45,7 +46,7 @@ class MainActivity : NavBarActivity<EmptyViewModel>() {
             add(
                 NavigationActivityItem(
                     2, R.drawable.ic_important2, R.drawable.ic_important,
-                    TitleItem("Срака", "байрака"), FragmenB()
+                    TitleItem("Срака", "байрака"), FragmenC()
                 )
             )
         }
@@ -61,12 +62,6 @@ class FragmenA : CozyFragment<EmptyViewModel>() {
     override fun onStartScreen() {
         super.onStartScreen()
 
-        tvClick.text = "sacsdcsad"
-            .makeCharSequence(SPAN.BOLD)
-            .setClick(Color.RED) {
-                LOG_EVENT("HELLO", "CLIcK")
-            }
-
         tvClick.movementMethod = LinkMovementMethod.getInstance();
         tvClick.highlightColor = Color.TRANSPARENT;
 
@@ -79,6 +74,9 @@ class FragmenA : CozyFragment<EmptyViewModel>() {
     }
 }
 
+
+class TestData(val data : String)
+
 class FragmenC : CozyFragment<EmptyViewModel>() {
 
     override fun onBackPress(): Boolean {
@@ -90,45 +88,16 @@ class FragmenC : CozyFragment<EmptyViewModel>() {
 
     override fun onStartScreen() {
         super.onStartScreen()
-
     }
+
+
+
+
+
 }
 
 
-class FragmenB : CozyFragment<EmptyViewModel>() {
 
-    override val layout = R.layout.fragment_b
-
-    override fun onStartScreen() {
-        super.onStartScreen()
-
-
-    }
-
-}
-
-class TestCell(override val data: String) : SlidingCozyCell() {
-    override val slidingLayout = R.layout.cell_test_sliding
-
-    override val layout = R.layout.cell_test
-
-    override fun bind(view: View) {
-
-
-        if (data == "1") {
-            startSliding(view)
-        } else {
-            stopSliding(view)
-        }
-
-
-
-        view.text.text = data
-        view.btTest.click {
-            LOG_EVENT("HELLO", "CLICK")
-        }
-    }
-}
 
 
 

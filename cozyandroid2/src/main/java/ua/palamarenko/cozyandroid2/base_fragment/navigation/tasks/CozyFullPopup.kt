@@ -176,7 +176,7 @@ abstract class CozyBottomSheets<T : CozyViewModel> : CozyFullPopup<T>() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         if (dialog != null && dialog?.window != null) {
-            dialog!!.window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            dialog!!.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         }
         v = inflater.inflate(R.layout.popup_bottom_sheet, container, false)
         val frameLayout = v.findViewById<FrameLayout>(R.id.container)

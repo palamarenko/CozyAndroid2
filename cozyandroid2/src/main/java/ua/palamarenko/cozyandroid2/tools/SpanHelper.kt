@@ -61,7 +61,7 @@ fun CharSequence.setClick(color: Int? = null, click: (() -> Unit)): CharSequence
     val st = SpannableString(this)
 
     val clickableSpan: ClickableSpan = object : ClickableSpan() {
-        override fun onClick(textView: View?) {
+        override fun onClick(textView: View) {
             click.invoke()
         }
 
@@ -72,7 +72,7 @@ fun CharSequence.setClick(color: Int? = null, click: (() -> Unit)): CharSequence
             }
         }
     }
-    st.setSpan(clickableSpan, 0, this.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
+    st.setSpan(clickableSpan, 0, this.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
     return st
 }
 

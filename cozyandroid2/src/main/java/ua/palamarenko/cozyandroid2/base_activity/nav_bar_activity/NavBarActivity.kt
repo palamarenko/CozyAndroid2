@@ -2,6 +2,7 @@ package ua.palamarenko.cozyandroid2.base_activity.nav_bar_activity
 
 import android.os.Bundle
 import android.os.Handler
+import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import kotlinx.android.synthetic.main.activity_nav_bar.*
@@ -32,13 +33,27 @@ abstract class NavBarActivity<T : CozyViewModel> : CozyActivity<T>() {
     }
 
 
+
+    open fun getMainFrame() : FrameLayout{
+        return flFragments
+    }
+    open fun getNavigationView(): CozyNavigateView {
+        return vNavigation
+    }
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_nav_bar)
-        this.frameLayout = flFragments
+        init()
+
+    }
+
+    fun init(){
+        this.frameLayout = getMainFrame()
         this.navigator =
-            NavBarNavigator(R.id.flFragments, supportFragmentManager, vNavigation, items)
-        vNavigation.initView(items.map {
+            NavBarNavigator(R.id.flFragments, supportFragmentManager, getNavigationView(), items)
+        getNavigationView().initView(items.map {
             NavigationItem(
                 it.id,
                 it.iconSelect,
@@ -48,15 +63,13 @@ abstract class NavBarActivity<T : CozyViewModel> : CozyActivity<T>() {
         })
 
 
-        vNavigation.listnener = { item ->
+        getNavigationView().listnener = { item ->
             task(NAVIGATE, items.find { it.id == item.id }!!.choiceFragment)
         }
-        vNavigation.setItem(true, items.first().id)
+        getNavigationView().setItem(true, items.first().id)
     }
 
-    fun getNavigationView(): CozyNavigateView {
-        return vNavigation
-    }
+
 
     override fun onBackPressed(fragment: Class<*>?) {
         when (backClickStrategy) {
@@ -115,7 +128,7 @@ abstract class NavBarActivity<T : CozyViewModel> : CozyActivity<T>() {
                 if (navigator.getCurrentFragment() != null &&
                     navigator.getCurrentFragment()!!::class.java.simpleName == it.choiceFragment::class.java.simpleName
                 ) {
-                    vNavigation.setItem(false, it.id)
+                    getNavigationView().setItem(false, it.id)
                 }
             }
         }, 100)

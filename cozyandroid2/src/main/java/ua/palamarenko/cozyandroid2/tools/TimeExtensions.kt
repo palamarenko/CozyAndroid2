@@ -6,7 +6,7 @@ import java.util.*
 fun Long.formatDate(
     format: String = "dd-MM-yyyy HH:mm:ss",
     locale: Locale = Locale.US,
-    convertFromLocal: Boolean = true
+    convertFromLocal: Boolean
 ): String {
     val formatter = SimpleDateFormat(format, locale)
     if (convertFromLocal) {
