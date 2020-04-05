@@ -121,7 +121,7 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
     implementation 'com.tbruyelle.rxpermissions2:rxpermissions:0.9.5@aar'
     implementation "com.google.dagger:dagger:$daggerVersion"
-    kapt 'androidx.room:room-compiler:2.2.4'
+    kapt 'androidx.room:room-compiler:2.2.5'
     kapt "com.google.dagger:dagger-compiler:$daggerVersion"
 }
 
