@@ -22,7 +22,7 @@ ext {
     siteUrl = 'https://github.com/palamarenko/CozyAndroid2'
     gitUrl = 'https://github.com/palamarenko/CozyAndroid2'
 
-    libraryVersion = '0.4.81'
+    libraryVersion = '0.4.87'
 
     developerId = 'lissf'
     developerName = 'Andrey Palamarenko'
@@ -100,9 +100,9 @@ dependencies {
     api "com.squareup.okhttp3:logging-interceptor:$okHttpVersion"
 
     // data base
-    api 'androidx.room:room-rxjava2:2.2.4'
-    api 'androidx.room:room-runtime:2.2.4'
-    api 'androidx.room:room-testing:2.2.4'
+    api 'androidx.room:room-rxjava2:2.2.5'
+    api 'androidx.room:room-runtime:2.2.5'
+    api 'androidx.room:room-testing:2.2.5'
 
     // rx java
     api 'io.reactivex.rxjava2:rxjava:2.2.9'

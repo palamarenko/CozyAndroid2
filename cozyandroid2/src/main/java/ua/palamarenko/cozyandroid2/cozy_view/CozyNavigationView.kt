@@ -28,7 +28,6 @@ class CozyNavigateView : FrameLayout {
 
     lateinit var view: LinearLayout
 
-
     private var itemList = ArrayList<NavItemWithView>()
     private var lastItem: NavItemWithView? = null
     var listnener: (NavigationItem) -> Unit = {}
@@ -40,8 +39,6 @@ class CozyNavigateView : FrameLayout {
 
     fun initView(list: List<NavigationItem>) {
         itemList.clear()
-
-
         view = LinearLayout(context)
         view.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
 
@@ -66,6 +63,15 @@ class CozyNavigateView : FrameLayout {
             itemList.add(NavItemWithView(it, itemView))
         }
         addView(view)
+    }
+
+    fun setIconSize(dpSize : Int){
+        itemList.forEach {
+           val lp =  it.view.ivIcon.layoutParams as LinearLayout.LayoutParams
+            lp.height = dpToPx(dpSize.toFloat())
+            lp.width = dpToPx(dpSize.toFloat())
+            it.view.ivIcon.layoutParams = lp
+        }
     }
 
 

@@ -28,31 +28,35 @@ abstract class NavBarActivity<T : CozyViewModel> : CozyActivity<T>() {
     abstract val items: List<NavigationActivityItem>
 
 
-    fun setBackClickStrategy(strategy : BackClickStrategy){
+    fun setBackClickStrategy(strategy: BackClickStrategy) {
         backClickStrategy = strategy
     }
 
 
-
-    open fun getMainFrame() : FrameLayout{
+    open fun getMainFrame(): FrameLayout {
         return flFragments
     }
+
     open fun getNavigationView(): CozyNavigateView {
         return vNavigation
+    }
+
+    open fun getActivityView(): Int {
+        return R.layout.activity_nav_bar
     }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_nav_bar)
+        setContentView(getActivityView())
         init()
 
     }
 
-    fun init(){
+    fun init() {
         this.frameLayout = getMainFrame()
         this.navigator =
-            NavBarNavigator(R.id.flFragments, supportFragmentManager, getNavigationView(), items)
+            NavBarNavigator(getMainFrame().id, supportFragmentManager, getNavigationView(), items)
         getNavigationView().initView(items.map {
             NavigationItem(
                 it.id,
@@ -68,7 +72,6 @@ abstract class NavBarActivity<T : CozyViewModel> : CozyActivity<T>() {
         }
         getNavigationView().setItem(true, items.first().id)
     }
-
 
 
     override fun onBackPressed(fragment: Class<*>?) {
@@ -89,10 +92,10 @@ abstract class NavBarActivity<T : CozyViewModel> : CozyActivity<T>() {
         }
 
         val currentFragment = navigator.fragmentManager.fragments.lastOrNull()
-        val name = if(currentFragment!=null)currentFragment::class.java.simpleName else ""
+        val name = if (currentFragment != null) currentFragment::class.java.simpleName else ""
 
 
-       val choiceItem =  items.find {it.choiceFragment::class.java.simpleName == name }
+        val choiceItem = items.find { it.choiceFragment::class.java.simpleName == name }
 
 
         when {
@@ -109,7 +112,7 @@ abstract class NavBarActivity<T : CozyViewModel> : CozyActivity<T>() {
             choiceItem.defaultItem -> {
                 finish()
             }
-            !choiceItem.defaultItem ->{
+            !choiceItem.defaultItem -> {
                 for (i in 0 until navigator.fragmentManager.backStackEntryCount - 1) {
                     navigator.fragmentManager.popBackStack()
                 }
@@ -142,7 +145,7 @@ class NavigationActivityItem(
     val title: TitleItem? = null,
     val choiceFragment: CozyFragment<*>,
     vararg val grooupFragmens: Class<CozyFragment<*>>,
-    val defaultItem : Boolean = false
+    val defaultItem: Boolean = false
 )
 
 

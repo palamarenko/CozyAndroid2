@@ -3,6 +3,7 @@ package ua.palamarenko.cozyandroid2.tools
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.widget.ImageView
+import com.squareup.picasso.MemoryPolicy
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Transformation
 import java.io.File
@@ -27,7 +28,8 @@ fun ImageView.load(
     transformation: Transformation? = null,
     viewSize: Int? = null,
     errorIcon : Any? = null,
-    placeholder: Any? = null) {
+    placeholder: Any? = null,
+    policy : MemoryPolicy? = null) {
     if (url.isNullOrEmpty()) {
 
         if(errorIcon!=null){
@@ -55,7 +57,9 @@ fun ImageView.load(
             if(placeholder is Int) pick.placeholder(placeholder)
             if(placeholder is Drawable) pick.placeholder(placeholder)
         }
-
+        if(policy!=null){
+            pick.memoryPolicy(policy)
+        }
         pick.into(this)
     }
 }
