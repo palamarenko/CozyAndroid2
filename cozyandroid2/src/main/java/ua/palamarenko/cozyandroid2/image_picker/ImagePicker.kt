@@ -106,7 +106,7 @@ class ImagePickPopup(val cozyFragment: CozyFragment<*>, val strings : ImagePickP
 }
 
 
-class ImagePickPopupStrings(
+open class ImagePickPopupStrings(
     var title: Any? = null,
     var cameraTitle: Any? = null,
     var cameraSubTitle: Any? = null,
