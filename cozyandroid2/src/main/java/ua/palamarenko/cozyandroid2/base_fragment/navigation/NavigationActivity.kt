@@ -13,7 +13,6 @@ import java.lang.Exception
 import androidx.fragment.app.FragmentTransaction
 import ua.palamarenko.cozyandroid2.R
 import ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks.CozyFragment
-import ua.palamarenko.cozyandroid2.tools.LOG_EVENT
 
 
 const val FRAGMENT_TAG = "FRAGMENT_TAG"
