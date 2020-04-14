@@ -12,16 +12,20 @@ import ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks.convertAnyToTi
 import ua.palamarenko.cozyandroid2.tools.click
 import java.io.File
 
-class ImagePickerRequest(val strings : ImagePickPopupStrings = ImagePickPopupStrings(),val callback: (File) -> Unit)
+
+enum class CROP_MODE {NONE, AVATAR, CUSTOM }
+
+class ImagePickerRequest( val strings : ImagePickPopupStrings = ImagePickPopupStrings(), val callback: (File) -> Unit,val cropMode : CROP_MODE = CROP_MODE.AVATAR)
 
 
 object ImagePicker {
 
-    fun pickImage(cozyFragment: CozyFragment<*>, strings : ImagePickPopupStrings = ImagePickPopupStrings(),callback: (File) -> Unit) {
+    fun pickImage(cozyFragment: CozyFragment<*>, strings : ImagePickPopupStrings = ImagePickPopupStrings(),callback: (File) -> Unit,cropMode : CROP_MODE) {
         ImagePickPopup(
             cozyFragment = cozyFragment,
             strings = strings,
-            callback =  callback).show(cozyFragment.fragmentManager)
+            callback =  callback,
+            cropMode = cropMode).show(cozyFragment.fragmentManager)
     }
 
 
@@ -29,7 +33,8 @@ object ImagePicker {
 
 
 class ImagePickPopup(val cozyFragment: CozyFragment<*>, val strings : ImagePickPopupStrings,
-                     val callback: (File) -> Unit) :
+                     val callback: (File) -> Unit,
+                     val cropMode : CROP_MODE) :
     CozyBasePopup<EmptyViewModel>() {
 
     override val layout = R.layout.popup_pick_image
@@ -78,25 +83,35 @@ class ImagePickPopup(val cozyFragment: CozyFragment<*>, val strings : ImagePickP
         }
 
         llCamera.click(false) {
-            ImagePicker.Companion.with(cozyFragment)
-                .crop(1f, 1f)
+           val picker =  ImagePicker.Companion.with(cozyFragment)
                 .cameraOnly()
                 .compress(1024)
                 .maxResultSize(1080, 1080)
-                .start(cozyFragment.RESULT_ACTIVITY_CODE)
+
+            when(cropMode){
+                CROP_MODE.AVATAR -> picker.crop(1f,1f)
+                CROP_MODE.CUSTOM -> picker.crop()
+            }
+
+
+            picker.start(cozyFragment.RESULT_ACTIVITY_CODE)
 
             dismissAllowingStateLoss()
         }
 
 
         llGallery.click(false) {
-            ImagePicker.Companion.with(cozyFragment)
+            val picker = ImagePicker.Companion.with(cozyFragment)
                 .galleryOnly()
-
-                .crop(1f, 1f)
                 .compress(1024)
                 .maxResultSize(1080, 1080)
-                .start(cozyFragment.RESULT_ACTIVITY_CODE)
+
+            when(cropMode){
+                CROP_MODE.AVATAR -> picker.crop(1f,1f)
+                CROP_MODE.CUSTOM -> picker.crop()
+            }
+
+            picker.start(cozyFragment.RESULT_ACTIVITY_CODE)
 
             dismissAllowingStateLoss()
         }

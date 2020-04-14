@@ -64,7 +64,8 @@ abstract class CozyFragment<T : CozyViewModel> : CozyBaseFragment<T>(), BackPres
             PICK_IMAGE -> ImagePicker.pickImage(
                 this,
                 (data as ImagePickerRequest).strings,
-                data.callback
+                data.callback,
+                data.cropMode
             )
             else -> observeCustomTasks(id, data, bundle)
         }
