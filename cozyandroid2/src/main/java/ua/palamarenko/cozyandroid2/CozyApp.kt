@@ -23,7 +23,6 @@ object CozyLibrarySettings {
         customListener = listener
         return this
     }
-
 }
 
 abstract class CustomTasksListener {
