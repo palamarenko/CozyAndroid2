@@ -2,7 +2,6 @@ package ua.palamarenko.cozyandroid2
 
 import android.content.Context
 import android.graphics.Canvas
-import android.os.Handler
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
@@ -14,7 +13,6 @@ import kotlinx.android.synthetic.main.view_recycler.view.*
 import ua.palamarenko.cozyandroid2.recycler.ButtonSwipeCallBack
 import ua.palamarenko.cozyandroid2.recycler.CozyDiffCallBack
 import ua.palamarenko.cozyandroid2.tools.dpToPx
-import java.lang.Exception
 
 
 fun RecyclerView.setCell(list: List<CozyCell>, layoutManager: RecyclerView.LayoutManager? = null) {
@@ -388,6 +386,16 @@ abstract class CozyCell {
     abstract val data: Any
     abstract val layout: Int
     abstract fun bind(view: View)
+
+    var identifier: Long? = null
+
+    open fun getIdentifier(): Long {
+        if (identifier != null) {
+            return identifier!!
+        }
+
+        return data.hashCode().toLong()
+    }
 
     open fun getViewBuilder(): ViewBuilder {
         return object : ViewBuilder(layout) {

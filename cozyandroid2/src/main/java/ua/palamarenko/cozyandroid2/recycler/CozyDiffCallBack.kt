@@ -15,7 +15,7 @@ class CozyDiffCallBack(
     override fun getNewListSize(): Int = newList.size
 
     override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        return comparator.isSameId(oldList[oldItemPosition].data,newList[newItemPosition].data)
+        return comparator.isSameId(oldList[oldItemPosition].getIdentifier(),newList[newItemPosition].getIdentifier())
     }
 
     override fun areContentsTheSame(oldPosition: Int, newPosition: Int): Boolean {
