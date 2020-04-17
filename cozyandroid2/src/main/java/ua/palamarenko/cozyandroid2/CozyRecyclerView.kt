@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Canvas
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
@@ -14,6 +15,7 @@ import ua.palamarenko.cozyandroid2.recycler.ButtonSwipeCallBack
 import ua.palamarenko.cozyandroid2.recycler.CozyDiffCallBack
 import ua.palamarenko.cozyandroid2.recycler.CozyRecyclerAdapter
 import ua.palamarenko.cozyandroid2.recycler.DragAndDropCallbackListener
+import ua.palamarenko.cozyandroid2.tools.LOG_EVENT
 import ua.palamarenko.cozyandroid2.tools.dpToPx
 
 
@@ -106,10 +108,16 @@ class CozyRecyclerView : FrameLayout {
         view.progress.visibility = View.VISIBLE
     }
 
-    fun addDragAndDrop(){
+    fun addDragAndDrop(endListener : () -> Unit = {}){
         val callback: ItemTouchHelper.Callback = DragAndDropCallbackListener(adapter,true)
         val touchHelper = ItemTouchHelper(callback)
         touchHelper.attachToRecyclerView(getRecyclerView())
+        getRecyclerView().setOnTouchListener { v, event ->
+            if(MotionEvent.ACTION_UP == event.action || MotionEvent.ACTION_CANCEL == event.action){
+                endListener.invoke()
+            }
+            return@setOnTouchListener false
+        }
     }
 
 

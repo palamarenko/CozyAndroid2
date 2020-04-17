@@ -12,7 +12,7 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 class CozyRecyclerAdapter() : RecyclerView.Adapter<CozyViewHolder<CozyCell>>(), DragAndDropCallbackListener.Listener {
-    private var list = ArrayList<CozyCell>()
+    var list = ArrayList<CozyCell>()
     private var listViewBuilder = ArrayList<ViewBuilder>()
 
     override fun onCreateViewHolder(
