@@ -106,13 +106,10 @@ class CozyRecyclerView : FrameLayout {
         view.progress.visibility = View.VISIBLE
     }
 
-    fun addDragAndDrop(longTap : Boolean = false){
-        val callback: ItemTouchHelper.Callback = DragAndDropCallbackListener(adapter,longTap)
+    fun addDragAndDrop(){
+        val callback: ItemTouchHelper.Callback = DragAndDropCallbackListener(adapter,true)
         val touchHelper = ItemTouchHelper(callback)
         touchHelper.attachToRecyclerView(getRecyclerView())
-        adapter.startDragListener = {
-            touchHelper.startDrag(getRecyclerView().findViewHolderForAdapterPosition(it)!!)
-        }
     }
 
 
@@ -320,8 +317,6 @@ abstract class CozyCell {
     abstract val layout: Int
     abstract fun bind(view: View)
 
-
-    var dragAndDropTrigger : () -> Unit = {}
     var position : Int = 0
     var identifier: Long? = null
 

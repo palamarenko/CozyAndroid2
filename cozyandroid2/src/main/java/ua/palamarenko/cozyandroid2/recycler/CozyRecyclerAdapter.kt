@@ -12,8 +12,6 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 class CozyRecyclerAdapter() : RecyclerView.Adapter<CozyViewHolder<CozyCell>>(), DragAndDropCallbackListener.Listener {
-    var startDragListener : (Int) -> Unit = {}
-
     private var list = ArrayList<CozyCell>()
     private var listViewBuilder = ArrayList<ViewBuilder>()
 
@@ -33,9 +31,6 @@ class CozyRecyclerAdapter() : RecyclerView.Adapter<CozyViewHolder<CozyCell>>(), 
     }
 
     override fun onBindViewHolder(holder: CozyViewHolder<CozyCell>, position: Int) {
-        list[position].dragAndDropTrigger = {
-            startDragListener.invoke(position)
-        }
         list[position].position = position
         list[position].bind(holder.itemView)
     }
