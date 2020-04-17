@@ -12,6 +12,8 @@ import androidx.recyclerview.widget.*
 import kotlinx.android.synthetic.main.view_recycler.view.*
 import ua.palamarenko.cozyandroid2.recycler.ButtonSwipeCallBack
 import ua.palamarenko.cozyandroid2.recycler.CozyDiffCallBack
+import ua.palamarenko.cozyandroid2.recycler.CozyRecyclerAdapter
+import ua.palamarenko.cozyandroid2.recycler.DragAndDropCallbackListener
 import ua.palamarenko.cozyandroid2.tools.dpToPx
 
 
@@ -20,7 +22,7 @@ fun RecyclerView.setCell(list: List<CozyCell>, layoutManager: RecyclerView.Layou
     if (layoutManager != null) {
         this.layoutManager = layoutManager
     }
-    val adapter = CozyRecyclerView.CozyRecyclerAdapter()
+    val adapter = CozyRecyclerAdapter()
     val comparatorItem: CompareItem = object : CompareItem {}
 
     this.adapter = adapter
@@ -102,6 +104,15 @@ class CozyRecyclerView : FrameLayout {
 
     fun needProgress() {
         view.progress.visibility = View.VISIBLE
+    }
+
+    fun addDragAndDrop(longTap : Boolean = false){
+        val callback: ItemTouchHelper.Callback = DragAndDropCallbackListener(adapter,longTap)
+        val touchHelper = ItemTouchHelper(callback)
+        touchHelper.attachToRecyclerView(getRecyclerView())
+        adapter.startDragListener = {
+            touchHelper.startDrag(getRecyclerView().findViewHolderForAdapterPosition(it)!!)
+        }
     }
 
 
@@ -291,84 +302,6 @@ class CozyRecyclerView : FrameLayout {
         view.flPlaceHolder.removeAllViews()
     }
 
-
-    class CozyRecyclerAdapter() : RecyclerView.Adapter<CozyViewHolder<CozyCell>>() {
-
-
-        private var list = ArrayList<CozyCell>()
-        private var listViewBuilder = ArrayList<ViewBuilder>()
-
-        override fun onCreateViewHolder(
-            parent: ViewGroup,
-            viewType: Int
-        ): CozyViewHolder<CozyCell> {
-            return CozyViewHolder(
-                listViewBuilder.find { it.viewType == viewType }!!.buildView(
-                    parent
-                )
-            )
-        }
-
-        override fun getItemCount(): Int {
-            return list.size
-        }
-
-        override fun onBindViewHolder(holder: CozyViewHolder<CozyCell>, position: Int) {
-            list[position].bind(holder.itemView)
-        }
-
-        override fun getItemId(position: Int): Long {
-            return list[position].data.hashCode().toLong()
-        }
-
-        override fun getItemViewType(position: Int): Int {
-            return list[position].getViewBuilder().viewType
-        }
-
-
-        fun updateList(data: List<CozyCell>, compareItem: CompareItem) {
-            listViewBuilder.clear()
-            data.forEach { cell ->
-                if (listViewBuilder.find { it.viewType == cell.getViewBuilder().viewType } == null) {
-                    listViewBuilder.add(cell.getViewBuilder())
-                }
-            }
-
-            val callBack = CozyDiffCallBack(list, data, compareItem)
-            val diffResult = DiffUtil.calculateDiff(callBack)
-            this.list.clear()
-            this.list.addAll(data)
-            diffResult.dispatchUpdatesTo(this)
-        }
-
-        fun addProgressCell(cell: CozyCell, compareItem: CompareItem) {
-            listViewBuilder.add(cell.getViewBuilder())
-            val newList = ArrayList<CozyCell>()
-            newList.addAll(list)
-            newList.add(cell)
-            val callBack = CozyDiffCallBack(list, newList, compareItem)
-            val diffResult = DiffUtil.calculateDiff(callBack)
-            this.list.clear()
-            this.list.addAll(newList)
-            diffResult.dispatchUpdatesTo(this)
-        }
-
-        fun removeProgressCell(compareItem: CompareItem) {
-            if(list[list.lastIndex] is DefaultProgressCell) {
-                val newList = ArrayList<CozyCell>()
-                newList.addAll(list)
-                newList.removeAt(newList.size - 1)
-                val callBack = CozyDiffCallBack(list, newList, compareItem)
-                val diffResult = DiffUtil.calculateDiff(callBack)
-                this.list.clear()
-                this.list.addAll(newList)
-                diffResult.dispatchUpdatesTo(this)
-            }
-        }
-
-    }
-
-    class CozyViewHolder<T : CozyCell>(itemView: View) : RecyclerView.ViewHolder(itemView)
 }
 
 interface CompareItem {
@@ -387,6 +320,8 @@ abstract class CozyCell {
     abstract val layout: Int
     abstract fun bind(view: View)
 
+
+    var position : Int = 0
     var identifier: Long? = null
 
     open fun getIdentifier(): Long {
@@ -413,50 +348,6 @@ abstract class CozyCell {
 
 abstract class ViewBuilder(val viewType: Int) {
     abstract fun buildView(parent: ViewGroup): View
-}
-
-
-abstract class SlidingCozyCell : CozyCell() {
-    abstract val slidingLayout: Int
-
-    override fun getViewBuilder(): ViewBuilder {
-        return object : ViewBuilder(layout + slidingLayout) {
-            override fun buildView(parent: ViewGroup): View {
-                val visibleView = LayoutInflater.from(parent.context).inflate(layout, parent, false)
-                val slidingView =
-                    LayoutInflater.from(parent.context).inflate(slidingLayout, parent, false)
-                visibleView.layoutParams = LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT
-                )
-                val mainView = LinearLayout(parent.context)
-                mainView.layoutParams = LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT
-                )
-                mainView.orientation = LinearLayout.HORIZONTAL
-                mainView.addView(visibleView)
-                val mainFraim = FrameLayout(parent.context)
-                mainFraim.tag = "SLIDING_VIEW"
-                mainFraim.layoutParams =
-                    LinearLayout.LayoutParams(dpToPx(1000f), LinearLayout.LayoutParams.MATCH_PARENT)
-                mainView.addView(mainFraim)
-                val firstFrame = FrameLayout(parent.context)
-                firstFrame.addView(slidingView)
-                mainFraim.addView(firstFrame)
-                return mainView
-            }
-        }
-    }
-
-    fun stopSliding(view: View) {
-        view.findViewWithTag<View>("SLIDING_VIEW").visibility = View.GONE
-
-    }
-
-    fun startSliding(view: View) {
-        view.findViewWithTag<View>("SLIDING_VIEW").visibility = View.VISIBLE
-    }
 }
 
 
