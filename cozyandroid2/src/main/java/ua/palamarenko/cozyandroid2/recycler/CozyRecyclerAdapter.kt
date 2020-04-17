@@ -33,6 +33,9 @@ class CozyRecyclerAdapter() : RecyclerView.Adapter<CozyViewHolder<CozyCell>>(), 
     }
 
     override fun onBindViewHolder(holder: CozyViewHolder<CozyCell>, position: Int) {
+        list[position].dragAndDropTrigger = {
+            startDragListener.invoke(position)
+        }
         list[position].position = position
         list[position].bind(holder.itemView)
     }

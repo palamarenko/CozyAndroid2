@@ -2,8 +2,7 @@ package ua.palamarenko.cozyandroid2.recycler
 
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
-import ua.palamarenko.cozyandroid2.CozyCell
-import ua.palamarenko.cozyandroid2.CozyRecyclerView
+
 
 class DragAndDropCallbackListener(val adapter: CozyRecyclerAdapter, val longTap : Boolean) : ItemTouchHelper.Callback() {
 
@@ -24,9 +23,7 @@ class DragAndDropCallbackListener(val adapter: CozyRecyclerAdapter, val longTap 
         return longTap
     }
 
-    override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-
-    }
+    override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {}
 
     override fun onMove(
         recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder,

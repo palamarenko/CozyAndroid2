@@ -321,6 +321,7 @@ abstract class CozyCell {
     abstract fun bind(view: View)
 
 
+    var dragAndDropTrigger : () -> Unit = {}
     var position : Int = 0
     var identifier: Long? = null
 
