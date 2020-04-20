@@ -1,4 +1,4 @@
-package ua.palamarenko.cozyandroid2.base_activity.nav_bar_activity
+package ua.palamarenko.cozyandroid2.base_activity
 
 import android.os.Bundle
 import android.os.Handler
@@ -8,7 +8,6 @@ import androidx.fragment.app.FragmentManager
 import kotlinx.android.synthetic.main.activity_nav_bar.*
 import ua.palamarenko.cozyandroid2.R
 import ua.palamarenko.cozyandroid2.base_fragment.navigation.BackPress
-import ua.palamarenko.cozyandroid2.base_fragment.navigation.FRAGMENT_TAG
 import ua.palamarenko.cozyandroid2.base_fragment.navigation.Navigator
 import ua.palamarenko.cozyandroid2.base_fragment.navigation.TRANSACTION_ANIMATION
 import ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks.CozyActivity
@@ -24,7 +23,8 @@ enum class BackClickStrategy { DEFAULT, GO_TO_FIRST }
 
 abstract class NavBarActivity<T : CozyViewModel> : CozyActivity<T>() {
 
-    private var backClickStrategy = BackClickStrategy.DEFAULT
+    private var backClickStrategy =
+        BackClickStrategy.DEFAULT
     abstract val items: List<NavigationActivityItem>
 
 
@@ -56,7 +56,12 @@ abstract class NavBarActivity<T : CozyViewModel> : CozyActivity<T>() {
     fun init() {
         this.frameLayout = getMainFrame()
         this.navigator =
-            NavBarNavigator(getMainFrame().id, supportFragmentManager, getNavigationView(), items)
+            NavBarNavigator(
+                getMainFrame().id,
+                supportFragmentManager,
+                getNavigationView(),
+                items
+            )
         getNavigationView().initView(items.map {
             NavigationItem(
                 it.id,
