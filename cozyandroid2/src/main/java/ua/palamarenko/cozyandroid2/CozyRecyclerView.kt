@@ -23,6 +23,8 @@ fun RecyclerView.setCell(list: List<CozyCell>, layoutManager: RecyclerView.Layou
 
     if (layoutManager != null) {
         this.layoutManager = layoutManager
+    }else{
+        this.layoutManager = LinearLayoutManager(this.context)
     }
     val adapter = CozyRecyclerAdapter()
     val comparatorItem: CompareItem = object : CompareItem {}
