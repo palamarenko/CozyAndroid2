@@ -36,6 +36,9 @@ fun ImageView.load(
         if (errorIcon != null) {
             if (errorIcon is Int) this.setImageResource(errorIcon)
             if (errorIcon is Drawable) this.setImageDrawable(errorIcon)
+        }else if(placeholder!=null){
+            if (placeholder is Int) this.setImageResource(placeholder)
+            if (placeholder is Drawable) this.setImageDrawable(placeholder)
         }
 
         return
