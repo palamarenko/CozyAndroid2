@@ -36,7 +36,7 @@ open class CozyViewModel : CozyBaseViewModel() {
     }
 
 
-    private fun deleteDatabaseFile(dbName: String) {
+    fun deleteDatabaseFile(dbName: String) {
         try {
             val databases =
                 File(CozyLibrarySettings.appContext!!.applicationInfo.dataDir + "/databases")
