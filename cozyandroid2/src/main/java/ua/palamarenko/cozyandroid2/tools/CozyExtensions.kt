@@ -66,6 +66,16 @@ fun CheckBox.listen(listener: (Boolean) -> Unit) {
 }
 
 
+fun getLocale() : Locale{
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N){
+        CozyLibrarySettings.appContext!!.resources.configuration.locales.get(0);
+    } else{
+        CozyLibrarySettings.appContext!!.resources.configuration.locale;
+    }
+}
+
+
+
 fun SearchView.listen(listener: (String) -> Unit, submitListener: ((String) -> Unit)? = null) {
 
     setOnQueryTextListener(object : SearchView.OnQueryTextListener {
