@@ -75,6 +75,10 @@ class PreferencesProvider {
             return manager.getBoolean(key, defValue)
         }
 
+        fun clear(){
+            manager.edit().clear().apply()
+        }
+
         fun readInt(key: String, defValue : Int = 0): Int {
             return manager.getInt(key, defValue)
         }
