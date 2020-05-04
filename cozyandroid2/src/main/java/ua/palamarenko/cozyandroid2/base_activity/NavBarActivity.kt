@@ -96,7 +96,8 @@ abstract class NavBarActivity<T : CozyViewModel> : CozyActivity<T>() {
             if (back) return
         }
 
-        val currentFragment = navigator.fragmentManager.fragments.lastOrNull()
+        val list = navigator.fragmentManager.fragments.filter {!it.tag.isNullOrBlank() }
+        val currentFragment = list.lastOrNull()
         val name = if (currentFragment != null) currentFragment::class.java.simpleName else ""
 
 
@@ -118,9 +119,7 @@ abstract class NavBarActivity<T : CozyViewModel> : CozyActivity<T>() {
                 finish()
             }
             !choiceItem.defaultItem -> {
-                for (i in 0 until navigator.fragmentManager.backStackEntryCount - 1) {
-                    navigator.fragmentManager.popBackStack()
-                }
+               task(NAVIGATE,items.find { it.defaultItem }!!.choiceFragment)
             }
 
         }
