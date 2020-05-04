@@ -27,9 +27,28 @@ import ua.palamarenko.cozyandroid2.base_fragment.navigation.Navigator
 abstract class CozyFullPopup<T : CozyViewModel> : CozyBasePopup<T>() {
 
 
+    private var callViewCreated: Boolean = false
+
+    open fun onRestartScreen() {}
+    open fun onStartScreen() {}
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         vm().tm.task.observe(this, Observer { observeTasks(it!!.id, it.data, it.rule) })
+
+        if (!callViewCreated) {
+            onStartScreen()
+        } else {
+            onRestartScreen()
+        }
+
+        callViewCreated = true
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        callViewCreated = false
+
     }
 
 
