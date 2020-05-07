@@ -20,7 +20,7 @@ abstract class CozyBaseFragment<T : CozyBaseViewModel> : Fragment() {
 
     private var fragmentView: View? = null
     private var callViewCreated: Boolean = false
-
+    private var callFirstOnResume: Boolean = false
 
 
     fun vm(): T {
@@ -32,8 +32,10 @@ abstract class CozyBaseFragment<T : CozyBaseViewModel> : Fragment() {
     }
 
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         if (fragmentView == null) {
             fragmentView = inflater.inflate(layout, null)
         }
@@ -43,8 +45,19 @@ abstract class CozyBaseFragment<T : CozyBaseViewModel> : Fragment() {
     override fun onDestroy() {
         super.onDestroy()
         callViewCreated = false
+        callFirstOnResume = false
 
     }
+
+    override fun onResume() {
+        super.onResume()
+        if (!callFirstOnResume) {
+            callFirstOnResume = true
+        } else {
+            onRestartScreen()
+        }
+    }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -65,7 +78,8 @@ abstract class CozyBaseFragment<T : CozyBaseViewModel> : Fragment() {
     protected fun hideKeyboard() {
         val view = activity!!.currentFocus
         if (view != null) {
-            val imm = activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            val imm =
+                activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             imm.hideSoftInputFromWindow(view.windowToken, 0)
         }
     }
@@ -96,7 +110,8 @@ abstract class CozyBaseFragment<T : CozyBaseViewModel> : Fragment() {
                         }
                     }, 300)
                 }
-                val imm = activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                val imm =
+                    activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                 imm.hideSoftInputFromWindow(view.windowToken, 0)
             } catch (e: Exception) {
             }
@@ -114,69 +129,74 @@ abstract class CozyBaseFragment<T : CozyBaseViewModel> : Fragment() {
 
 
     @SuppressLint("CheckResult")
-    fun permission(listener : (Boolean) -> Unit,vararg  permissions: String){
+    fun permission(listener: (Boolean) -> Unit, vararg permissions: String) {
         requestPermission().request(*permissions)
             .subscribe({
                 listener.invoke(it)
 
-            },{
+            }, {
                 listener.invoke(false)
             })
     }
 
     @Deprecated("")
-    open fun onViewCreated() {}
+    open fun onViewCreated() {
+    }
 
     open fun onStartScreen() {}
 
 
-    fun getArgumentString(key: String, fromActivity : Boolean = false): String {
-        var value =  arguments?.getString(key) ?: ""
+    fun getArgumentString(key: String, fromActivity: Boolean = false): String {
+        var value = arguments?.getString(key) ?: ""
 
-        if(value.isEmpty() && fromActivity){
-            value =  activity?.intent?.getStringExtra(key)?:""
+        if (value.isEmpty() && fromActivity) {
+            value = activity?.intent?.getStringExtra(key) ?: ""
         }
 
         return value
     }
-    fun getArgumentLong(key: String, fromActivity : Boolean = false): Long {
+
+    fun getArgumentLong(key: String, fromActivity: Boolean = false): Long {
         var value = arguments?.getLong(key) ?: 0
 
-        if(value == 0L && fromActivity){
-            value =  activity?.intent?.getLongExtra(key,0)?: 0
+        if (value == 0L && fromActivity) {
+            value = activity?.intent?.getLongExtra(key, 0) ?: 0
         }
         return value
     }
-    fun getArgumentDouble(key: String, fromActivity : Boolean = false): Double {
-        var value =  arguments?.getDouble(key) ?: 0.0
 
-        if(value == 0.0 && fromActivity){
-            value =  activity?.intent?.getDoubleExtra(key,0.0)?: 0.0
-        }
-        return value
-    }
-    fun getArgumentInt(key: String, fromActivity : Boolean = false): Int {
-        var value =  arguments?.getInt(key) ?: 0
+    fun getArgumentDouble(key: String, fromActivity: Boolean = false): Double {
+        var value = arguments?.getDouble(key) ?: 0.0
 
-        if(value == 0 && fromActivity){
-            value =  activity?.intent?.getIntExtra(key,0)?: 0
+        if (value == 0.0 && fromActivity) {
+            value = activity?.intent?.getDoubleExtra(key, 0.0) ?: 0.0
         }
         return value
     }
-    fun getArgumentBool(key: String, fromActivity : Boolean = false): Boolean {
+
+    fun getArgumentInt(key: String, fromActivity: Boolean = false): Int {
+        var value = arguments?.getInt(key) ?: 0
+
+        if (value == 0 && fromActivity) {
+            value = activity?.intent?.getIntExtra(key, 0) ?: 0
+        }
+        return value
+    }
+
+    fun getArgumentBool(key: String, fromActivity: Boolean = false): Boolean {
         var value = arguments?.getBoolean(key) ?: false
 
-        if(!value && fromActivity){
-            value =  activity?.intent?.getBooleanExtra(key,false)?: false
+        if (!value && fromActivity) {
+            value = activity?.intent?.getBooleanExtra(key, false) ?: false
         }
         return value
     }
 
-    inline fun <reified T> getArgumentObject(key: String, fromActivity : Boolean = false): T? {
+    inline fun <reified T> getArgumentObject(key: String, fromActivity: Boolean = false): T? {
         val typeObject = arguments?.getString(key)
         var value = if (typeObject != null) Gson().fromJson(typeObject, T::class.java) else null
 
-        if(value == null && fromActivity){
+        if (value == null && fromActivity) {
             val json = activity?.intent?.getStringExtra(key)
             value = if (json != null) Gson().fromJson(json, T::class.java) else null
 
@@ -196,7 +216,7 @@ abstract class CozyBaseFragment<T : CozyBaseViewModel> : Fragment() {
 
 }
 
-fun<B : CozyBaseViewModel,T : CozyBaseFragment<B>>  T.putString(key: String, value: String): T {
+fun <B : CozyBaseViewModel, T : CozyBaseFragment<B>> T.putString(key: String, value: String): T {
     if (arguments == null) {
         arguments = Bundle()
     }
@@ -204,7 +224,8 @@ fun<B : CozyBaseViewModel,T : CozyBaseFragment<B>>  T.putString(key: String, val
     arguments?.putString(key, value)
     return this
 }
-fun <B : CozyBaseViewModel,T : CozyBaseFragment<B>> T.putDouble(key: String, value: Double): T {
+
+fun <B : CozyBaseViewModel, T : CozyBaseFragment<B>> T.putDouble(key: String, value: Double): T {
     if (arguments == null) {
         arguments = Bundle()
     }
@@ -212,7 +233,8 @@ fun <B : CozyBaseViewModel,T : CozyBaseFragment<B>> T.putDouble(key: String, val
     arguments?.putDouble(key, value)
     return this
 }
-fun <B : CozyBaseViewModel,T : CozyBaseFragment<B>> T.putInt(key: String, value: Int): T {
+
+fun <B : CozyBaseViewModel, T : CozyBaseFragment<B>> T.putInt(key: String, value: Int): T {
     if (arguments == null) {
         arguments = Bundle()
     }
@@ -220,7 +242,8 @@ fun <B : CozyBaseViewModel,T : CozyBaseFragment<B>> T.putInt(key: String, value:
     arguments?.putInt(key, value)
     return this
 }
-fun <B : CozyBaseViewModel,T : CozyBaseFragment<B>> T.putLong(key: String, value: Long): T {
+
+fun <B : CozyBaseViewModel, T : CozyBaseFragment<B>> T.putLong(key: String, value: Long): T {
     if (arguments == null) {
         arguments = Bundle()
     }
@@ -228,7 +251,8 @@ fun <B : CozyBaseViewModel,T : CozyBaseFragment<B>> T.putLong(key: String, value
     arguments?.putLong(key, value)
     return this
 }
-fun <B : CozyBaseViewModel,T : CozyBaseFragment<B>> T.putBool(key: String, value: Boolean): T {
+
+fun <B : CozyBaseViewModel, T : CozyBaseFragment<B>> T.putBool(key: String, value: Boolean): T {
     if (arguments == null) {
         arguments = Bundle()
     }
@@ -236,7 +260,8 @@ fun <B : CozyBaseViewModel,T : CozyBaseFragment<B>> T.putBool(key: String, value
     arguments?.putBoolean(key, value)
     return this
 }
-fun <B : CozyBaseViewModel,T : CozyBaseFragment<B>> T.putObject(key: String, value: Any?): T {
+
+fun <B : CozyBaseViewModel, T : CozyBaseFragment<B>> T.putObject(key: String, value: Any?): T {
     if (arguments == null) {
         arguments = Bundle()
     }
