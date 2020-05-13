@@ -1,24 +1,25 @@
 package ua.palamarenko.cozyandroid2.image_picker
 
-import android.R.attr.data
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import androidx.annotation.NonNull
+import androidx.core.app.ActivityCompat.startActivityForResult
 import com.github.dhaval2404.imagepicker.ImagePicker
 import kotlinx.android.synthetic.main.popup_pick_image.*
 import pl.aprilapps.easyphotopicker.DefaultCallback
 import pl.aprilapps.easyphotopicker.EasyImage
 import pl.aprilapps.easyphotopicker.MediaFile
 import pl.aprilapps.easyphotopicker.MediaSource
-import ua.palamarenko.cozyandroid2.R
+import ua.palamarenko.cozyandroid2.CozyLibrarySettings
 import ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks.CozyBasePopup
 import ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks.CozyFragment
 import ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks.EmptyViewModel
 import ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks.convertAnyToTitle
-import ua.palamarenko.cozyandroid2.tools.LOG_EVENT
 import ua.palamarenko.cozyandroid2.tools.click
 import java.io.File
+import java.io.FileOutputStream
 
 
 enum class CROP_MODE { NONE, AVATAR, CUSTOM }
@@ -31,10 +32,37 @@ class PickSingleImageRequest(
 )
 
 class PickMultipleImageRequest(val callback: (List<File>) -> Unit)
-class PickFile()
+class PickFile( val callback: (File) -> Unit, val type : String = "*/*")
 
 
-object ImagePicker {
+object FilePicker {
+
+    fun Uri.convertUriToFile() : File {
+        val tmpFile = File.createTempFile("file", ".tmp")
+        val os = FileOutputStream(tmpFile)
+        val iss = CozyLibrarySettings.appContext!!.contentResolver.openInputStream(this)
+        iss?.copyTo(os)
+        os.flush()
+        iss?.close()
+        os.close()
+        return tmpFile
+    }
+
+
+    fun pickFile( cozyFragment: CozyFragment<*>, pickFile  : PickFile) : ((requestCode: Int, resultCode: Int, data: Intent?) -> Unit){
+        val intent = Intent(Intent.ACTION_GET_CONTENT)
+        intent.addCategory(Intent.CATEGORY_OPENABLE)
+        intent.type = pickFile.type
+        val i = Intent.createChooser(intent, "File")
+        cozyFragment.startActivityForResult(i, 99)
+
+        val activityResultCallBack: ((requestCode: Int, resultCode: Int, data: Intent?) -> Unit) =
+            { i: Int, i1: Int, intent: Intent? ->
+                pickFile.callback.invoke(File(intent?.data?.path?:""))
+            }
+
+       return activityResultCallBack
+    }
 
 
     fun pickMultipleImage(
