@@ -87,7 +87,7 @@ val text = "[\n" +
         "  { \"mask\": \"+213-##-###-####\", \"cc\": \"DZ\", \"name_en\": \"Algeria\", \"desc_en\": \"\", \"name_ru\": \"Алжир\", \"desc_ru\": \"\" },\n" +
         "  { \"mask\": \"+593-##-###-####\", \"cc\": \"EC\", \"name_en\": \"Ecuador \", \"desc_en\": \"mobile\", \"name_ru\": \"Эквадор \", \"desc_ru\": \"мобильные\" },\n" +
         "  { \"mask\": \"+593-#-###-####\", \"cc\": \"EC\", \"name_en\": \"Ecuador\", \"desc_en\": \"\", \"name_ru\": \"Эквадор\", \"desc_ru\": \"\" },\n" +
-        "  { \"mask\": \"+372-####-####\", \"cc\": \"EE\", \"name_en\": \"Estonia \", \"desc_en\": \"mobile\", \"name_ru\": \"Эстония \", \"desc_ru\": \"мобильные\" },\n" +
+        "  { \"mask\": \"+372-####-####\", \"cc\": \"EE\", \"name_en\": \"Estonia\", \"desc_en\": \"mobile\", \"name_ru\": \"Эстония \", \"desc_ru\": \"мобильные\" },\n" +
         "  { \"mask\": \"+372-###-####\", \"cc\": \"EE\", \"name_en\": \"Estonia\", \"desc_en\": \"\", \"name_ru\": \"Эстония\", \"desc_ru\": \"\" },\n" +
         "  { \"mask\": \"+20(###)###-####\", \"cc\": \"EG\", \"name_en\": \"Egypt\", \"desc_en\": \"\", \"name_ru\": \"Египет\", \"desc_ru\": \"\" },\n" +
         "  { \"mask\": \"+291-#-###-###\", \"cc\": \"ER\", \"name_en\": \"Eritrea\", \"desc_en\": \"\", \"name_ru\": \"Эритрея\", \"desc_ru\": \"\" },\n" +
@@ -104,7 +104,7 @@ val text = "[\n" +
         "  { \"mask\": \"+590(###)###-###\", \"cc\": \"FR\", \"name_en\": \"Guadeloupe\", \"desc_en\": \"\", \"name_ru\": \"Гваделупа\", \"desc_ru\": \"\" },\n" +
         "  { \"mask\": \"+241-#-##-##-##\", \"cc\": \"GA\", \"name_en\": \"Gabon\", \"desc_en\": \"\", \"name_ru\": \"Габон\", \"desc_ru\": \"\" },\n" +
         "  { \"mask\": \"+1(473)###-####\", \"cc\": \"GD\", \"name_en\": \"Grenada\", \"desc_en\": \"\", \"name_ru\": \"Гренада\", \"desc_ru\": \"\" },\n" +
-        "  { \"mask\": \"+995(###)###-###\", \"cc\": \"GE\", \"name_en\": \"Rep. of Georgia\", \"desc_en\": \"\", \"name_ru\": \"Грузия\", \"desc_ru\": \"\" },\n" +
+        "  { \"mask\": \"+995(###)###-###\", \"cc\": \"GE\", \"name_en\": \"Georgia\", \"desc_en\": \"\", \"name_ru\": \"Грузия\", \"desc_ru\": \"\" },\n" +
         "  { \"mask\": \"+594-#####-####\", \"cc\": \"GF\", \"name_en\": \"Guiana (French)\", \"desc_en\": \"\", \"name_ru\": \"Фр. Гвиана\", \"desc_ru\": \"\" },\n" +
         "  { \"mask\": \"+233(###)###-###\", \"cc\": \"GH\", \"name_en\": \"Ghana\", \"desc_en\": \"\", \"name_ru\": \"Гана\", \"desc_ru\": \"\" },\n" +
         "  { \"mask\": \"+350-###-#####\", \"cc\": \"GI\", \"name_en\": \"Gibraltar\", \"desc_en\": \"\", \"name_ru\": \"Гибралтар\", \"desc_ru\": \"\" },\n" +
