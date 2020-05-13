@@ -26,7 +26,7 @@ open class CozyActivity<T : CozyViewModel> : NavigateActivity() {
             TOAST -> showToast(data as String)
             START_ACTIVITY -> changeActivity(data, bundle)
             BACK_PRESS -> onBackPressed(data as? Class<*>)
-            CUSTOM_ACTION -> customAction(data as? ActivityCallBack)
+            CUSTOM_ACTION -> customAction(data as? CustomActionCallback)
             SHOW_POPUP -> showPopup(data, supportFragmentManager)
             FINISH_ACTIVITY -> finish()
             SHOW_SNACKBAR -> showSnackbar(findViewById(android.R.id.content), data as SnackbarPopup)
@@ -43,8 +43,8 @@ open class CozyActivity<T : CozyViewModel> : NavigateActivity() {
     }
 
 
-    open fun customAction(callBack: ActivityCallBack?) {
-        callBack?.listener?.invoke(this)
+    open fun customAction(callback: CustomActionCallback?) {
+        callback?.listener?.invoke(this)
     }
 
 

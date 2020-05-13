@@ -79,16 +79,16 @@ abstract class CozyFullPopup<T : CozyViewModel> : CozyBasePopup<T>() {
             DISMISS -> dismiss()
             FINISH_ACTIVITY -> activity?.finish()
             SHOW_POPUP -> showPopup(data,fragmentManager)
-            CUSTOM_ACTION -> customAction(data as? ActivityCallBack)
+            CUSTOM_ACTION -> customAction(data as? CustomActionCallback)
             SHOW_SNACKBAR -> view?.apply { showSnackbar(this, data as SnackbarPopup) }
             else -> observeCustomTasks(id,data,bundle)
         }
     }
 
 
-    open fun customAction(callBack: ActivityCallBack?) {
+    open fun customAction(callback: CustomActionCallback?) {
         if (activity != null && activity is CozyActivity<*>) {
-            callBack?.listener?.invoke(activity as CozyActivity<*>)
+            callback?.listener?.invoke(activity as CozyActivity<*>)
         }
     }
 

@@ -15,7 +15,7 @@ import java.io.File
 
 enum class CROP_MODE {NONE, AVATAR, CUSTOM }
 
-class ImagePickerRequest( val strings : ImagePickPopupStrings = ImagePickPopupStrings(), val callback: (File) -> Unit,val cropMode : CROP_MODE = CROP_MODE.AVATAR)
+class PickImageRequest( val strings : ImagePickPopupStrings = ImagePickPopupStrings(), val callback: (File) -> Unit,val cropMode : CROP_MODE = CROP_MODE.AVATAR)
 
 
 object ImagePicker {

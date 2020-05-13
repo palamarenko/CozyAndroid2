@@ -1,6 +1,5 @@
 package ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks
 
-import android.Manifest
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
@@ -14,11 +13,10 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
 import com.google.gson.Gson
-import com.google.gson.JsonSerializer
 import ua.palamarenko.cozyandroid2.CozyLibrarySettings
 import ua.palamarenko.cozyandroid2.base_fragment.navigation.*
 import ua.palamarenko.cozyandroid2.image_picker.ImagePicker
-import ua.palamarenko.cozyandroid2.image_picker.ImagePickerRequest
+import ua.palamarenko.cozyandroid2.image_picker.PickImageRequest
 import ua.palamarenko.cozyandroid2.tools.click
 
 
@@ -49,13 +47,13 @@ abstract class CozyFragment<T : CozyViewModel> : CozyBaseFragment<T>(), BackPres
             TOAST -> showToast(data as String)
             START_ACTIVITY -> changeActivity(data, bundle)
             BACK_PRESS -> onBackPress(data as? Class<*>)
-            CUSTOM_ACTION -> customAction(data as? ActivityCallBack)
+            CUSTOM_ACTION -> customAction(data as? CustomActionCallback)
             FINISH_ACTIVITY -> activity?.finish()
             SHOW_POPUP -> showPopup(data, fragmentManager)
-            START_ACTIVITY_FOR_RESAULT -> startResultActivityRout(data, bundle)
+            START_ACTIVITY_FOR_RESAULT -> startResultActivityResault(data, bundle)
             SET_RESULT -> setResult(data)
             SHOW_SNACKBAR -> view?.apply { showSnackbar(this, data as SnackbarPopup) }
-            REQUEST_PERMISSION -> checkPermission(data as PermissionModel)
+            REQUEST_PERMISSION -> checkPermission(data as RequestPermissionCallback)
             CLEAR_FRAGMENTS -> fragmentManager?.popBackStack(
                 null,
                 FragmentManager.POP_BACK_STACK_INCLUSIVE
@@ -63,7 +61,7 @@ abstract class CozyFragment<T : CozyViewModel> : CozyBaseFragment<T>(), BackPres
             OPEN_LINK -> openLink(data as String)
             PICK_IMAGE -> ImagePicker.pickImage(
                 this,
-                (data as ImagePickerRequest).strings,
+                (data as PickImageRequest).strings,
                 data.callback,
                 data.cropMode
             )
@@ -96,13 +94,13 @@ abstract class CozyFragment<T : CozyViewModel> : CozyBaseFragment<T>(), BackPres
         }
     }
 
-    private fun checkPermission(data: PermissionModel) {
+    private fun checkPermission(data: RequestPermissionCallback) {
         permission({ data.callBack.invoke(it) }, *data.permission)
     }
 
-    open fun customAction(callBack: ActivityCallBack?) {
+    open fun customAction(callback: CustomActionCallback?) {
         if (activity != null && activity is CozyActivity<*>) {
-            callBack?.listener?.invoke(activity as CozyActivity<*>)
+            callback?.listener?.invoke(activity as CozyActivity<*>)
         }
     }
 
@@ -125,13 +123,13 @@ abstract class CozyFragment<T : CozyViewModel> : CozyBaseFragment<T>(), BackPres
     }
 
 
-    open fun startResultActivityRout(data: Any, intentBundle: Bundle) {
-        if (data is ActivityResult) {
+    open fun startResultActivityResault(data: Any, intentBundle: Bundle) {
+        if (data is StartActivityCallback) {
             startResultActivity(data, intentBundle)
             return
         }
 
-        if (data is ActivityResultResponse<*>) {
+        if (data is StartActivityTypeCallback<*>) {
             startResultActivity(data, intentBundle)
             return
         }
@@ -139,7 +137,7 @@ abstract class CozyFragment<T : CozyViewModel> : CozyBaseFragment<T>(), BackPres
         throw IllegalStateException("Please use ActivityResult or ActivityResultResponse")
     }
 
-    open fun startResultActivity(data: ActivityResult, intentBundle: Bundle) {
+    open fun startResultActivity(data: StartActivityCallback, intentBundle: Bundle) {
         if (data.activity is Class<*>) {
             val intent = Intent(context, data.activity)
             intent.putExtras(intentBundle)
@@ -152,7 +150,7 @@ abstract class CozyFragment<T : CozyViewModel> : CozyBaseFragment<T>(), BackPres
 
 
     open fun <RESULT : Any> startResultActivity(
-        data: ActivityResultResponse<RESULT>,
+        data: StartActivityTypeCallback<RESULT>,
         intentBundle: Bundle
     ) {
 
@@ -232,9 +230,9 @@ abstract class CozyFragment<T : CozyViewModel> : CozyBaseFragment<T>(), BackPres
 }
 
 
-class PermissionModel(val permission: Array<String>, val callBack: (Boolean) -> Unit)
-class ActivityResult(val activity: Any, val callBack: (Intent) -> Unit)
-class ActivityResultResponse<T : Any>(val activity: Any, val callBack: (T) -> Unit)
+class RequestPermissionCallback(val permission: Array<String>, val callBack: (Boolean) -> Unit)
+class StartActivityCallback(val activity: Any, val callBack: (Intent) -> Unit)
+class StartActivityTypeCallback<T : Any>(val activity: Any, val callBack: (T) -> Unit)
 
 
-class ActivityCallBack(val listener: (CozyActivity<*>) -> Unit)
+class CustomActionCallback(val listener: (CozyActivity<*>) -> Unit)

@@ -10,6 +10,8 @@ tasks.withType(Javadoc).all {
 }
 
 ext {
+    user = 'palamarenko'
+    key = '11qq22ww'
     bintrayRepo = 'CozyAndroid'
     bintrayName = 'CozyAndroid'
 
@@ -22,7 +24,7 @@ ext {
     siteUrl = 'https://github.com/palamarenko/CozyAndroid2'
     gitUrl = 'https://github.com/palamarenko/CozyAndroid2'
 
-    libraryVersion = '0.4.95'
+    libraryVersion = '0.4.96'
 
     developerId = 'lissf'
     developerName = 'Andrey Palamarenko'
