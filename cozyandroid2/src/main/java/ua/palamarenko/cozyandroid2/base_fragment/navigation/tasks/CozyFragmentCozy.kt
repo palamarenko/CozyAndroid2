@@ -16,7 +16,9 @@ import com.google.gson.Gson
 import ua.palamarenko.cozyandroid2.CozyLibrarySettings
 import ua.palamarenko.cozyandroid2.base_fragment.navigation.*
 import ua.palamarenko.cozyandroid2.image_picker.ImagePicker
-import ua.palamarenko.cozyandroid2.image_picker.PickImageRequest
+import ua.palamarenko.cozyandroid2.image_picker.PickMultipleImageRequest
+import ua.palamarenko.cozyandroid2.image_picker.PickSingleImageRequest
+import ua.palamarenko.cozyandroid2.tools.LOG_EVENT
 import ua.palamarenko.cozyandroid2.tools.click
 
 
@@ -26,7 +28,10 @@ abstract class CozyFragment<T : CozyViewModel> : CozyBaseFragment<T>(), BackPres
     private val RESULT_KEY = "COZY_RESULT_KEY"
     private val COZY_RESULT_CLASS_NAME = "COZY_RESULT_CLASS_NAME"
     val RESULT_ACTIVITY_CODE = 99
-    var activityResultCallBack: ((Intent) -> Unit)? = null
+
+
+    var activityResultCallBack: ((requestCode: Int, resultCode: Int, data: Intent?) -> Unit)? = null
+
 
 
     override fun onCreateView(
@@ -59,14 +64,29 @@ abstract class CozyFragment<T : CozyViewModel> : CozyBaseFragment<T>(), BackPres
                 FragmentManager.POP_BACK_STACK_INCLUSIVE
             )
             OPEN_LINK -> openLink(data as String)
-            PICK_IMAGE -> ImagePicker.pickImage(
-                this,
-                (data as PickImageRequest).strings,
-                data.callback,
-                data.cropMode
-            )
+            PICK_FILE -> pickFile(data)
             else -> observeCustomTasks(id, data, bundle)
         }
+    }
+
+
+    private fun pickFile(data : Any){
+
+        when(data){
+            is PickSingleImageRequest ->{
+                ImagePicker.pickSingleImage(
+                    this,
+                    data.strings,
+                    data.callback,
+                    data.cropMode
+                )
+            }
+            is PickMultipleImageRequest ->{
+               activityResultCallBack =  ImagePicker.pickMultipleImage(this,data.callback)
+            }
+        }
+
+
     }
 
 
@@ -134,7 +154,6 @@ abstract class CozyFragment<T : CozyViewModel> : CozyBaseFragment<T>(), BackPres
             return
         }
 
-        throw IllegalStateException("Please use ActivityResult or ActivityResultResponse")
     }
 
     open fun startResultActivity(data: StartActivityCallback, intentBundle: Bundle) {
@@ -145,7 +164,9 @@ abstract class CozyFragment<T : CozyViewModel> : CozyBaseFragment<T>(), BackPres
         } else {
             startActivityForResult(data.activity as Intent, RESULT_ACTIVITY_CODE)
         }
-        activityResultCallBack = data.callBack
+        activityResultCallBack = { i: Int, i1: Int, intent: Intent? ->
+            data.callBack.invoke(intent!!)
+        }
     }
 
 
@@ -154,7 +175,6 @@ abstract class CozyFragment<T : CozyViewModel> : CozyBaseFragment<T>(), BackPres
         intentBundle: Bundle
     ) {
 
-
         if (data.activity is Class<*>) {
             val intent = Intent(context, data.activity)
             intent.putExtras(intentBundle)
@@ -162,10 +182,9 @@ abstract class CozyFragment<T : CozyViewModel> : CozyBaseFragment<T>(), BackPres
         } else {
             startActivityForResult(data.activity as Intent, RESULT_ACTIVITY_CODE)
         }
-        activityResultCallBack = {
-
-            val json = it.getStringExtra(RESULT_KEY)
-            val cl: Class<RESULT> = Class.forName(it.getStringExtra(COZY_RESULT_CLASS_NAME)!!) as Class<RESULT>
+        activityResultCallBack = { i: Int, i1: Int, intent: Intent? ->
+            val json = intent!!.getStringExtra(RESULT_KEY)
+            val cl: Class<RESULT> = Class.forName(intent.getStringExtra(COZY_RESULT_CLASS_NAME)!!) as Class<RESULT>
             val t = Gson().fromJson(json, cl)
             data.callBack.invoke(t)
         }
@@ -187,8 +206,8 @@ abstract class CozyFragment<T : CozyViewModel> : CozyBaseFragment<T>(), BackPres
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == RESULT_ACTIVITY_CODE && activityResultCallBack != null && data != null) {
-            activityResultCallBack!!.invoke(data)
+        if (activityResultCallBack != null && data != null) {
+            activityResultCallBack!!.invoke(requestCode,resultCode,data)
             activityResultCallBack = null
             return
         }
@@ -218,7 +237,6 @@ abstract class CozyFragment<T : CozyViewModel> : CozyBaseFragment<T>(), BackPres
 
 
     private fun getNavigator(): Navigator {
-
         try {
             return (activity as NavigateActivity).navigator
 

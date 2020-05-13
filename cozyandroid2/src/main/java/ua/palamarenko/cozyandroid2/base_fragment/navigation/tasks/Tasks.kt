@@ -15,5 +15,5 @@ const val START_ACTIVITY_FOR_RESAULT = 10
 const val SET_RESULT = 11
 const val SHOW_SNACKBAR = 12
 const val CLEAR_FRAGMENTS = 13
-const val PICK_IMAGE = 14
+const val PICK_FILE = 14
 const val OPEN_LINK = 15

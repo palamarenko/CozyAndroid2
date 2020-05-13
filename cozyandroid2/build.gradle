@@ -93,6 +93,7 @@ dependencies {
     api 'com.squareup.picasso:picasso:2.71828'
     api 'com.github.chrisbanes:PhotoView:2.3.0'
     api 'com.github.dhaval2404:imagepicker:1.6'
+    api 'com.github.jkwiecien:EasyImage:3.0.4'
 
     // okhttp retrofit
     api "com.squareup.retrofit2:retrofit-converters:$retrofit_version"
