@@ -5,7 +5,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import androidx.annotation.NonNull
-import androidx.core.app.ActivityCompat.startActivityForResult
 import com.github.dhaval2404.imagepicker.ImagePicker
 import kotlinx.android.synthetic.main.popup_pick_image.*
 import pl.aprilapps.easyphotopicker.DefaultCallback
@@ -32,7 +31,7 @@ class PickSingleImageRequest(
 )
 
 class PickMultipleImageRequest(val callback: (List<File>) -> Unit)
-class PickFile( val callback: (File) -> Unit, val type : String = "*/*")
+class PickFileRequest(val callback: (File) -> Unit, val type : String = "*/*")
 
 
 object FilePicker {
@@ -49,16 +48,16 @@ object FilePicker {
     }
 
 
-    fun pickFile( cozyFragment: CozyFragment<*>, pickFile  : PickFile) : ((requestCode: Int, resultCode: Int, data: Intent?) -> Unit){
+    fun pickFile(cozyFragment: CozyFragment<*>, pickFileRequest  : PickFileRequest) : ((requestCode: Int, resultCode: Int, data: Intent?) -> Unit){
         val intent = Intent(Intent.ACTION_GET_CONTENT)
         intent.addCategory(Intent.CATEGORY_OPENABLE)
-        intent.type = pickFile.type
+        intent.type = pickFileRequest.type
         val i = Intent.createChooser(intent, "File")
         cozyFragment.startActivityForResult(i, 99)
 
         val activityResultCallBack: ((requestCode: Int, resultCode: Int, data: Intent?) -> Unit) =
             { i: Int, i1: Int, intent: Intent? ->
-                pickFile.callback.invoke(File(intent?.data?.path?:""))
+                pickFileRequest.callback.invoke(File(intent?.data?.path?:""))
             }
 
        return activityResultCallBack

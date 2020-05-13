@@ -16,6 +16,7 @@ import com.google.gson.Gson
 import ua.palamarenko.cozyandroid2.CozyLibrarySettings
 import ua.palamarenko.cozyandroid2.base_fragment.navigation.*
 import ua.palamarenko.cozyandroid2.image_picker.FilePicker
+import ua.palamarenko.cozyandroid2.image_picker.PickFileRequest
 import ua.palamarenko.cozyandroid2.image_picker.PickMultipleImageRequest
 import ua.palamarenko.cozyandroid2.image_picker.PickSingleImageRequest
 import ua.palamarenko.cozyandroid2.tools.click
@@ -82,6 +83,9 @@ abstract class CozyFragment<T : CozyViewModel> : CozyBaseFragment<T>(), BackPres
             }
             is PickMultipleImageRequest ->{
                activityResultCallBack =  FilePicker.pickMultipleImage(this,data.callback)
+            }
+            is PickFileRequest ->{
+                activityResultCallBack = FilePicker.pickFile(this,data)
             }
         }
 
