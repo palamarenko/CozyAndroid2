@@ -42,10 +42,10 @@ class PickFileRequest(val callback: (File) -> Unit, val type : String = "*/*")
 
 object FilePicker {
 
-    fun Uri.convertUriToFile(name : String) : File {
-        val tmpFile = File.createTempFile(name,"")
+    private fun convertUriToFile(uri : Uri,name : String) : File {
+        val tmpFile = File(CozyLibrarySettings.appContext!!.cacheDir,name)
         val os = FileOutputStream(tmpFile)
-        val iss = CozyLibrarySettings.appContext!!.contentResolver.openInputStream(this)
+        val iss = CozyLibrarySettings.appContext!!.contentResolver.openInputStream(uri)
         iss?.copyTo(os)
         os.flush()
         iss?.close()
@@ -63,15 +63,14 @@ object FilePicker {
 
         val activityResultCallBack: ((requestCode: Int, resultCode: Int, data: Intent?) -> Unit) =
             { i: Int, i1: Int, intent: Intent? ->
-
-                pickFileRequest.callback.invoke(intent!!.data!!.convertUriToFile(dumpImageMetaData(intent.data!!,cozyFragment)))
+                pickFileRequest.callback.invoke(convertUriToFile(intent!!.data!!,dumpImageMetaData(intent.data!!)))
             }
 
        return activityResultCallBack
     }
 
-    fun dumpImageMetaData(uri: Uri,cozyFragment: CozyFragment<*>) : String {
-        val cursor: Cursor = cozyFragment.context!!.contentResolver
+    fun dumpImageMetaData(uri: Uri) : String {
+        val cursor: Cursor = CozyLibrarySettings.appContext!!.contentResolver
             .query(uri, null, null, null, null, null)!!
         cursor.use { cursor ->
             if (cursor.moveToFirst()) {
