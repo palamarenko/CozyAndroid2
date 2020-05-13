@@ -1,8 +1,11 @@
 package ua.palamarenko.cozyandroid2.image_picker
 
 import android.content.Intent
+import android.database.Cursor
 import android.net.Uri
 import android.os.Bundle
+import android.os.ParcelFileDescriptor
+import android.provider.OpenableColumns
 import android.view.View
 import androidx.annotation.NonNull
 import com.github.dhaval2404.imagepicker.ImagePicker
@@ -12,12 +15,15 @@ import pl.aprilapps.easyphotopicker.EasyImage
 import pl.aprilapps.easyphotopicker.MediaFile
 import pl.aprilapps.easyphotopicker.MediaSource
 import ua.palamarenko.cozyandroid2.CozyLibrarySettings
+import ua.palamarenko.cozyandroid2.R
 import ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks.CozyBasePopup
 import ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks.CozyFragment
 import ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks.EmptyViewModel
 import ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks.convertAnyToTitle
+import ua.palamarenko.cozyandroid2.tools.LOG_EVENT
 import ua.palamarenko.cozyandroid2.tools.click
 import java.io.File
+import java.io.FileDescriptor
 import java.io.FileOutputStream
 
 
@@ -36,8 +42,8 @@ class PickFileRequest(val callback: (File) -> Unit, val type : String = "*/*")
 
 object FilePicker {
 
-    fun Uri.convertUriToFile() : File {
-        val tmpFile = File.createTempFile("file", ".tmp")
+    fun Uri.convertUriToFile(name : String) : File {
+        val tmpFile = File.createTempFile(name,"")
         val os = FileOutputStream(tmpFile)
         val iss = CozyLibrarySettings.appContext!!.contentResolver.openInputStream(this)
         iss?.copyTo(os)
@@ -57,10 +63,24 @@ object FilePicker {
 
         val activityResultCallBack: ((requestCode: Int, resultCode: Int, data: Intent?) -> Unit) =
             { i: Int, i1: Int, intent: Intent? ->
-                pickFileRequest.callback.invoke(File(intent?.data?.path?:""))
+
+                pickFileRequest.callback.invoke(intent!!.data!!.convertUriToFile(dumpImageMetaData(intent.data!!,cozyFragment)))
             }
 
        return activityResultCallBack
+    }
+
+    fun dumpImageMetaData(uri: Uri,cozyFragment: CozyFragment<*>) : String {
+        val cursor: Cursor = cozyFragment.context!!.contentResolver
+            .query(uri, null, null, null, null, null)!!
+        cursor.use { cursor ->
+            if (cursor.moveToFirst()) {
+               return  cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+                )
+
+            }
+        }
+        return ""
     }
 
 
