@@ -7,6 +7,7 @@ import android.view.View
 import kotlinx.android.synthetic.main.popup_cozy.*
 import ua.palamarenko.cozyandroid2.CozyLibrarySettings
 import ua.palamarenko.cozyandroid2.R
+import ua.palamarenko.cozyandroid2.tools.click
 import ua.palamarenko.cozyandroid2.tools.makeCharSequence
 
 open class CozyPopup : CozyReusePopup() {
@@ -55,10 +56,11 @@ open class CozyPopup : CozyReusePopup() {
                 dismissAllowingStateLoss()
             }
 
-            isCancelable = isCancelable
+            if(isCancelable){
+                flClick.setOnClickListener { dismissAllowingStateLoss() }
+            }
 
         }
-
     }
 
 
