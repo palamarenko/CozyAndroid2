@@ -8,7 +8,11 @@ import io.reactivex.Observable
 import io.reactivex.Single
 import ua.palamarenko.cozyandroid2.CozyLibrarySettings
 import ua.palamarenko.cozyandroid2.base_fragment.navigation.CozyBaseViewModel
+import ua.palamarenko.cozyandroid2.tools.PreferencesProvider
 import java.io.File
+
+
+
 
 open class CozyViewModel : CozyBaseViewModel() {
 
@@ -30,6 +34,7 @@ open class CozyViewModel : CozyBaseViewModel() {
             throwable.message?.startsWith("Room cannot verify the data integrity.") == true
         ) {
             deleteDatabaseFile(dbName)
+            PreferencesProvider.clear()
             return true
         }
         return false
