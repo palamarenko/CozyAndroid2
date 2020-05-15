@@ -6,6 +6,13 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
 
+    <application>
+        <activity android:name="ua.palamarenko.cozyandroid2.tools.image_viewer.ImageViewerActivity"
+            android:screenOrientation="portrait"
+            android:exported="true"
+            android:theme="@style/ImageView"
+            android:windowSoftInputMode="adjustResize"/>
 
+    </application>
 
 </manifest>

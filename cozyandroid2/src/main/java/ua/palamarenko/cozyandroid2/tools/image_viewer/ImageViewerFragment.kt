@@ -27,7 +27,8 @@ class ImageViewerFragment : CozyFragment<EmptyViewModel>() {
         super.onStartScreen()
         ivBack.click { task(BACK_PRESS) }
 
-        val obj = getArgumentObject<ImageViewObj>(DATA)
+        val obj = getArgumentObject<ImageViewObj>(DATA)!!
+
 
         if(obj?.list != null && obj.list.size > 1){
             pwPlate.setMaxCount(obj.list.size)
@@ -39,6 +40,7 @@ class ImageViewerFragment : CozyFragment<EmptyViewModel>() {
         if(obj==null){
             task(BACK_PRESS)
         }else{
+            tvToolbar.text = obj.title
             viewPager.initSimple(fragmentManager, obj.list) {
                 ImageFragment().putString(URL,it)
             }

@@ -1,7 +1,10 @@
 package ua.palamarenko.cozyandroid2.tools.image_viewer
 
+import android.content.ComponentName
+import android.content.Intent
 import android.os.Bundle
 import com.google.gson.Gson
+import ua.palamarenko.cozyandroid2.CozyLibrarySettings
 import ua.palamarenko.cozyandroid2.R
 import ua.palamarenko.cozyandroid2.base_fragment.navigation.putObject
 import ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks.CozyActivity
@@ -10,23 +13,16 @@ import ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks.EmptyViewModel
 
 const val DATA = "IMAGE_DATA"
 const val URL = "IMAGE_URL"
-class ImageViewObj(val list: List<String>,val position : Int = 0)
-
-fun imageViewBundle(imageList : List<String>?,url: String = "") : Bundle {
-    if(imageList==null){
-        return imageViewBundle(url)
-    }
+class ImageViewObj(val list: List<String>,val position : Int = 0, val title : String)
 
 
-    return Bundle().apply {
-        putString(DATA, Gson().toJson(ImageViewObj(imageList, imageList.indexOf(url))))
-    }
-}
-
-fun imageViewBundle(url: String) : Bundle {
-    return Bundle().apply {
-        putString(DATA, Gson().toJson(ImageViewObj(arrayListOf(url))))
-    }
+fun getImageViewBundle(imageList : List<String>?,url: String, title : String) : Intent{
+    val intent = Intent(Intent.ACTION_VIEW)
+    intent.component = ComponentName(CozyLibrarySettings.appContext!!,
+        ImageViewerActivity::class.java
+    )
+    intent.putExtra(DATA,Gson().toJson(ImageViewObj(imageList?: arrayListOf(url), (imageList?:ArrayList()).indexOf(url),title)))
+    return intent
 }
 
 

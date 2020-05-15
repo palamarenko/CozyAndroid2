@@ -17,3 +17,5 @@ const val SHOW_SNACKBAR = 12
 const val CLEAR_FRAGMENTS = 13
 const val PICK_FILE = 14
 const val OPEN_LINK = 15
+const val IMAGE_VIEWER = 16
+

@@ -20,6 +20,7 @@ import ua.palamarenko.cozyandroid2.image_picker.PickFileRequest
 import ua.palamarenko.cozyandroid2.image_picker.PickMultipleImageRequest
 import ua.palamarenko.cozyandroid2.image_picker.PickSingleImageRequest
 import ua.palamarenko.cozyandroid2.tools.click
+import ua.palamarenko.cozyandroid2.tools.image_viewer.getImageViewBundle
 
 
 abstract class CozyFragment<T : CozyViewModel> : CozyBaseFragment<T>(), BackPress {
@@ -65,6 +66,9 @@ abstract class CozyFragment<T : CozyViewModel> : CozyBaseFragment<T>(), BackPres
             )
             OPEN_LINK -> openLink(data as String)
             PICK_FILE -> pickFile(data)
+            IMAGE_VIEWER -> {
+                startActivity(getImageViewBundle((data as ImageViewerRequest).list, data.url,data.title))
+            }
             else -> observeCustomTasks(id, data, bundle)
         }
     }
@@ -254,6 +258,7 @@ abstract class CozyFragment<T : CozyViewModel> : CozyBaseFragment<T>(), BackPres
 class RequestPermissionCallback(val permission: Array<String>, val callBack: (Boolean) -> Unit)
 class StartActivityCallback(val activity: Any, val callBack: (Intent) -> Unit)
 class StartActivityTypeCallback<T : Any>(val activity: Any, val callBack: (T) -> Unit)
+class ImageViewerRequest(val url : String, val list : List<String>? = null, val title : String = "Image")
 
 
 class CustomActionCallback(val listener: (CozyActivity<*>) -> Unit)
