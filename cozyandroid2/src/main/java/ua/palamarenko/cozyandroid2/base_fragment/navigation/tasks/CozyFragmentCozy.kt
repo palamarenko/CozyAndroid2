@@ -39,7 +39,7 @@ abstract class CozyFragment<T : CozyViewModel> : CozyBaseFragment<T>(), BackPres
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        vm().tm.task.observe(this, Observer { observeTasks(it!!.id, it.data, it.rule) })
+        vm().tm.task.observe(viewLifecycleOwner, Observer { observeTasks(it!!.id, it.data, it.rule) })
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
