@@ -66,7 +66,7 @@ fun CheckBox.listen(listener: (Boolean) -> Unit) {
 }
 
 
-fun inflate(id : Int) : View{
+fun inflateView(id : Int) : View{
     return View.inflate(CozyLibrarySettings.appContext,id,null)
 }
 
