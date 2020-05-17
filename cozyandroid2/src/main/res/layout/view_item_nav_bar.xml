@@ -1,37 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/flClick"
-        android:layout_width="50dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:background="?selectableItemBackgroundBorderless"
-        android:padding="4dp">
+    android:id="@+id/flClick"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:layout_weight="1"
+    android:background="?selectableItemBackgroundBorderless"
+    android:minWidth="50dp">
 
 
     <LinearLayout
-            android:id="@+id/llAnimate"
-            android:layout_width="match_parent"
-            android:orientation="vertical"
-            android:layout_gravity="center"
-            android:layout_height="wrap_content">
-    <ImageView
+        android:id="@+id/llAnimate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="4dp"
+        android:layout_gravity="center"
+        android:orientation="vertical">
+
+        <ImageView
             android:id="@+id/ivIcon"
             android:layout_width="28dp"
-            android:layout_marginTop="4dp"
-            android:layout_gravity="center"
             android:layout_height="28dp"
-         />
+            android:layout_gravity="center"
+            android:layout_marginTop="4dp" />
 
-    <TextView
+        <TextView
             android:id="@+id/tvTitle"
-            android:visibility="gone"
-            android:layout_marginTop="3dp"
-            android:textSize="10sp"
-            android:lines="1"
-            android:gravity="center"
-            android:ellipsize="end"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:layout_marginTop="3dp"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:maxWidth="60dp"
+            android:lines="1"
+            android:textSize="10sp"
+            android:visibility="gone" />
 
     </LinearLayout>
 
