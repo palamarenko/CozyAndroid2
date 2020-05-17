@@ -66,6 +66,11 @@ fun CheckBox.listen(listener: (Boolean) -> Unit) {
 }
 
 
+fun inflate(id : Int) : View{
+    return View.inflate(CozyLibrarySettings.appContext,id,null)
+}
+
+
 fun getLocale() : Locale{
     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N){
         CozyLibrarySettings.appContext!!.resources.configuration.locales.get(0);

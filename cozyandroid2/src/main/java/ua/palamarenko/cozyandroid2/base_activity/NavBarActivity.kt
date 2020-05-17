@@ -14,6 +14,7 @@ import ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks.CozyActivity
 import ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks.CozyFragment
 import ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks.CozyViewModel
 import ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks.NAVIGATE
+import ua.palamarenko.cozyandroid2.cozy_view.BaseNavigationItem
 import ua.palamarenko.cozyandroid2.cozy_view.CozyNavigateView
 import ua.palamarenko.cozyandroid2.cozy_view.NavigationItem
 import ua.palamarenko.cozyandroid2.cozy_view.TitleItem
@@ -62,20 +63,13 @@ abstract class NavBarActivity<T : CozyViewModel> : CozyActivity<T>() {
                 getNavigationView(),
                 items
             )
-        getNavigationView().initView(items.map {
-            NavigationItem(
-                it.id,
-                it.iconSelect,
-                it.iconUnSelect,
-                it.title
-            )
-        })
+        getNavigationView().initView(items.map {it.item})
 
 
         getNavigationView().listnener = { item ->
-            task(NAVIGATE, items.find { it.id == item.id }!!.choiceFragment)
+            task(NAVIGATE, items.find { it.item.id == item.id }!!.choiceFragment)
         }
-        getNavigationView().setItem(true, items.first().id)
+        getNavigationView().setItem(true, items.first().item.id)
     }
 
 
@@ -135,7 +129,7 @@ abstract class NavBarActivity<T : CozyViewModel> : CozyActivity<T>() {
                 if (navigator.getCurrentFragment() != null &&
                     navigator.getCurrentFragment()!!::class.java.simpleName == it.choiceFragment::class.java.simpleName
                 ) {
-                    getNavigationView().setItem(false, it.id)
+                    getNavigationView().setItem(false, it.item.id)
                 }
             }
         }, 100)
@@ -143,14 +137,17 @@ abstract class NavBarActivity<T : CozyViewModel> : CozyActivity<T>() {
 }
 
 class NavigationActivityItem(
-    val id: Int,
-    val iconSelect: Int,
-    val iconUnSelect: Int,
-    val title: TitleItem? = null,
+    val item : BaseNavigationItem,
     val choiceFragment: CozyFragment<*>,
     vararg val grooupFragmens: Class<CozyFragment<*>>,
     val defaultItem: Boolean = false
 )
+
+
+
+
+
+
 
 
 class NavBarNavigator(
@@ -165,7 +162,7 @@ class NavBarNavigator(
 
         items.forEach {
             if (fragment.javaClass.simpleName == it.choiceFragment::class.java.simpleName) {
-                navigateView.setItem(false, it.id)
+                navigateView.setItem(false, it.item.id)
             }
         }
 
