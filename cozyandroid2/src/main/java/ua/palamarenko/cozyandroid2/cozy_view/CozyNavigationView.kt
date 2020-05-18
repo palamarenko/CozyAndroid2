@@ -12,16 +12,26 @@ import ua.palamarenko.cozyandroid2.tools.dpToPx
 
 
 class NavigationItem(
-    val id: Int,
+    override val id: Int,
     val iconSelect: Int,
     val iconUnSelect: Int,
     val title: TitleItem? = null
-)
+) : BaseNavigationItem(id)
+
+
+class CustomViewItem(
+    override val id: Int,
+    val view: View
+) : BaseNavigationItem(id)
+
+
+abstract class BaseNavigationItem(open val id: Int)
+
 
 class TitleItem(val select: CharSequence, val unSelect: CharSequence)
 
 
-private class NavItemWithView(val item: NavigationItem, val view: View)
+private class NavItemWithView(val item: BaseNavigationItem, val view: View)
 
 
 class CozyNavigateView : FrameLayout {
@@ -37,40 +47,64 @@ class CozyNavigateView : FrameLayout {
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
 
 
-    fun initView(list: List<NavigationItem>) {
+    fun initView(list: List<BaseNavigationItem>) {
         itemList.clear()
         view = LinearLayout(context)
         view.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
 
         list.forEach {
-            val itemView = View.inflate(context, R.layout.view_item_nav_bar, null)
-            itemView.ivIcon.setImageResource(it.iconUnSelect)
-            itemView.flClick.click(false) { setItem(true, it.id) }
-
-            val params =
-                LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT)
-            params.weight = 1f
-            itemView.layoutParams = params
-            if (it.title != null) {
-                itemView.tvTitle.visibility = View.VISIBLE
-                itemView.tvTitle.text = it.title!!.unSelect
-            } else {
-                itemView.tvTitle.visibility = View.GONE
+            when (it) {
+                is NavigationItem -> inflateNavigationItem(it)
+                is CustomViewItem -> inflateCustomItem(it)
             }
 
-
-            view.addView(itemView)
-            itemList.add(NavItemWithView(it, itemView))
         }
         addView(view)
     }
 
-    fun setIconSize(dpSize : Int){
+
+
+    private fun inflateCustomItem(it: CustomViewItem) {
+        val params =
+            LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT)
+        params.weight = 1f
+        it.view.layoutParams = params
+
+        view.addView(it.view)
+        itemList.add(NavItemWithView(it, it.view))
+    }
+
+
+    private fun inflateNavigationItem(it: NavigationItem) {
+        val itemView = View.inflate(context, R.layout.view_item_nav_bar, null)
+        itemView.ivIcon.setImageResource(it.iconUnSelect)
+        itemView.flClick.click(false) { setItem(true, it.id) }
+
+        val params =
+            LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT)
+        params.weight = 1f
+        itemView.layoutParams = params
+        if (it.title != null) {
+            itemView.tvTitle.visibility = View.VISIBLE
+            itemView.tvTitle.text = it.title!!.unSelect
+        } else {
+            itemView.tvTitle.visibility = View.GONE
+        }
+
+
+        view.addView(itemView)
+        itemList.add(NavItemWithView(it, itemView))
+    }
+
+    fun setIconSize(dpSize: Int) {
         itemList.forEach {
-           val lp =  it.view.ivIcon.layoutParams as LinearLayout.LayoutParams
-            lp.height = dpToPx(dpSize.toFloat())
-            lp.width = dpToPx(dpSize.toFloat())
-            it.view.ivIcon.layoutParams = lp
+            if (it.item is NavigationItem) {
+                val lp = it.view.ivIcon.layoutParams as LinearLayout.LayoutParams
+                lp.height = dpToPx(dpSize.toFloat())
+                lp.width = dpToPx(dpSize.toFloat())
+                it.view.ivIcon.layoutParams = lp
+            }
+
         }
     }
 
@@ -80,34 +114,37 @@ class CozyNavigateView : FrameLayout {
             return
         }
         itemList.forEach {
-            if (it.item.id != id) {
-                it.view.ivIcon.setImageResource(it.item.iconUnSelect)
-                if (it.item.title != null) {
-                    it.view.tvTitle.text = it.item.title.unSelect
-                }
-                animateView(it.view.llAnimate,false)
-            } else {
-                it.view.ivIcon.setImageResource(it.item.iconSelect)
-                if (it.item.title != null) {
-                    it.view.tvTitle.text = it.item.title.select
-                }
-                animateView(it.view.llAnimate,true)
-                lastItem = it
-                if (needCallBack) {
-                    listnener.invoke(it.item)
+            if (it.item is NavigationItem) {
+                if (it.item.id != id) {
+                    it.view.ivIcon.setImageResource(it.item.iconUnSelect)
+                    if (it.item.title != null) {
+                        it.view.tvTitle.text = it.item.title.unSelect
+                    }
+                    animateView(it.view.llAnimate, false)
+                } else {
+                    it.view.ivIcon.setImageResource(it.item.iconSelect)
+                    if (it.item.title != null) {
+                        it.view.tvTitle.text = it.item.title.select
+                    }
+                    animateView(it.view.llAnimate, true)
+                    lastItem = it
+                    if (needCallBack) {
+                        listnener.invoke(it.item)
+                    }
                 }
             }
         }
     }
 
-    private fun animateView(view : View, selected : Boolean){
-        if(selected){
+
+    private fun animateView(view: View, selected: Boolean) {
+        if (selected) {
             view.animate()
                 .scaleX(1.1f)
                 .scaleY(1.1f)
                 .setDuration(100)
                 .start()
-        }else{
+        } else {
             view.animate()
                 .scaleX(1.0f)
                 .scaleY(1.0f)

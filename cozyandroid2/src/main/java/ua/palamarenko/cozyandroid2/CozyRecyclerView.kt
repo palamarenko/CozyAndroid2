@@ -11,12 +11,14 @@ import android.widget.FrameLayout
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.*
 import kotlinx.android.synthetic.main.view_recycler.view.*
+import kotlinx.android.synthetic.main.view_recycler_place_holder.view.*
 import ua.palamarenko.cozyandroid2.recycler.ButtonSwipeCallBack
 import ua.palamarenko.cozyandroid2.recycler.CozyDiffCallBack
 import ua.palamarenko.cozyandroid2.recycler.CozyRecyclerAdapter
 import ua.palamarenko.cozyandroid2.recycler.DragAndDropCallbackListener
 import ua.palamarenko.cozyandroid2.tools.LOG_EVENT
 import ua.palamarenko.cozyandroid2.tools.dpToPx
+import ua.palamarenko.cozyandroid2.tools.inflateView
 
 
 fun RecyclerView.setCell(list: List<CozyCell>, layoutManager: RecyclerView.LayoutManager? = null) {
@@ -276,6 +278,7 @@ class CozyRecyclerView : FrameLayout {
         }
 
         view.progress.visibility = View.GONE
+        refreshHide()
     }
 
     fun addProgressCell() {
@@ -293,10 +296,18 @@ class CozyRecyclerView : FrameLayout {
         this.view.flPlaceHolder.addView(view)
     }
 
-
-    fun setPlaceHolder(id: Int) {
+    fun setPlaceHolder(charSequence: CharSequence){
         needPlaceHolder = true
-        val view = View.inflate(context, id, null)
+        val view = inflateView(R.layout.view_recycler_place_holder)
+        view.tvHolder.text = charSequence
+        view.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
+        this.view.flPlaceHolder.addView(view)
+    }
+
+
+    fun setPlaceHolder(viewId: Int) {
+        needPlaceHolder = true
+        val view = View.inflate(context, viewId, null)
         view.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
         this.view.flPlaceHolder.addView(view)
     }
