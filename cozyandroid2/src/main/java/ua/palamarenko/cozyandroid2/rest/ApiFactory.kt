@@ -75,7 +75,15 @@ open class ApiFactory<T>(private val BASE_URL: String, open val apiGet: Class<ou
             val request = requestBuilder
                 .cacheControl(okhttp3.CacheControl.Builder().noCache().build())
                 .build()
-            chain.proceed(request)
+            val response = chain.proceed(request)
+
+            if(response.code() == 401){
+
+            }
+
+
+
+           return@addInterceptor response
         }
     }
 
