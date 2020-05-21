@@ -16,6 +16,7 @@ import ua.palamarenko.cozyandroid2.recycler.ButtonSwipeCallBack
 import ua.palamarenko.cozyandroid2.recycler.CozyDiffCallBack
 import ua.palamarenko.cozyandroid2.recycler.CozyRecyclerAdapter
 import ua.palamarenko.cozyandroid2.recycler.DragAndDropCallbackListener
+import ua.palamarenko.cozyandroid2.recycler.layout_manager.CozyLinearLayoutManager
 import ua.palamarenko.cozyandroid2.tools.LOG_EVENT
 import ua.palamarenko.cozyandroid2.tools.dpToPx
 import ua.palamarenko.cozyandroid2.tools.inflateView
@@ -176,12 +177,12 @@ class CozyRecyclerView : FrameLayout {
 
     fun setHorizontalLayoutManager(reverseLayout: Boolean = false) {
         view.baseRecycler.layoutManager =
-            LinearLayoutManager(view.context, LinearLayoutManager.HORIZONTAL, reverseLayout)
+            CozyLinearLayoutManager(view.context, LinearLayoutManager.HORIZONTAL, reverseLayout)
     }
 
     fun setVerticalLayoutManager(reverseLayout: Boolean = false) {
         view.baseRecycler.layoutManager =
-            LinearLayoutManager(view.context, LinearLayoutManager.VERTICAL, reverseLayout)
+            CozyLinearLayoutManager(view.context, LinearLayoutManager.VERTICAL, reverseLayout)
     }
 
     fun setGridLayoutManager(spanCount: Int) {
@@ -239,11 +240,11 @@ class CozyRecyclerView : FrameLayout {
         }
 
         if (view.baseRecycler.layoutManager is GridLayoutManager) {
-            (view.baseRecycler.layoutManager as GridLayoutManager).scrollToPosition(0)
+            (view.baseRecycler.layoutManager as GridLayoutManager).scrollToPosition(position)
         }
 
         if (view.baseRecycler.layoutManager is StaggeredGridLayoutManager) {
-            (view.baseRecycler.layoutManager as StaggeredGridLayoutManager).scrollToPosition(0)
+            (view.baseRecycler.layoutManager as StaggeredGridLayoutManager).scrollToPosition(position)
         }
 
     }
