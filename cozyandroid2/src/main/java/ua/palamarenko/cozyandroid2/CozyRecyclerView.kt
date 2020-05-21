@@ -8,17 +8,14 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
-import android.widget.LinearLayout
 import androidx.recyclerview.widget.*
+import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.view_recycler.view.*
 import kotlinx.android.synthetic.main.view_recycler_place_holder.view.*
 import ua.palamarenko.cozyandroid2.recycler.ButtonSwipeCallBack
-import ua.palamarenko.cozyandroid2.recycler.CozyDiffCallBack
 import ua.palamarenko.cozyandroid2.recycler.CozyRecyclerAdapter
 import ua.palamarenko.cozyandroid2.recycler.DragAndDropCallbackListener
 import ua.palamarenko.cozyandroid2.recycler.layout_manager.CozyLinearLayoutManager
-import ua.palamarenko.cozyandroid2.tools.LOG_EVENT
-import ua.palamarenko.cozyandroid2.tools.dpToPx
 import ua.palamarenko.cozyandroid2.tools.inflateView
 
 
@@ -250,6 +247,30 @@ class CozyRecyclerView : FrameLayout {
     }
 
     fun listenEndList(listener: () -> Unit) {
+
+        var loading = true
+        var pastVisiblesItems: Int
+        var visibleItemCount: Int
+        var totalItemCount: Int
+
+        view.baseRecycler.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                if (dy > 0) {
+                    visibleItemCount = view.baseRecycler.layoutManager!!.childCount
+                    totalItemCount = view.baseRecycler.layoutManager!!.itemCount
+                    pastVisiblesItems = (view.baseRecycler.layoutManager!! as? LinearLayoutManager)?.findFirstVisibleItemPosition()?:0
+                    if (loading) {
+                        if (visibleItemCount + pastVisiblesItems >= totalItemCount) {
+                            loading = false
+                            listener.invoke()
+                        }
+                    }
+                }
+            }
+        })
+
+
+
         view.baseRecycler.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
