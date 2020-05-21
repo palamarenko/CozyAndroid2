@@ -268,17 +268,6 @@ class CozyRecyclerView : FrameLayout {
                 }
             }
         })
-
-
-
-        view.baseRecycler.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                super.onScrollStateChanged(recyclerView, newState)
-                if (!recyclerView.canScrollVertically(1) && newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    listener.invoke()
-                }
-            }
-        })
     }
 
     fun refrshShow() {
