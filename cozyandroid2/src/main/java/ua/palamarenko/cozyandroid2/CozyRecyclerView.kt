@@ -265,7 +265,7 @@ class CozyRecyclerView : FrameLayout {
         }
     }
 
-    fun listenEndList(listener: () -> Unit) {
+    fun loadMoreCallBack(listener: () -> Unit) {
         this.endlessListener = listener
 
         var pastVisiblesItems: Int
@@ -292,6 +292,28 @@ class CozyRecyclerView : FrameLayout {
             }
         })
     }
+    fun listenEndList(listener: () -> Unit) {
+
+        var pastVisiblesItems: Int
+        var visibleItemCount: Int
+        var totalItemCount: Int
+
+        view.baseRecycler.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                if (dy > 0) { //check for scroll down
+                    visibleItemCount = view.baseRecycler.layoutManager!!.childCount
+                    totalItemCount = view.baseRecycler.layoutManager!!.itemCount
+                    pastVisiblesItems = (view.baseRecycler.layoutManager!! as? LinearLayoutManager)?.findFirstVisibleItemPosition()?:0
+                    if (visibleItemCount + pastVisiblesItems >= totalItemCount) {
+                        listener.invoke()
+                    }
+                }
+            }
+        })
+    }
+
+
+
 
     fun refrshShow() {
         view.srRefresh.isRefreshing = true

@@ -1,6 +1,5 @@
 package ua.palamarenko.cozyandroid2.recycler.pagination
 
-import android.view.View
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import ua.palamarenko.cozyandroid2.CozyCell
@@ -20,7 +19,7 @@ abstract class PaginationController(
 
     fun start() {
         loadNextPage()
-        recycler.listenEndList {
+        recycler.loadMoreCallBack {
             if (needLoadNewPage) {
                 loadNextPage()
             }
