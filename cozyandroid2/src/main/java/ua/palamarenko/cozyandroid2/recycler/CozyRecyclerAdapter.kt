@@ -72,6 +72,11 @@ class CozyRecyclerAdapter() : RecyclerView.Adapter<CozyViewHolder<CozyCell>>(), 
     }
 
     fun removeProgressCell(compareItem: CompareItem) {
+        if (list.isEmpty()) {
+            return
+        }
+
+
         if(list[list.lastIndex] is DefaultProgressCell) {
             val newList = ArrayList<CozyCell>()
             newList.addAll(list)

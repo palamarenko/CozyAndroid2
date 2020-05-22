@@ -34,13 +34,14 @@ abstract class CozyFragment<T : CozyViewModel> : CozyBaseFragment<T>(), BackPres
     var activityResultCallBack: ((requestCode: Int, resultCode: Int, data: Intent?) -> Unit)? = null
 
 
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        vm().tm.task.observe(viewLifecycleOwner, Observer { observeTasks(it!!.id, it.data, it.rule) })
+        vm().tm.task.observe(
+            viewLifecycleOwner,
+            Observer { observeTasks(it!!.id, it.data, it.rule) })
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
@@ -67,17 +68,23 @@ abstract class CozyFragment<T : CozyViewModel> : CozyBaseFragment<T>(), BackPres
             OPEN_LINK -> openLink(data as String)
             PICK_FILE -> pickFile(data)
             IMAGE_VIEWER -> {
-                startActivity(getImageViewBundle((data as ImageViewerRequest).list, data.url,data.title))
+                startActivity(
+                    getImageViewBundle(
+                        (data as ImageViewerRequest).list,
+                        data.url,
+                        data.title
+                    )
+                )
             }
             else -> observeCustomTasks(id, data, bundle)
         }
     }
 
 
-    private fun pickFile(data : Any){
+    private fun pickFile(data: Any) {
 
-        when(data){
-            is PickSingleImageRequest ->{
+        when (data) {
+            is PickSingleImageRequest -> {
                 FilePicker.pickSingleImage(
                     this,
                     data.strings,
@@ -85,11 +92,11 @@ abstract class CozyFragment<T : CozyViewModel> : CozyBaseFragment<T>(), BackPres
                     data.cropMode
                 )
             }
-            is PickMultipleImageRequest ->{
-               activityResultCallBack =  FilePicker.pickMultipleImage(this,data.callback)
+            is PickMultipleImageRequest -> {
+                activityResultCallBack = FilePicker.pickMultipleImage(this, data.callback)
             }
-            is PickFileRequest ->{
-                activityResultCallBack = FilePicker.pickFile(this,data)
+            is PickFileRequest -> {
+                activityResultCallBack = FilePicker.pickFile(this, data)
             }
         }
 
@@ -191,7 +198,8 @@ abstract class CozyFragment<T : CozyViewModel> : CozyBaseFragment<T>(), BackPres
         }
         activityResultCallBack = { i: Int, i1: Int, intent: Intent? ->
             val json = intent!!.getStringExtra(RESULT_KEY)
-            val cl: Class<RESULT> = Class.forName(intent.getStringExtra(COZY_RESULT_CLASS_NAME)!!) as Class<RESULT>
+            val cl: Class<RESULT> =
+                Class.forName(intent.getStringExtra(COZY_RESULT_CLASS_NAME)!!) as Class<RESULT>
             val t = Gson().fromJson(json, cl)
             data.callBack.invoke(t)
         }
@@ -214,7 +222,7 @@ abstract class CozyFragment<T : CozyViewModel> : CozyBaseFragment<T>(), BackPres
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (activityResultCallBack != null && data != null) {
-            activityResultCallBack!!.invoke(requestCode,resultCode,data)
+            activityResultCallBack!!.invoke(requestCode, resultCode, data)
             activityResultCallBack = null
             return
         }
@@ -258,7 +266,12 @@ abstract class CozyFragment<T : CozyViewModel> : CozyBaseFragment<T>(), BackPres
 class RequestPermissionCallback(val permission: Array<String>, val callBack: (Boolean) -> Unit)
 class StartActivityCallback(val activity: Any, val callBack: (Intent) -> Unit)
 class StartActivityTypeCallback<T : Any>(val activity: Any, val callBack: (T) -> Unit)
-class ImageViewerRequest(val url : String, val list : List<String>? = null, val title : String = "Image")
+class ImageViewerRequest(
+    val url: String,
+    val list: List<String>? = null,
+    val title: String = "Image"
+)
 
+class ShowProgressCallBack(val progress: Boolean, val dismissCallBack: (() -> Unit)? = null)
 
 class CustomActionCallback(val listener: (CozyActivity<*>) -> Unit)

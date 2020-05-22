@@ -246,22 +246,45 @@ class CozyRecyclerView : FrameLayout {
 
     }
 
-    fun listenEndList(listener: () -> Unit) {
+    var loading = false
+    var enableLoading = false
+    var endlessListener: () -> Unit = {}
 
-        var loading = true
+    fun checkForEndlessScroll() {
+        if (loading) {
+            return
+        }
+
+        val visibleItemCount = view.baseRecycler.layoutManager!!.childCount
+        val totalItemCount = view.baseRecycler.layoutManager!!.itemCount
+        val pastVisiblesItems = (view.baseRecycler.layoutManager!! as? LinearLayoutManager)?.findFirstVisibleItemPosition()?:0
+
+        if (visibleItemCount + pastVisiblesItems >= totalItemCount) {
+            loading = true
+            endlessListener.invoke()
+        }
+    }
+
+    fun listenEndList(listener: () -> Unit) {
+        this.endlessListener = listener
+
         var pastVisiblesItems: Int
         var visibleItemCount: Int
         var totalItemCount: Int
 
         view.baseRecycler.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                if (!enableLoading) {
+                    return
+                }
+
                 if (dy > 0) {
                     visibleItemCount = view.baseRecycler.layoutManager!!.childCount
                     totalItemCount = view.baseRecycler.layoutManager!!.itemCount
                     pastVisiblesItems = (view.baseRecycler.layoutManager!! as? LinearLayoutManager)?.findFirstVisibleItemPosition()?:0
-                    if (loading) {
+                    if (!loading) {
                         if (visibleItemCount + pastVisiblesItems >= totalItemCount) {
-                            loading = false
+                            loading = true
                             listener.invoke()
                         }
                     }
@@ -383,5 +406,7 @@ const val PROGRESS_CELL = "_PROGRESS_CELL"
 
 class DefaultProgressCell(override val data: Any = PROGRESS_CELL) : CozyCell() {
     override val layout: Int = R.layout.cell_progress
-    override fun bind(view: View) {}
+    override fun bind(view: View) {
+        view.progress.visibility = View.VISIBLE
+    }
 }
