@@ -16,6 +16,7 @@ import ua.palamarenko.cozyandroid2.recycler.ButtonSwipeCallBack
 import ua.palamarenko.cozyandroid2.recycler.CozyRecyclerAdapter
 import ua.palamarenko.cozyandroid2.recycler.DragAndDropCallbackListener
 import ua.palamarenko.cozyandroid2.recycler.layout_manager.CozyLinearLayoutManager
+import ua.palamarenko.cozyandroid2.tools.LOG_EVENT
 import ua.palamarenko.cozyandroid2.tools.inflateView
 
 
@@ -23,7 +24,7 @@ fun RecyclerView.setCell(list: List<CozyCell>, layoutManager: RecyclerView.Layou
 
     if (layoutManager != null) {
         this.layoutManager = layoutManager
-    }else{
+    } else {
         this.layoutManager = LinearLayoutManager(this.context)
     }
     val adapter = CozyRecyclerAdapter()
@@ -110,12 +111,12 @@ class CozyRecyclerView : FrameLayout {
         view.progress.visibility = View.VISIBLE
     }
 
-    fun addDragAndDrop(endListener : () -> Unit = {}){
-        val callback: ItemTouchHelper.Callback = DragAndDropCallbackListener(adapter,true)
+    fun addDragAndDrop(endListener: () -> Unit = {}) {
+        val callback: ItemTouchHelper.Callback = DragAndDropCallbackListener(adapter, true)
         val touchHelper = ItemTouchHelper(callback)
         touchHelper.attachToRecyclerView(getRecyclerView())
         getRecyclerView().setOnTouchListener { v, event ->
-            if(MotionEvent.ACTION_UP == event.action || MotionEvent.ACTION_CANCEL == event.action){
+            if (MotionEvent.ACTION_UP == event.action || MotionEvent.ACTION_CANCEL == event.action) {
                 endListener.invoke()
             }
             return@setOnTouchListener false
@@ -241,7 +242,9 @@ class CozyRecyclerView : FrameLayout {
         }
 
         if (view.baseRecycler.layoutManager is StaggeredGridLayoutManager) {
-            (view.baseRecycler.layoutManager as StaggeredGridLayoutManager).scrollToPosition(position)
+            (view.baseRecycler.layoutManager as StaggeredGridLayoutManager).scrollToPosition(
+                position
+            )
         }
 
     }
@@ -257,7 +260,9 @@ class CozyRecyclerView : FrameLayout {
 
         val visibleItemCount = view.baseRecycler.layoutManager!!.childCount
         val totalItemCount = view.baseRecycler.layoutManager!!.itemCount
-        val pastVisiblesItems = (view.baseRecycler.layoutManager!! as? LinearLayoutManager)?.findFirstVisibleItemPosition()?:0
+        val pastVisiblesItems =
+            (view.baseRecycler.layoutManager!! as? LinearLayoutManager)?.findFirstVisibleItemPosition()
+                ?: 0
 
         if (visibleItemCount + pastVisiblesItems >= totalItemCount) {
             loading = true
@@ -281,7 +286,9 @@ class CozyRecyclerView : FrameLayout {
                 if (dy > 0) {
                     visibleItemCount = view.baseRecycler.layoutManager!!.childCount
                     totalItemCount = view.baseRecycler.layoutManager!!.itemCount
-                    pastVisiblesItems = (view.baseRecycler.layoutManager!! as? LinearLayoutManager)?.findFirstVisibleItemPosition()?:0
+                    pastVisiblesItems =
+                        (view.baseRecycler.layoutManager!! as? LinearLayoutManager)?.findFirstVisibleItemPosition()
+                            ?: 0
                     if (!loading) {
                         if (visibleItemCount + pastVisiblesItems >= totalItemCount) {
                             loading = true
@@ -292,6 +299,21 @@ class CozyRecyclerView : FrameLayout {
             }
         })
     }
+
+
+    fun isVisibleLastItem(): Boolean {
+        val visibleItemCount = view.baseRecycler.layoutManager!!.childCount
+        val totalItemCount = getItemCount()
+        val pastVisiblesItems =
+            (view.baseRecycler.layoutManager!! as? LinearLayoutManager)?.findFirstVisibleItemPosition()
+                ?: 0
+
+        LOG_EVENT("HELLO_ITEM",visibleItemCount,totalItemCount,pastVisiblesItems)
+
+        return visibleItemCount + pastVisiblesItems >= totalItemCount
+    }
+
+
     fun listenEndList(listener: () -> Unit) {
 
         var pastVisiblesItems: Int
@@ -303,7 +325,9 @@ class CozyRecyclerView : FrameLayout {
                 if (dy > 0) { //check for scroll down
                     visibleItemCount = view.baseRecycler.layoutManager!!.childCount
                     totalItemCount = view.baseRecycler.layoutManager!!.itemCount
-                    pastVisiblesItems = (view.baseRecycler.layoutManager!! as? LinearLayoutManager)?.findFirstVisibleItemPosition()?:0
+                    pastVisiblesItems =
+                        (view.baseRecycler.layoutManager!! as? LinearLayoutManager)?.findFirstVisibleItemPosition()
+                            ?: 0
                     if (visibleItemCount + pastVisiblesItems >= totalItemCount) {
                         listener.invoke()
                     }
@@ -311,8 +335,6 @@ class CozyRecyclerView : FrameLayout {
             }
         })
     }
-
-
 
 
     fun refrshShow() {
@@ -337,6 +359,20 @@ class CozyRecyclerView : FrameLayout {
         refreshHide()
     }
 
+
+    fun addCell(data: List<CozyCell>) {
+        adapter.addList(data, comparatorItem)
+
+        if (adapter.itemCount == 0 && needPlaceHolder) {
+            view.flPlaceHolder.visibility = View.VISIBLE
+        } else {
+            view.flPlaceHolder.visibility = View.GONE
+        }
+
+        view.progress.visibility = View.GONE
+        refreshHide()
+    }
+
     fun addProgressCell() {
         adapter.addProgressCell(DefaultProgressCell(), comparatorItem)
     }
@@ -346,13 +382,18 @@ class CozyRecyclerView : FrameLayout {
     }
 
 
+    fun getItemCount(): Int {
+        return adapter.itemCount
+    }
+
+
     fun setPlaceHolder(view: View) {
         needPlaceHolder = true
         view.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
         this.view.flPlaceHolder.addView(view)
     }
 
-    fun setPlaceHolder(charSequence: CharSequence){
+    fun setPlaceHolder(charSequence: CharSequence) {
         needPlaceHolder = true
         val view = inflateView(R.layout.view_recycler_place_holder)
         view.tvHolder.text = charSequence
@@ -394,7 +435,7 @@ abstract class CozyCell {
     abstract val layout: Int
     abstract fun bind(view: View)
 
-    var position : Int = 0
+    var position: Int = 0
     var identifier: Long? = null
 
     open fun getIdentifier(): Long {
