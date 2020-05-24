@@ -52,10 +52,10 @@ abstract class PaginationController(
             firstPage += 1
 
             Handler().postDelayed({
-                if(recycler.isVisibleLastItem()){
+                if (recycler.isVisibleLastItem()) {
                     loadNextPage()
                 }
-            },200)
+            }, 200)
 
         })
     }
