@@ -77,9 +77,6 @@ open class ApiFactory<T>(private val BASE_URL: String, open val apiGet: Class<ou
                 .build()
             val response = chain.proceed(request)
 
-            if(response.code() == 401){
-
-            }
 
 
 
