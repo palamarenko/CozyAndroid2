@@ -128,6 +128,10 @@ class CozyRecyclerView : FrameLayout {
         return view.baseRecycler
     }
 
+    fun getFrameLayout(): FrameLayout {
+        return view.flRoot
+    }
+
     fun setDivider(
         need: Boolean = true,
         decorator: RecyclerView.ItemDecoration = DividerItemDecoration(
@@ -308,7 +312,6 @@ class CozyRecyclerView : FrameLayout {
             (view.baseRecycler.layoutManager!! as? LinearLayoutManager)?.findFirstVisibleItemPosition()
                 ?: 0
 
-        LOG_EVENT("HELLO_ITEM",visibleItemCount,totalItemCount,pastVisiblesItems)
 
         return visibleItemCount + pastVisiblesItems >= totalItemCount
     }

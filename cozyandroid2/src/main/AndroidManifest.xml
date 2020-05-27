@@ -13,6 +13,13 @@
             android:theme="@style/ImageView"
             android:windowSoftInputMode="adjustResize"/>
 
+
+        <activity android:name=".base_fragment.navigation.tasks.activity.HostActivity"
+            android:screenOrientation="portrait"
+            android:exported="true"
+            android:theme="@style/ImageView"
+            android:windowSoftInputMode="adjustResize"/>
+
     </application>
 
 </manifest>
