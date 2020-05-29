@@ -1,14 +1,12 @@
 package ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks
 
 import android.view.View
-import android.view.ViewGroup
 import androidx.annotation.ColorInt
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import ua.palamarenko.cozyandroid2.CozyLibrarySettings
 import com.google.android.material.snackbar.Snackbar
-import androidx.core.view.accessibility.AccessibilityEventCompat.setAction
+import ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks.popups.*
 
 
 fun showPopup(data: Any, fragmentManager: FragmentManager?) {
@@ -17,6 +15,8 @@ fun showPopup(data: Any, fragmentManager: FragmentManager?) {
         is Popup -> showDefaultPopup(data, fragmentManager)
         is CozyFullPopup<*> -> data.show(fragmentManager)
         is CozyBottomSheets<*> -> data.show(fragmentManager)
+        is ShowPopupWindow -> CozyWindowPopup().create(data.anchor,data.list,data.click)
+        is ShowPopupWindowCustomCell -> CozyWindowPopup().createWithCell(data.anchor,data.list)
     }
 }
 
@@ -34,12 +34,20 @@ fun showDefaultProgress(progress: Boolean, activity: FragmentActivity?) {
 
 fun showSnackbar(baseView: View, popup: SnackbarPopup) {
 
-    val snackbar = Snackbar.make(baseView, convertAnyToTitle(popup.title), Snackbar.LENGTH_LONG)
+    val snackbar = Snackbar.make(baseView,
+        convertAnyToTitle(
+            popup.title
+        ), Snackbar.LENGTH_LONG)
 
     if (popup.action != null) {
 
         val actionName =
-            if (convertAnyToTitle(popup.actionName).isNotEmpty()) convertAnyToTitle(popup.actionName) else "Ok"
+            if (convertAnyToTitle(
+                    popup.actionName
+                )
+                    .isNotEmpty()) convertAnyToTitle(
+                popup.actionName
+            ) else "Ok"
 
         snackbar.setAction(actionName) {
             popup.action?.invoke()

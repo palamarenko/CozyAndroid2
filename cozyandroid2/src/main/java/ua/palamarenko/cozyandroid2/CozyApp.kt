@@ -1,11 +1,10 @@
 package ua.palamarenko.cozyandroid2
 
-import android.app.Application
 import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.FragmentActivity
-import ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks.CozyPopup
-import ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks.CozyReusePopup
+import ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks.popups.CozyPopup
+import ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks.popups.CozyReusePopup
 
 
 object CozyLibrarySettings {

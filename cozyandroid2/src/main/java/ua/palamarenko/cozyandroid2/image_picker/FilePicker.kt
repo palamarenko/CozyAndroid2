@@ -4,7 +4,6 @@ import android.content.Intent
 import android.database.Cursor
 import android.net.Uri
 import android.os.Bundle
-import android.os.ParcelFileDescriptor
 import android.provider.OpenableColumns
 import android.view.View
 import androidx.annotation.NonNull
@@ -16,14 +15,12 @@ import pl.aprilapps.easyphotopicker.MediaFile
 import pl.aprilapps.easyphotopicker.MediaSource
 import ua.palamarenko.cozyandroid2.CozyLibrarySettings
 import ua.palamarenko.cozyandroid2.R
-import ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks.CozyBasePopup
+import ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks.popups.CozyBasePopup
 import ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks.CozyFragment
 import ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks.EmptyViewModel
-import ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks.convertAnyToTitle
-import ua.palamarenko.cozyandroid2.tools.LOG_EVENT
+import ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks.popups.convertAnyToTitle
 import ua.palamarenko.cozyandroid2.tools.click
 import java.io.File
-import java.io.FileDescriptor
 import java.io.FileOutputStream
 
 
@@ -157,27 +154,45 @@ class ImagePickPopup(
         super.onViewCreated(view, savedInstanceState)
 
         if (strings.title != null) {
-            tvTitle.text = convertAnyToTitle(strings.title!!)
+            tvTitle.text =
+                convertAnyToTitle(
+                    strings.title!!
+                )
         }
 
         if (strings.cameraTitle != null) {
-            tvCameraTitle.text = convertAnyToTitle(strings.cameraTitle!!)
+            tvCameraTitle.text =
+                convertAnyToTitle(
+                    strings.cameraTitle!!
+                )
         }
 
         if (strings.cameraSubTitle != null) {
-            tvCameraSubTitle.text = convertAnyToTitle(strings.cameraSubTitle!!)
+            tvCameraSubTitle.text =
+                convertAnyToTitle(
+                    strings.cameraSubTitle!!
+                )
         }
 
         if (strings.galleryTitle != null) {
-            tvGalleryTitle.text = convertAnyToTitle(strings.galleryTitle!!)
+            tvGalleryTitle.text =
+                convertAnyToTitle(
+                    strings.galleryTitle!!
+                )
         }
 
         if (strings.gallerySubTitle != null) {
-            tvGallerySubTitle.text = convertAnyToTitle(strings.gallerySubTitle!!)
+            tvGallerySubTitle.text =
+                convertAnyToTitle(
+                    strings.gallerySubTitle!!
+                )
         }
 
         if (strings.cancel != null) {
-            tvCancel.text = convertAnyToTitle(strings.cancel!!)
+            tvCancel.text =
+                convertAnyToTitle(
+                    strings.cancel!!
+                )
         }
 
         cozyFragment.activityResultCallBack = { i, i1, data ->

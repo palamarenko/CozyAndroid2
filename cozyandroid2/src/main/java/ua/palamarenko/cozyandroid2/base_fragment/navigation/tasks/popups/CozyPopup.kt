@@ -1,13 +1,10 @@
-package ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks
+package ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks.popups
 
-import android.content.Context
-import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import kotlinx.android.synthetic.main.popup_cozy.*
 import ua.palamarenko.cozyandroid2.CozyLibrarySettings
 import ua.palamarenko.cozyandroid2.R
-import ua.palamarenko.cozyandroid2.tools.click
 import ua.palamarenko.cozyandroid2.tools.makeCharSequence
 
 open class CozyPopup : CozyReusePopup() {
@@ -43,15 +40,31 @@ open class CozyPopup : CozyReusePopup() {
 
 
             tvOk.setOnClickListener {
-                positiveCallback?.invoke(ResponseModel(cbCheckBox.isChecked))
-                finishAction?.invoke(ResponseModel(cbCheckBox.isChecked))
+                positiveCallback?.invoke(
+                    ResponseModel(
+                        cbCheckBox.isChecked
+                    )
+                )
+                finishAction?.invoke(
+                    ResponseModel(
+                        cbCheckBox.isChecked
+                    )
+                )
                 finishAction = null
                 dismissAllowingStateLoss()
             }
 
             tvCancel.setOnClickListener {
-                negativeCallback?.invoke(ResponseModel(cbCheckBox.isChecked))
-                finishAction?.invoke(ResponseModel(cbCheckBox.isChecked))
+                negativeCallback?.invoke(
+                    ResponseModel(
+                        cbCheckBox.isChecked
+                    )
+                )
+                finishAction?.invoke(
+                    ResponseModel(
+                        cbCheckBox.isChecked
+                    )
+                )
                 finishAction = null
                 dismissAllowingStateLoss()
             }
@@ -94,10 +107,18 @@ fun convertAnyToTitle(title: Any): CharSequence {
 fun Popup.generationShortPopup(): ShortPopup {
 
     return ShortPopup(
-        title = convertAnyToTitle(title),
-        body = convertAnyToTitle(body),
-        positiveButtonName =convertAnyToTitle(positiveButtonName),
-        negativeButtonName = convertAnyToTitle(negativeButtonName),
+        title = convertAnyToTitle(
+            title
+        ),
+        body = convertAnyToTitle(
+            body
+        ),
+        positiveButtonName = convertAnyToTitle(
+            positiveButtonName
+        ),
+        negativeButtonName = convertAnyToTitle(
+            negativeButtonName
+        ),
         isCancelable = isCancelable,
         checkBoxTitle = checkBoxTitle
     )

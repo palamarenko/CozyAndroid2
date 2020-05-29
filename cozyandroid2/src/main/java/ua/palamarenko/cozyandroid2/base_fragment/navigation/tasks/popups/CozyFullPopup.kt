@@ -1,4 +1,4 @@
-package ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks
+package ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks.popups
 
 import android.app.Dialog
 import android.content.Context
@@ -23,6 +23,7 @@ import ua.palamarenko.cozyandroid2.CozyLibrarySettings
 import ua.palamarenko.cozyandroid2.R
 import ua.palamarenko.cozyandroid2.base_fragment.navigation.NavigateActivity
 import ua.palamarenko.cozyandroid2.base_fragment.navigation.Navigator
+import ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks.*
 
 abstract class CozyFullPopup<T : CozyViewModel> : CozyBasePopup<T>() {
 
@@ -78,9 +79,17 @@ abstract class CozyFullPopup<T : CozyViewModel> : CozyBasePopup<T>() {
             BACK_PRESS ->  onBackPress(data as? Class<*>)
             DISMISS -> dismiss()
             FINISH_ACTIVITY -> activity?.finish()
-            SHOW_POPUP -> showPopup(data,fragmentManager)
+            SHOW_POPUP -> showPopup(
+                data,
+                fragmentManager
+            )
             CUSTOM_ACTION -> customAction(data as? CustomActionCallback)
-            SHOW_SNACKBAR -> view?.apply { showSnackbar(this, data as SnackbarPopup) }
+            SHOW_SNACKBAR -> view?.apply {
+                showSnackbar(
+                    this,
+                    data as SnackbarPopup
+                )
+            }
             else -> observeCustomTasks(id,data,bundle)
         }
     }
@@ -135,7 +144,10 @@ abstract class CozyFullPopup<T : CozyViewModel> : CozyBasePopup<T>() {
 
 
     open fun showProgress(progress: Boolean) {
-        showDefaultProgress(progress,activity)
+        showDefaultProgress(
+            progress,
+            activity
+        )
     }
 
 

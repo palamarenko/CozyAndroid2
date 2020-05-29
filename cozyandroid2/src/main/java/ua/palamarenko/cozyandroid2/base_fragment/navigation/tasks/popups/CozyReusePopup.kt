@@ -1,10 +1,12 @@
-package ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks
+package ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks.popups
 
 import android.content.DialogInterface
 import kotlinx.android.synthetic.main.popup_cozy.*
+import ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks.EmptyViewModel
 import java.lang.Exception
 
-abstract class CozyReusePopup : CozyBasePopup<EmptyViewModel>(), CozyPopupSetter {
+abstract class CozyReusePopup : CozyBasePopup<EmptyViewModel>(),
+    CozyPopupSetter {
 
     var positiveCallback: ((ResponseModel) -> Unit)? = null
     var negativeCallback: ((ResponseModel) -> Unit)? = null
@@ -16,8 +18,16 @@ abstract class CozyReusePopup : CozyBasePopup<EmptyViewModel>(), CozyPopupSetter
     override fun onDismiss(dialog: DialogInterface) {
         super.onDismiss(dialog)
         try {
-            dissmisCallback?.invoke(ResponseModel(cbCheckBox.isChecked))
-            finishAction?.invoke(ResponseModel(cbCheckBox.isChecked))
+            dissmisCallback?.invoke(
+                ResponseModel(
+                    cbCheckBox.isChecked
+                )
+            )
+            finishAction?.invoke(
+                ResponseModel(
+                    cbCheckBox.isChecked
+                )
+            )
             finishAction = null
         } catch (e: Exception) {
         }

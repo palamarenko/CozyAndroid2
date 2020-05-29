@@ -1,4 +1,4 @@
-package ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks
+package ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks.popups
 
 import android.app.Dialog
 import android.content.Context
@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatDialogFragment
 import androidx.lifecycle.ViewModelProviders
 import com.google.gson.Gson
 import ua.palamarenko.cozyandroid2.base_fragment.navigation.ReflectionUtils
+import ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks.CozyViewModel
 
 abstract class CozyBasePopup<T : CozyViewModel> : AppCompatDialogFragment() {
 
@@ -113,7 +114,7 @@ abstract class CozyBasePopup<T : CozyViewModel> : AppCompatDialogFragment() {
         arguments?.putBoolean(key, value)
         return this
     }
-    fun setArgumentObject(key: String, value: Any?): CozyBasePopup<T>{
+    fun setArgumentObject(key: String, value: Any?): CozyBasePopup<T> {
         if(arguments == null) {
             arguments = Bundle()
         }

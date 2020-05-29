@@ -17,6 +17,7 @@ import com.google.gson.Gson
 import ua.palamarenko.cozyandroid2.CozyLibrarySettings
 import ua.palamarenko.cozyandroid2.base_fragment.navigation.*
 import ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks.activity.HostActivity
+import ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks.popups.PopupCell
 import ua.palamarenko.cozyandroid2.image_picker.FilePicker
 import ua.palamarenko.cozyandroid2.image_picker.PickFileRequest
 import ua.palamarenko.cozyandroid2.image_picker.PickMultipleImageRequest
@@ -59,12 +60,12 @@ abstract class CozyFragment<T : CozyViewModel> : CozyBaseFragment<T>(), BackPres
             BACK_PRESS -> onBackPress(data as? Class<*>)
             CUSTOM_ACTION -> customAction(data as? CustomActionCallback)
             FINISH_ACTIVITY -> activity?.finish()
-            SHOW_POPUP -> showPopup(data, fragmentManager)
+            SHOW_POPUP -> showPopup(data, parentFragmentManager)
             START_ACTIVITY_FOR_RESAULT -> startResultActivityResault(data, bundle)
             SET_RESULT -> setResult(data)
             SHOW_SNACKBAR -> view?.apply { showSnackbar(this, data as SnackbarPopup) }
             REQUEST_PERMISSION -> checkPermission(data as RequestPermissionCallback)
-            CLEAR_FRAGMENTS -> fragmentManager?.popBackStack(
+            CLEAR_FRAGMENTS -> parentFragmentManager.popBackStack(
                 null,
                 FragmentManager.POP_BACK_STACK_INCLUSIVE
             )
@@ -153,14 +154,15 @@ abstract class CozyFragment<T : CozyViewModel> : CozyBaseFragment<T>(), BackPres
 
     open fun navigate(fragment: Any, bundle: Bundle) {
 
-        when(fragment){
+        when (fragment) {
             is Fragment -> getNavigator().replaceFragment(fragment, bundle)
             is NavigateNewActivity -> {
                 val intent = Intent(Intent.ACTION_VIEW)
-                intent.component = ComponentName(CozyLibrarySettings.appContext!!,
+                intent.component = ComponentName(
+                    CozyLibrarySettings.appContext!!,
                     HostActivity::class.java
                 )
-                fragment.bundle.putString("HostActivityFragment",fragment.fragment.canonicalName)
+                fragment.bundle.putString("HostActivityFragment", fragment.fragment.canonicalName)
                 intent.putExtras(fragment.bundle)
                 startActivity(intent)
             }
@@ -281,7 +283,7 @@ abstract class CozyFragment<T : CozyViewModel> : CozyBaseFragment<T>(), BackPres
 
 
 class RequestPermissionCallback(val permission: Array<String>, val callBack: (Boolean) -> Unit)
-class NavigateNewActivity(val fragment : Class<*>, val bundle: Bundle = Bundle())
+class NavigateNewActivity(val fragment: Class<*>, val bundle: Bundle = Bundle())
 class StartActivityCallback(val activity: Any, val callBack: (Intent) -> Unit)
 class StartActivityTypeCallback<T : Any>(val activity: Any, val callBack: (T) -> Unit)
 class ImageViewerRequest(
@@ -291,5 +293,6 @@ class ImageViewerRequest(
 )
 
 class ShowProgressCallBack(val progress: Boolean, val dismissCallBack: (() -> Unit)? = null)
-
+class ShowPopupWindow(val anchor: View, val list: List<String>, val click: (String) -> Unit)
+class ShowPopupWindowCustomCell(val anchor: View, val list: List<PopupCell>)
 class CustomActionCallback(val listener: (CozyActivity<*>) -> Unit)
