@@ -1,10 +1,11 @@
-package ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks.popups
+package ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks
 
 import android.os.Bundle
 import android.view.View
 import kotlinx.android.synthetic.main.popup_cozy.*
 import ua.palamarenko.cozyandroid2.CozyLibrarySettings
 import ua.palamarenko.cozyandroid2.R
+import ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks.popups.CozyReusePopup
 import ua.palamarenko.cozyandroid2.tools.makeCharSequence
 
 open class CozyPopup : CozyReusePopup() {
