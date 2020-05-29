@@ -14,9 +14,8 @@ class HostActivity : CozyActivity<EmptyViewModel>(){
         super.onCreate(savedInstanceState)
         val c = Class.forName(intent.getStringExtra("HostActivityFragment")!!)
         val cons: Constructor<*> = c.getConstructor()
-        val fragment: Any = cons.newInstance()
-        simpleInit(fragment as CozyFragment<*>)
-
-
+        val fragment: CozyFragment<*> = cons.newInstance() as CozyFragment<*>
+        fragment.arguments = intent.extras?:Bundle()
+        simpleInit(fragment)
     }
 }

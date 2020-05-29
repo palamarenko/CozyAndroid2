@@ -184,6 +184,30 @@ open class CozyViewModel : CozyBaseViewModel() {
     }
 
 
+    fun  Completable.toLiveData(
+        bindName: String? = null,
+        onError: (Throwable) -> Unit = { validateError(it) }
+    ): MutableLiveData<Any> {
+
+        val liveData = if (bindName != null && liveDataMap[bindName] != null) {
+            liveDataMap.get(bindName) as MutableLiveData<Any>
+        } else {
+            MutableLiveData<Any>()
+        }
+
+        if (bindName != null && liveDataMap.get(bindName) == null) {
+            liveDataMap[bindName] = liveData
+        }
+
+
+        bindSubscribe(bindName = bindName, onNext = {
+            liveData.postValue(Any())
+        }, onError = onError)
+
+        return liveData
+    }
+
+
     fun <T : Any> Single<T>.justSubscribe(onNext: (T) -> Unit = {}) = subscribe(onNext, {}).apply {
         compositeDisposable.bind(this)
     }

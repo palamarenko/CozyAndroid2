@@ -213,7 +213,6 @@ abstract class CozyBaseFragment<T : CozyBaseViewModel> : Fragment() {
         super.onStop()
         hideKeyboard()
     }
-
 }
 
 fun <B : CozyBaseViewModel, T : CozyBaseFragment<B>> T.putString(key: String, value: String): T {
