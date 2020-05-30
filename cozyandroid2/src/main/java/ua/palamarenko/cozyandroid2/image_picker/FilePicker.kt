@@ -18,7 +18,7 @@ import ua.palamarenko.cozyandroid2.R
 import ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks.popups.CozyBasePopup
 import ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks.CozyFragment
 import ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks.EmptyViewModel
-import ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks.popups.convertAnyToTitle
+import ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks.convertAnyToTitle
 import ua.palamarenko.cozyandroid2.tools.click
 import java.io.File
 import java.io.FileOutputStream

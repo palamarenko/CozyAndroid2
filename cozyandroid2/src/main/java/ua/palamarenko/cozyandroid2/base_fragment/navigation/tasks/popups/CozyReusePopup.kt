@@ -3,6 +3,8 @@ package ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks.popups
 import android.content.DialogInterface
 import kotlinx.android.synthetic.main.popup_cozy.*
 import ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks.EmptyViewModel
+import ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks.ResponseModel
+import ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks.ShortPopup
 import java.lang.Exception
 
 abstract class CozyReusePopup : CozyBasePopup<EmptyViewModel>(),
