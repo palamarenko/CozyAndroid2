@@ -66,19 +66,18 @@ fun CheckBox.listen(listener: (Boolean) -> Unit) {
 }
 
 
-fun inflateView(id : Int) : View{
-    return View.inflate(CozyLibrarySettings.appContext,id,null)
+fun inflateView(id: Int): View {
+    return View.inflate(CozyLibrarySettings.appContext, id, null)
 }
 
 
-fun getLocale() : Locale{
-    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N){
+fun getLocale(): Locale {
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
         CozyLibrarySettings.appContext!!.resources.configuration.locales.get(0);
-    } else{
+    } else {
         CozyLibrarySettings.appContext!!.resources.configuration.locale;
     }
 }
-
 
 
 fun SearchView.listen(listener: (String) -> Unit, submitListener: ((String) -> Unit)? = null) {
@@ -132,7 +131,7 @@ fun View.click(clickBack: Boolean = true, click: () -> Unit) {
             post {
                 try {
                     val outValue = TypedValue()
-
+                    LOG_EVENT("HELLO_SIZE", width, height, width / 2 > height)
                     if (width / 2 > height) {
                         context.theme.resolveAttribute(
                             android.R.attr.selectableItemBackground,
@@ -140,7 +139,9 @@ fun View.click(clickBack: Boolean = true, click: () -> Unit) {
                             true
                         )
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                            foreground = getDrawable(outValue.resourceId)
+                            if (foreground == null) {
+                                foreground = getDrawable(outValue.resourceId)
+                            }
                         }
                     } else {
                         context.theme.resolveAttribute(
@@ -149,7 +150,12 @@ fun View.click(clickBack: Boolean = true, click: () -> Unit) {
                             true
                         )
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                            foreground = getDrawable(outValue.resourceId)
+                            if (background == null) {
+                                background = getDrawable(outValue.resourceId)
+                            } else if (foreground == null) {
+                                foreground = getDrawable(outValue.resourceId)
+                            }
+
                         }
                     }
                 } catch (e: Exception) {
@@ -496,23 +502,23 @@ private fun LOG_THIS(key: String?, mes: Any?) {
 
     Log.d("MY_LOG_$useKey", useMes.toString())
 }
-private fun getDislay(any : Any?) : String{
+
+private fun getDislay(any: Any?): String {
     try {
-        if(any is String){
+        if (any is String) {
             return any
         }
-        if(any is Number){
+        if (any is Number) {
             return any.toString()
         }
-        if(any == null){
+        if (any == null) {
             return "NULL"
         }
 
         return Gson().toJson(any)
-    }catch (e : java.lang.Exception){
-        return e.message?:""
+    } catch (e: java.lang.Exception) {
+        return e.message ?: ""
     }
-
 
 
 }
