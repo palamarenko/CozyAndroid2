@@ -131,7 +131,6 @@ fun View.click(clickBack: Boolean = true, click: () -> Unit) {
             post {
                 try {
                     val outValue = TypedValue()
-                    LOG_EVENT("HELLO_SIZE", width, height, width / 2 > height)
                     if (width / 2 > height) {
                         context.theme.resolveAttribute(
                             android.R.attr.selectableItemBackground,
