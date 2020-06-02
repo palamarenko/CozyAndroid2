@@ -61,7 +61,9 @@ abstract class PaginationController(
     }
 
 
-    private fun restart() {
+    fun restart(firstPage : Int = 0) {
+        needLoadNewPage = true
+        this.firstPage = firstPage
         lastLoadSize = -1
     }
 
