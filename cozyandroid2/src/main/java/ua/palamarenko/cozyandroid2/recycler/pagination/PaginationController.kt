@@ -36,7 +36,7 @@ abstract class PaginationController(
 
 
     private fun loadNextPage() {
-        if (lastLoadSize == recycler.getItemCount()) {
+        if (lastLoadSize == recycler.getItemCount() || !needLoadNewPage) {
             return
         }
 

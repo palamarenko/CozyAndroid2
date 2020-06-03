@@ -162,8 +162,8 @@ abstract class CozyFragment<T : CozyViewModel> : CozyBaseFragment<T>(), BackPres
                     CozyLibrarySettings.appContext!!,
                     HostActivity::class.java
                 )
-                fragment.bundle.putString("HostActivityFragment", fragment.fragment.canonicalName)
-                intent.putExtras(fragment.bundle)
+                bundle.putString("HostActivityFragment", fragment.fragment.canonicalName)
+                intent.putExtras(bundle)
                 startActivity(intent)
             }
         }
@@ -283,7 +283,7 @@ abstract class CozyFragment<T : CozyViewModel> : CozyBaseFragment<T>(), BackPres
 
 
 class RequestPermissionCallback(val permission: Array<String>, val callBack: (Boolean) -> Unit)
-class NavigateNewActivity(val fragment: Class<*>, val bundle: Bundle = Bundle())
+class NavigateNewActivity(val fragment: Class<*>)
 class StartActivityCallback(val activity: Any, val callBack: (Intent) -> Unit)
 class StartActivityTypeCallback<T : Any>(val activity: Any, val callBack: (T) -> Unit)
 class ImageViewerRequest(
