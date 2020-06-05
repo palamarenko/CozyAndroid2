@@ -150,8 +150,10 @@ fun View.click(clickBack: Boolean = true, click: () -> Unit) {
                         )
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                             if (background == null) {
-                                background = getDrawable(outValue.resourceId)
-                            } else if (foreground == null) {
+                                val drawable = getDrawable(outValue.resourceId)
+                                drawable.level = 882
+                                background = drawable
+                            } else if (foreground == null && background.level != 882) {
                                 foreground = getDrawable(outValue.resourceId)
                             }
 
@@ -169,6 +171,8 @@ fun View.click(clickBack: Boolean = true, click: () -> Unit) {
 
     setOnClickListener { click.invoke() }
 }
+
+
 
 fun EditText.openKeyboard() {
     post {
