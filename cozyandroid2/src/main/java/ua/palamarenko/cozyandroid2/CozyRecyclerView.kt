@@ -28,10 +28,9 @@ fun RecyclerView.setCell(list: List<CozyCell>, layoutManager: RecyclerView.Layou
         this.layoutManager = LinearLayoutManager(this.context)
     }
     val adapter = CozyRecyclerAdapter()
-    val comparatorItem: CompareItem = object : CompareItem {}
 
     this.adapter = adapter
-    adapter.updateList(list, comparatorItem)
+    adapter.updateList(list)
 
 }
 
@@ -39,9 +38,6 @@ fun RecyclerView.setCell(list: List<CozyCell>, layoutManager: RecyclerView.Layou
 class CozyRecyclerView : FrameLayout {
 
     lateinit var adapter: CozyRecyclerAdapter
-
-
-    private var comparatorItem: CompareItem = object : CompareItem {}
 
 
     private lateinit var view: View
@@ -344,13 +340,9 @@ class CozyRecyclerView : FrameLayout {
         view.srRefresh.isRefreshing = true
     }
 
-    fun setComparator(comparatorItem: CompareItem) {
-        this.comparatorItem = comparatorItem
-    }
-
 
     fun setCell(data: List<CozyCell>) {
-        adapter.updateList(data, comparatorItem)
+        adapter.updateList(data)
 
         if (adapter.itemCount == 0 && needPlaceHolder) {
             view.flPlaceHolder.visibility = View.VISIBLE
@@ -364,7 +356,7 @@ class CozyRecyclerView : FrameLayout {
 
 
     fun addCell(data: List<CozyCell>) {
-        adapter.addList(data, comparatorItem)
+        adapter.addList(data)
 
         if (adapter.itemCount == 0 && needPlaceHolder) {
             view.flPlaceHolder.visibility = View.VISIBLE
@@ -377,11 +369,11 @@ class CozyRecyclerView : FrameLayout {
     }
 
     fun addProgressCell() {
-        adapter.addProgressCell(DefaultProgressCell(), comparatorItem)
+        adapter.addProgressCell(DefaultProgressCell())
     }
 
     fun removeProgressCell() {
-        adapter.removeProgressCell(comparatorItem)
+        adapter.removeProgressCell()
     }
 
 
@@ -422,16 +414,6 @@ class CozyRecyclerView : FrameLayout {
 
 }
 
-interface CompareItem {
-    fun isSameId(data1: Any, data2: Any): Boolean {
-        return data1.hashCode() == data2.hashCode()
-    }
-
-    fun isSameContent(data1: Any, data2: Any): Boolean {
-        return data1.hashCode() == data2.hashCode()
-    }
-}
-
 
 abstract class CozyCell {
     abstract val data: Any
@@ -439,7 +421,8 @@ abstract class CozyCell {
     abstract fun bind(view: View)
 
     var position: Int = 0
-    var identifier: Long? = null
+    open var identifier: Long? = null
+    open var contentHash: Long? = null
 
     open fun getIdentifier(): Long {
         if (identifier != null) {
@@ -448,6 +431,15 @@ abstract class CozyCell {
 
         return data.hashCode().toLong()
     }
+
+    open fun getContentHash(): Long {
+        if (contentHash != null) {
+            return contentHash!!
+        }
+
+        return data.hashCode().toLong()
+    }
+
 
     open fun getViewBuilder(): ViewBuilder {
         return object : ViewBuilder(layout) {

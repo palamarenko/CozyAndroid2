@@ -4,7 +4,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import ua.palamarenko.cozyandroid2.CompareItem
 import ua.palamarenko.cozyandroid2.CozyCell
 import ua.palamarenko.cozyandroid2.DefaultProgressCell
 import ua.palamarenko.cozyandroid2.ViewBuilder
@@ -44,7 +43,7 @@ class CozyRecyclerAdapter() : RecyclerView.Adapter<CozyViewHolder<CozyCell>>(), 
     }
 
 
-    fun updateList(data: List<CozyCell>, compareItem: CompareItem) {
+    fun updateList(data: List<CozyCell>) {
         listViewBuilder.clear()
         data.forEach { cell ->
             if (listViewBuilder.find { it.viewType == cell.getViewBuilder().viewType } == null) {
@@ -52,7 +51,7 @@ class CozyRecyclerAdapter() : RecyclerView.Adapter<CozyViewHolder<CozyCell>>(), 
             }
         }
 
-        val callBack = CozyDiffCallBack(list, data, compareItem)
+        val callBack = CozyDiffCallBack(list, data)
         val diffResult = DiffUtil.calculateDiff(callBack)
         this.list.clear()
         this.list.addAll(data)
@@ -60,7 +59,7 @@ class CozyRecyclerAdapter() : RecyclerView.Adapter<CozyViewHolder<CozyCell>>(), 
     }
 
 
-    fun addList(data: List<CozyCell>, compareItem: CompareItem) {
+    fun addList(data: List<CozyCell>) {
         listViewBuilder.clear()
         val newList = ArrayList<CozyCell>()
         newList.addAll(list)
@@ -71,26 +70,26 @@ class CozyRecyclerAdapter() : RecyclerView.Adapter<CozyViewHolder<CozyCell>>(), 
             }
         }
 
-        val callBack = CozyDiffCallBack(list, newList, compareItem)
+        val callBack = CozyDiffCallBack(list, newList)
         val diffResult = DiffUtil.calculateDiff(callBack)
         this.list.clear()
         this.list.addAll(newList)
         diffResult.dispatchUpdatesTo(this)
     }
 
-    fun addProgressCell(cell: CozyCell, compareItem: CompareItem) {
+    fun addProgressCell(cell: CozyCell) {
         listViewBuilder.add(cell.getViewBuilder())
         val newList = ArrayList<CozyCell>()
         newList.addAll(list)
         newList.add(cell)
-        val callBack = CozyDiffCallBack(list, newList, compareItem)
+        val callBack = CozyDiffCallBack(list, newList)
         val diffResult = DiffUtil.calculateDiff(callBack)
         this.list.clear()
         this.list.addAll(newList)
         diffResult.dispatchUpdatesTo(this)
     }
 
-    fun removeProgressCell(compareItem: CompareItem) {
+    fun removeProgressCell() {
         if (list.isEmpty()) {
             return
         }
@@ -100,7 +99,7 @@ class CozyRecyclerAdapter() : RecyclerView.Adapter<CozyViewHolder<CozyCell>>(), 
             val newList = ArrayList<CozyCell>()
             newList.addAll(list)
             newList.removeAt(newList.size - 1)
-            val callBack = CozyDiffCallBack(list, newList, compareItem)
+            val callBack = CozyDiffCallBack(list, newList)
             val diffResult = DiffUtil.calculateDiff(callBack)
             this.list.clear()
             this.list.addAll(newList)
