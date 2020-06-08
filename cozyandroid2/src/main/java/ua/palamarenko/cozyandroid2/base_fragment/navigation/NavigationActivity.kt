@@ -2,17 +2,16 @@ package ua.palamarenko.cozyandroid2.base_fragment.navigation
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.view.View
 import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import com.tbruyelle.rxpermissions2.RxPermissions
-import java.lang.Exception
 import androidx.fragment.app.FragmentTransaction
+import com.tbruyelle.rxpermissions2.RxPermissions
 import ua.palamarenko.cozyandroid2.R
 import ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks.CozyFragment
+import ua.palamarenko.cozyandroid2.tools.LOG_EVENT
 
 
 const val FRAGMENT_TAG = "FRAGMENT_TAG"
@@ -32,6 +31,13 @@ open class NavigateActivity : AppCompatActivity() {
         animation: TRANSACTION_ANIMATION = TRANSACTION_ANIMATION.DEFAULT_ANIMATION,
         customAnimation: ((ft: FragmentTransaction) -> Unit)? = null
     ) {
+
+        val fm: FragmentManager = supportFragmentManager
+        for (i in 0 until fm.backStackEntryCount) {
+            fm.popBackStack()
+        }
+
+
         frameLayout = FrameLayout(this)
         frameLayout.id = View.generateViewId()
         this.setContentView(frameLayout)
@@ -70,6 +76,8 @@ open class NavigateActivity : AppCompatActivity() {
         } else {
             val manager = navigator.fragmentManager
             val count = manager.backStackEntryCount
+
+            LOG_EVENT("HELLO",count)
             if (count <= 1) {
                 finish()
             } else {
