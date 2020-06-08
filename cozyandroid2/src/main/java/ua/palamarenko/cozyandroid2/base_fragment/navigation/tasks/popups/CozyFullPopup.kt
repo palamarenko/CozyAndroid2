@@ -1,6 +1,7 @@
 package ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks.popups
 
 import android.app.Dialog
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
@@ -24,6 +25,7 @@ import ua.palamarenko.cozyandroid2.R
 import ua.palamarenko.cozyandroid2.base_fragment.navigation.NavigateActivity
 import ua.palamarenko.cozyandroid2.base_fragment.navigation.Navigator
 import ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks.*
+import ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks.activity.HostActivity
 
 abstract class CozyFullPopup<T : CozyViewModel> : CozyBasePopup<T>() {
 
@@ -73,7 +75,7 @@ abstract class CozyFullPopup<T : CozyViewModel> : CozyBasePopup<T>() {
 
         when (id) {
             SHOW_PROGRESS -> showProgress(data as Boolean)
-            NAVIGATE -> navigate(data as Fragment, bundle)
+            NAVIGATE -> navigate(data, bundle)
             TOAST -> showToast(data as String)
             START_ACTIVITY -> changeActivity(data, bundle)
             BACK_PRESS ->  onBackPress(data as? Class<*>)
@@ -110,8 +112,21 @@ abstract class CozyFullPopup<T : CozyViewModel> : CozyBasePopup<T>() {
     }
 
 
-    open fun navigate(fragment: Fragment, bundle: Bundle = Bundle()) {
-        getNavigator().replaceFragment(fragment, bundle)
+    open fun navigate(fragment: Any, bundle: Bundle = Bundle()) {
+        when (fragment) {
+            is Fragment -> getNavigator().replaceFragment(fragment, bundle)
+            is NavigateNewActivity -> {
+                val intent = Intent(Intent.ACTION_VIEW)
+                intent.component = ComponentName(
+                    CozyLibrarySettings.appContext!!,
+                    HostActivity::class.java
+                )
+                bundle.putString(hostActivityFragment, fragment.fragment.canonicalName)
+                intent.putExtras(bundle)
+                startActivity(intent)
+            }
+        }
+
     }
 
     private fun getNavigator(): Navigator {

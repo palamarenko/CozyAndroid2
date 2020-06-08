@@ -27,6 +27,8 @@ import ua.palamarenko.cozyandroid2.tools.image_viewer.ImageViewerActivity
 import ua.palamarenko.cozyandroid2.tools.image_viewer.getImageViewBundle
 
 
+val hostActivityFragment = "HostActivityFragment"
+
 abstract class CozyFragment<T : CozyViewModel> : CozyBaseFragment<T>(), BackPress {
 
     private val POPUP_TAG = "POPUP_TAG"
@@ -162,7 +164,7 @@ abstract class CozyFragment<T : CozyViewModel> : CozyBaseFragment<T>(), BackPres
                     CozyLibrarySettings.appContext!!,
                     HostActivity::class.java
                 )
-                bundle.putString("HostActivityFragment", fragment.fragment.canonicalName)
+                bundle.putString(hostActivityFragment, fragment.fragment.canonicalName)
                 intent.putExtras(bundle)
                 startActivity(intent)
             }

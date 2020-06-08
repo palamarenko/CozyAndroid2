@@ -1,5 +1,6 @@
 package ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks
 
+import android.content.ComponentName
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
@@ -9,6 +10,7 @@ import androidx.lifecycle.ViewModelProviders
 import ua.palamarenko.cozyandroid2.CozyLibrarySettings
 import ua.palamarenko.cozyandroid2.base_fragment.navigation.NavigateActivity
 import ua.palamarenko.cozyandroid2.base_fragment.navigation.ReflectionUtils
+import ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks.activity.HostActivity
 
 open class CozyActivity<T : CozyViewModel> : NavigateActivity() {
     private val POPUP_TAG = "POPUP_TAG"
@@ -22,7 +24,7 @@ open class CozyActivity<T : CozyViewModel> : NavigateActivity() {
 
         when (id) {
             SHOW_PROGRESS -> showProgress(data as Boolean)
-            NAVIGATE -> navigate(data as Fragment, bundle)
+            NAVIGATE -> navigate(data, bundle)
             TOAST -> showToast(data as String)
             START_ACTIVITY -> changeActivity(data, bundle)
             BACK_PRESS -> onBackPressed(data as? Class<*>)
@@ -58,9 +60,23 @@ open class CozyActivity<T : CozyViewModel> : NavigateActivity() {
     }
 
 
-    open fun navigate(fragment: Fragment, bundle: Bundle) {
-        navigator.replaceFragment(fragment, bundle)
+    open fun navigate(fragment: Any, bundle: Bundle = Bundle()) {
+        when (fragment) {
+            is Fragment -> navigator.replaceFragment(fragment, bundle)
+            is NavigateNewActivity -> {
+                val intent = Intent(Intent.ACTION_VIEW)
+                intent.component = ComponentName(
+                    CozyLibrarySettings.appContext!!,
+                    HostActivity::class.java
+                )
+                bundle.putString(hostActivityFragment, fragment.fragment.canonicalName)
+                intent.putExtras(bundle)
+                startActivity(intent)
+            }
+        }
+
     }
+
 
     open fun showToast(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_LONG).show()
