@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.view.LayoutInflater
@@ -24,6 +25,7 @@ import ua.palamarenko.cozyandroid2.R
 import ua.palamarenko.cozyandroid2.base_fragment.navigation.NavigateActivity
 import ua.palamarenko.cozyandroid2.base_fragment.navigation.Navigator
 import ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks.*
+import ua.palamarenko.cozyandroid2.tools.image_viewer.getImageViewBundle
 
 abstract class CozyFullPopup<T : CozyViewModel> : CozyBasePopup<T>() {
 
@@ -35,7 +37,7 @@ abstract class CozyFullPopup<T : CozyViewModel> : CozyBasePopup<T>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        vm().tm.task.observe(this, Observer { observeTasks(it!!.id, it.data, it.rule) })
+        vm().tm.task.observe(viewLifecycleOwner, Observer { observeTasks(it!!.id, it.data, it.rule) })
 
         if (!callViewCreated) {
             onStartScreen()
@@ -90,10 +92,29 @@ abstract class CozyFullPopup<T : CozyViewModel> : CozyBasePopup<T>() {
                     data as SnackbarPopup
                 )
             }
+            OPEN_LINK -> openLink(data as String)
+            IMAGE_VIEWER -> {
+                startActivity(
+                    getImageViewBundle(
+                        (data as ImageViewerRequest).list,
+                        data.url,
+                        data.title
+                    )
+                )
+            }
             else -> observeCustomTasks(id,data,bundle)
         }
     }
 
+    private fun openLink(link: String) {
+        val formattedLink = if (!link.startsWith("http://") && !link.startsWith("https://")) {
+            "http://$link";
+        } else {
+            link
+        }
+        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(formattedLink))
+        startActivity(browserIntent)
+    }
 
     open fun customAction(callback: CustomActionCallback?) {
         if (activity != null && activity is CozyActivity<*>) {
