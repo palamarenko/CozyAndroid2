@@ -101,63 +101,6 @@ abstract class CozyBasePopup<T : CozyViewModel> : AppCompatDialogFragment() {
         return arguments?.getDouble(key) ?: 0.0
     }
 
-    fun <B : CozyBaseViewModel, T : CozyBasePopup<B>> T.putString(key: String, value: String): T {
-        if (arguments == null) {
-            arguments = Bundle()
-        }
-
-        arguments?.putString(key, value)
-        return this
-    }
-
-    fun <B : CozyBaseViewModel, T : CozyBasePopup<B>> T.putDouble(key: String, value: Double): T {
-        if (arguments == null) {
-            arguments = Bundle()
-        }
-
-        arguments?.putDouble(key, value)
-        return this
-    }
-
-    fun <B : CozyBaseViewModel, T : CozyBasePopup<B>> T.putInt(key: String, value: Int): T {
-        if (arguments == null) {
-            arguments = Bundle()
-        }
-
-        arguments?.putInt(key, value)
-        return this
-    }
-
-    fun <B : CozyBaseViewModel, T : CozyBasePopup<B>> T.putLong(key: String, value: Long): T {
-        if (arguments == null) {
-            arguments = Bundle()
-        }
-
-        arguments?.putLong(key, value)
-        return this
-    }
-
-    fun <B : CozyBaseViewModel, T : CozyBasePopup<B>> T.putBool(key: String, value: Boolean): T {
-        if (arguments == null) {
-            arguments = Bundle()
-        }
-
-        arguments?.putBoolean(key, value)
-        return this
-    }
-
-    fun <B : CozyBaseViewModel, T : CozyBasePopup<B>> T.putObject(key: String, value: Any?): T {
-        if (arguments == null) {
-            arguments = Bundle()
-        }
-        if (value != null) arguments?.putString(key, Gson().toJson(value))
-        return this
-    }
-
-
-
-
-
     inline fun <reified T> getArgumentObject(key: String): T?{
         val typeObject = arguments?.getString(key)
 
@@ -197,4 +140,58 @@ abstract class CozyBasePopup<T : CozyViewModel> : AppCompatDialogFragment() {
         }
     }
 
+}
+
+
+fun <B : CozyBaseViewModel, T : CozyBasePopup<B>> T.putString(key: String, value: String): T {
+    if (getArguments() == null) {
+        setArguments(Bundle())
+    }
+
+    getArguments()?.putString(key, value)
+    return this
+}
+
+fun <B : CozyBaseViewModel, T : CozyBasePopup<B>> T.putDouble(key: String, value: Double): T {
+    if (getArguments() == null) {
+        setArguments(Bundle())
+    }
+
+    getArguments()?.putDouble(key, value)
+    return this
+}
+
+fun <B : CozyBaseViewModel, T : CozyBasePopup<B>> T.putInt(key: String, value: Int): T {
+    if (getArguments() == null) {
+        setArguments(Bundle())
+    }
+
+    getArguments()?.putInt(key, value)
+    return this
+}
+
+fun <B : CozyBaseViewModel, T : CozyBasePopup<B>> T.putLong(key: String, value: Long): T {
+    if (getArguments() == null) {
+        setArguments(Bundle())
+    }
+
+    getArguments()?.putLong(key, value)
+    return this
+}
+
+fun <B : CozyBaseViewModel, T : CozyBasePopup<B>> T.putBool(key: String, value: Boolean): T {
+    if (getArguments() == null) {
+        setArguments(Bundle())
+    }
+
+    getArguments()?.putBoolean(key, value)
+    return this
+}
+
+fun <B : CozyBaseViewModel, T : CozyBasePopup<B>> T.putObject(key: String, value: Any?): T {
+    if (getArguments() == null) {
+        setArguments(Bundle())
+    }
+    if (value != null) getArguments()?.putString(key, Gson().toJson(value))
+    return this
 }
