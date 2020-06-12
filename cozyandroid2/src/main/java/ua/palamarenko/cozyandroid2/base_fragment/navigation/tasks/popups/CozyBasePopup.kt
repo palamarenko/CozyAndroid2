@@ -14,6 +14,8 @@ import android.widget.EditText
 import androidx.appcompat.app.AppCompatDialogFragment
 import androidx.lifecycle.ViewModelProviders
 import com.google.gson.Gson
+import ua.palamarenko.cozyandroid2.base_fragment.navigation.CozyBaseFragment
+import ua.palamarenko.cozyandroid2.base_fragment.navigation.CozyBaseViewModel
 import ua.palamarenko.cozyandroid2.base_fragment.navigation.ReflectionUtils
 import ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks.CozyViewModel
 
@@ -70,14 +72,6 @@ abstract class CozyBasePopup<T : CozyViewModel> : AppCompatDialogFragment() {
         }
     }
 
-    fun setArgumentString(key: String, value: String): CozyBasePopup<T> {
-        if (arguments == null) {
-            arguments = Bundle()
-        }
-        arguments?.putString(key, value)
-        return this
-    }
-
 
     fun setArgumentCharSequence(key: String, value: CharSequence): CozyBasePopup<T> {
         if (arguments == null) {
@@ -86,43 +80,6 @@ abstract class CozyBasePopup<T : CozyViewModel> : AppCompatDialogFragment() {
         arguments?.putCharSequence(key, value)
         return this
     }
-
-    fun setArgumentInt(key: String, value: Int): CozyBasePopup<T> {
-        if (arguments == null) {
-            arguments = Bundle()
-        }
-
-        arguments?.putInt(key, value)
-        return this
-    }
-
-    fun setArgumentDouble(key: String, value: Double): CozyBasePopup<T> {
-        if (arguments == null) {
-            arguments = Bundle()
-        }
-
-        arguments?.putDouble(key, value)
-        return this
-    }
-
-
-    fun setArgumentBool(key: String, value: Boolean): CozyBasePopup<T> {
-        if (arguments == null) {
-            arguments = Bundle()
-        }
-
-        arguments?.putBoolean(key, value)
-        return this
-    }
-    fun setArgumentObject(key: String, value: Any?): CozyBasePopup<T> {
-        if(arguments == null) {
-            arguments = Bundle()
-        }
-        if(value!= null)
-            arguments?.putString(key, Gson().toJson(value))
-        return this
-    }
-
 
     fun getArgumentString(key: String): String {
         return arguments?.getString(key) ?: ""
@@ -143,6 +100,64 @@ abstract class CozyBasePopup<T : CozyViewModel> : AppCompatDialogFragment() {
     fun getArgumentDouble(key: String): Double {
         return arguments?.getDouble(key) ?: 0.0
     }
+
+    fun <B : CozyBaseViewModel, T : CozyBasePopup<B>> T.putString(key: String, value: String): T {
+        if (arguments == null) {
+            arguments = Bundle()
+        }
+
+        arguments?.putString(key, value)
+        return this
+    }
+
+    fun <B : CozyBaseViewModel, T : CozyBasePopup<B>> T.putDouble(key: String, value: Double): T {
+        if (arguments == null) {
+            arguments = Bundle()
+        }
+
+        arguments?.putDouble(key, value)
+        return this
+    }
+
+    fun <B : CozyBaseViewModel, T : CozyBasePopup<B>> T.putInt(key: String, value: Int): T {
+        if (arguments == null) {
+            arguments = Bundle()
+        }
+
+        arguments?.putInt(key, value)
+        return this
+    }
+
+    fun <B : CozyBaseViewModel, T : CozyBasePopup<B>> T.putLong(key: String, value: Long): T {
+        if (arguments == null) {
+            arguments = Bundle()
+        }
+
+        arguments?.putLong(key, value)
+        return this
+    }
+
+    fun <B : CozyBaseViewModel, T : CozyBasePopup<B>> T.putBool(key: String, value: Boolean): T {
+        if (arguments == null) {
+            arguments = Bundle()
+        }
+
+        arguments?.putBoolean(key, value)
+        return this
+    }
+
+    fun <B : CozyBaseViewModel, T : CozyBasePopup<B>> T.putObject(key: String, value: Any?): T {
+        if (arguments == null) {
+            arguments = Bundle()
+        }
+        if (value != null) arguments?.putString(key, Gson().toJson(value))
+        return this
+    }
+
+
+
+
+
     inline fun <reified T> getArgumentObject(key: String): T?{
         val typeObject = arguments?.getString(key)
 
