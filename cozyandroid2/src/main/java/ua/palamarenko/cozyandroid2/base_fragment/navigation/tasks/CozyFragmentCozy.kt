@@ -295,6 +295,8 @@ class ImageViewerRequest(
 )
 
 class ShowProgressCallBack(val progress: Boolean, val dismissCallBack: (() -> Unit)? = null)
-class ShowPopupWindow(val anchor: View, val list: List<String>, val click: (String) -> Unit)
+class ShowPopupWindow(val anchor: View, val list: List<WindowPopupItems>, val click: (String) -> Unit)
+class WindowPopupItems(val title : String, val id : String)
+
 class ShowPopupWindowCustomCell(val anchor: View, val list: List<PopupCell>)
 class CustomActionCallback(val listener: (CozyActivity<*>) -> Unit)
