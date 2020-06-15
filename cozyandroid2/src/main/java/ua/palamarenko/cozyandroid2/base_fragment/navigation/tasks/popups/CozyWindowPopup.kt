@@ -20,7 +20,7 @@ import ua.palamarenko.cozyandroid2.tools.dpToPx
 
 class CozyWindowPopup {
 
-    fun create(view: View, list: List<WindowPopupItems>, click: (String) -> Unit) {
+    fun create(view: View, list: List<WindowPopupItems>, click: (Int) -> Unit) {
         val contentView = View.inflate(view.context, R.layout.view_popup_window, null)
         val popup = PopupWindow(
             contentView,
@@ -58,7 +58,7 @@ class CozyWindowPopup {
 }
 
 
-class DefaultPopupCell(override val data: WindowPopupItems, val click: (String) -> Unit) : PopupCell() {
+class DefaultPopupCell(override val data: WindowPopupItems, val click: (Int) -> Unit) : PopupCell() {
     override val layout = R.layout.cell_defaultpopup
 
     override fun bind(view: View) {
