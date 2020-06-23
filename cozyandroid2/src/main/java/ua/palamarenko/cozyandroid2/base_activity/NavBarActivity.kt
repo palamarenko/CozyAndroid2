@@ -92,10 +92,10 @@ abstract class NavBarActivity<T : CozyViewModel> : CozyActivity<T>() {
 
         val list = navigator.fragmentManager.fragments.filter {!it.tag.isNullOrBlank() }
         val currentFragment = list.lastOrNull()
-        val name = if (currentFragment != null) currentFragment::class.java.simpleName else ""
+        val name = if (currentFragment != null) currentFragment::class.java.canonicalName else ""
 
 
-        val choiceItem = items.find { it.choiceFragment::class.java.simpleName == name }
+        val choiceItem = items.find { it.choiceFragment::class.java.canonicalName == name }
 
 
         when {
@@ -127,7 +127,7 @@ abstract class NavBarActivity<T : CozyViewModel> : CozyActivity<T>() {
         Handler().postDelayed({
             items.forEach {
                 if (navigator.getCurrentFragment() != null &&
-                    navigator.getCurrentFragment()!!::class.java.simpleName == it.choiceFragment::class.java.simpleName
+                    navigator.getCurrentFragment()!!::class.java.canonicalName == it.choiceFragment::class.java.canonicalName
                 ) {
                     getNavigationView().setItem(false, it.item.id)
                 }
@@ -161,7 +161,7 @@ class NavBarNavigator(
 
 
         items.forEach {
-            if (fragment.javaClass.simpleName == it.choiceFragment::class.java.simpleName) {
+            if (fragment.javaClass.canonicalName == it.choiceFragment::class.java.canonicalName) {
                 navigateView.setItem(false, it.item.id)
             }
         }
@@ -171,18 +171,18 @@ class NavBarNavigator(
 
 
         try {
-            if (fragmentManager.findFragmentByTag(fragment.javaClass.simpleName) != null && (items.find { it.choiceFragment::class.java.simpleName == fragment.javaClass.simpleName } != null)
+            if (fragmentManager.findFragmentByTag(fragment.javaClass.canonicalName) != null && (items.find { it.choiceFragment::class.java.canonicalName == fragment.javaClass.canonicalName } != null)
             ) {
                 ft.replace(
                     this.contId,
-                    fragmentManager.findFragmentByTag(fragment.javaClass.simpleName)!!,
-                    fragment.javaClass.simpleName
+                    fragmentManager.findFragmentByTag(fragment.javaClass.canonicalName)!!,
+                    fragment.javaClass.canonicalName
                 )
             } else {
-                ft.replace(this.contId, fragment, fragment.javaClass.simpleName)
+                ft.replace(this.contId, fragment, fragment.javaClass.canonicalName)
             }
 
-            ft.addToBackStack(fragment.javaClass.simpleName)
+            ft.addToBackStack(fragment.javaClass.canonicalName)
 
             ft.commitAllowingStateLoss()
         } catch (e: Exception) {

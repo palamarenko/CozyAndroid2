@@ -8,6 +8,20 @@ import com.squareup.picasso.Picasso
 import com.squareup.picasso.Transformation
 import java.io.File
 
+
+private var picassoClient: Picasso? = null
+
+
+fun setPicassoClient(picasso: Picasso) {
+    picassoClient = picasso
+}
+
+private fun getPicassoClient() : Picasso{
+   return if(picassoClient!=null) picassoClient!! else Picasso.get()
+}
+
+
+
 fun ImageView.load(file: File, transformater: Transformation? = null, viewSize: Int? = null) {
     post {
         val pick = Picasso.get()
@@ -36,7 +50,7 @@ fun ImageView.load(
         if (errorIcon != null) {
             if (errorIcon is Int) this.setImageResource(errorIcon)
             if (errorIcon is Drawable) this.setImageDrawable(errorIcon)
-        }else if(placeholder!=null){
+        } else if (placeholder != null) {
             if (placeholder is Int) this.setImageResource(placeholder)
             if (placeholder is Drawable) this.setImageDrawable(placeholder)
         }
@@ -46,7 +60,7 @@ fun ImageView.load(
 
     post {
         try {
-            val pick = Picasso.get()
+            val pick = getPicassoClient()
                 .load(url)
                 .centerCrop()
                 .resize(viewSize ?: width, viewSize ?: height)
@@ -93,24 +107,24 @@ fun ImageView.load(
         try {
 
 
-        val pick = Picasso.get()
-            .load(url)
-            .centerCrop()
-            .resize(viewSize ?: width, viewSize ?: height)
+            val pick = getPicassoClient()
+                .load(url)
+                .centerCrop()
+                .resize(viewSize ?: width, viewSize ?: height)
 
-        if (transformation != null) {
-            pick.transform(transformation)
-        }
-        if (errorIcon != null) {
-            if (errorIcon is Int) pick.error(errorIcon)
-            if (errorIcon is Drawable) pick.error(errorIcon)
-        }
-        if (placeholder != null) {
-            if (placeholder is Int) pick.placeholder(placeholder)
-            if (placeholder is Drawable) pick.placeholder(placeholder)
-        }
+            if (transformation != null) {
+                pick.transform(transformation)
+            }
+            if (errorIcon != null) {
+                if (errorIcon is Int) pick.error(errorIcon)
+                if (errorIcon is Drawable) pick.error(errorIcon)
+            }
+            if (placeholder != null) {
+                if (placeholder is Int) pick.placeholder(placeholder)
+                if (placeholder is Drawable) pick.placeholder(placeholder)
+            }
 
-        pick.into(this)
+            pick.into(this)
         } catch (e: java.lang.Exception) {
         }
     }

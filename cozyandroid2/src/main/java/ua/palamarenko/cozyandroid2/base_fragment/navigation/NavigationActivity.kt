@@ -61,7 +61,7 @@ open class NavigateActivity : AppCompatActivity() {
     }
 
     fun findCurrentFragment(): Fragment? {
-        return navigator.fragmentManager.fragments.findLast { it.tag == FRAGMENT_TAG || it.tag == it::class.java.simpleName }
+        return navigator.fragmentManager.fragments.findLast { it.tag == FRAGMENT_TAG || it.tag == it::class.java.canonicalName }
     }
 
     open fun onBackPressed(fragment: Class<*>?) {
@@ -72,7 +72,7 @@ open class NavigateActivity : AppCompatActivity() {
 
 
         if (fragment != null) {
-            navigator.fragmentManager.popBackStack(fragment.simpleName, 0)
+            navigator.fragmentManager.popBackStack(fragment.canonicalName, 0)
         } else {
             val manager = navigator.fragmentManager
             val count = manager.backStackEntryCount
@@ -141,7 +141,7 @@ open class Navigator(
 
             }
 
-            ft.addToBackStack(fragment.javaClass.simpleName)
+            ft.addToBackStack(fragment.javaClass.canonicalName)
 
             ft.commitAllowingStateLoss()
 

@@ -192,15 +192,30 @@ abstract class CozyFragment<T : CozyViewModel> : CozyBaseFragment<T>(), BackPres
     }
 
     open fun startResultActivity(data: StartActivityCallback, intentBundle: Bundle) {
-        if (data.activity is Class<*>) {
-            val intent = Intent(context, data.activity)
-            intent.putExtras(intentBundle)
-            startActivityForResult(intent, RESULT_ACTIVITY_CODE)
-        } else {
-            startActivityForResult(data.activity as Intent, RESULT_ACTIVITY_CODE)
-        }
+
         activityResultCallBack = { i: Int, i1: Int, intent: Intent? ->
             data.callBack.invoke(intent!!)
+        }
+
+        when (data.activity) {
+            is Class<*> -> {
+                val intent = Intent(context, data.activity)
+                intent.putExtras(intentBundle)
+                startActivityForResult(intent, RESULT_ACTIVITY_CODE)
+            }
+            is Intent -> {
+                startActivityForResult(data.activity, RESULT_ACTIVITY_CODE)
+            }
+            is NavigateNewActivity -> {
+                val intent = Intent(Intent.ACTION_VIEW)
+                intent.component = ComponentName(
+                    CozyLibrarySettings.appContext!!,
+                    HostActivity::class.java
+                )
+                intentBundle.putString(hostActivityFragment, data.activity.fragment.canonicalName)
+                intent.putExtras(intentBundle)
+                startActivityForResult(intent,RESULT_ACTIVITY_CODE)
+            }
         }
     }
 
@@ -295,8 +310,8 @@ class ImageViewerRequest(
 )
 
 class ShowProgressCallBack(val progress: Boolean, val dismissCallBack: (() -> Unit)? = null)
-class ShowPopupWindow(val anchor: View, val list: List<WindowPopupItems>, val click: (String) -> Unit)
-class WindowPopupItems(val title : String, val id : String)
+class ShowPopupWindow(val anchor: View, val list: List<WindowPopupItems>, val click: (Int) -> Unit)
+class WindowPopupItems(val title: String, val id: Int)
 
 class ShowPopupWindowCustomCell(val anchor: View, val list: List<PopupCell>)
 class CustomActionCallback(val listener: (CozyActivity<*>) -> Unit)

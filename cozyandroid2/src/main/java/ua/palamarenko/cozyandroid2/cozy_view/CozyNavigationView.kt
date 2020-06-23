@@ -31,14 +31,14 @@ abstract class BaseNavigationItem(open val id: Int)
 class TitleItem(val select: CharSequence, val unSelect: CharSequence)
 
 
-private class NavItemWithView(val item: BaseNavigationItem, val view: View)
+class NavItemWithView(val item: BaseNavigationItem, val view: View)
 
 
 class CozyNavigateView : FrameLayout {
 
     lateinit var view: LinearLayout
 
-    private var itemList = ArrayList<NavItemWithView>()
+    var itemList = ArrayList<NavItemWithView>()
     private var lastItem: NavItemWithView? = null
     var listnener: (NavigationItem) -> Unit = {}
 
@@ -60,6 +60,10 @@ class CozyNavigateView : FrameLayout {
 
         }
         addView(view)
+    }
+
+    public fun getNavBarItems() : ArrayList<NavItemWithView>{
+        return itemList
     }
 
 
