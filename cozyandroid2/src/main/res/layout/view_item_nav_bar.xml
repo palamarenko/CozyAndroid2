@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/flClick"
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
@@ -12,16 +13,32 @@
         android:id="@+id/llAnimate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="4dp"
         android:layout_gravity="center"
+        android:layout_margin="4dp"
         android:orientation="vertical">
 
-        <ImageView
-            android:id="@+id/ivIcon"
+
+        <FrameLayout
+            android:id="@+id/flSize"
             android:layout_width="28dp"
             android:layout_height="28dp"
-            android:layout_gravity="center"
-            android:layout_marginTop="4dp" />
+            android:layout_gravity="center">
+
+            <ua.palamarenko.cozyandroid2.tools.shape_view.views.ShapeImageView
+                android:id="@+id/svMarker"
+                android:layout_width="6dp"
+                android:visibility="gone"
+                app:back_shape_color="@android:color/holo_red_dark"
+                android:layout_height="6dp"
+                android:layout_gravity="end|top" />
+
+            <ImageView
+                android:id="@+id/ivIcon"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="4dp" />
+
+        </FrameLayout>
 
         <TextView
             android:id="@+id/tvTitle"
@@ -30,8 +47,8 @@
             android:layout_marginTop="3dp"
             android:ellipsize="end"
             android:gravity="center"
-            android:maxWidth="60dp"
             android:lines="1"
+            android:maxWidth="60dp"
             android:textSize="10sp"
             android:visibility="gone" />
 

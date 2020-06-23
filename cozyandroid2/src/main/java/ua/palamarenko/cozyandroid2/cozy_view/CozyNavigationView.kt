@@ -3,12 +3,14 @@ package ua.palamarenko.cozyandroid2.cozy_view
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
+import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import kotlinx.android.synthetic.main.view_item_nav_bar.view.*
 import ua.palamarenko.cozyandroid2.R
 import ua.palamarenko.cozyandroid2.tools.click
 import ua.palamarenko.cozyandroid2.tools.dpToPx
+import ua.palamarenko.cozyandroid2.tools.shape_view.factory.ShapeDrawableFactory
 
 
 class NavigationItem(
@@ -62,10 +64,28 @@ class CozyNavigateView : FrameLayout {
         addView(view)
     }
 
-    public fun getNavBarItems() : ArrayList<NavItemWithView>{
+    public fun getNavBarItems(): ArrayList<NavItemWithView> {
         return itemList
     }
 
+
+    fun showMarker(
+        show: Boolean,
+        id: Int,
+        color: Int? = null,
+        shape: ShapeDrawableFactory.SHAPE? = null
+    ) {
+        val item = itemList.find { it.item.id == id }
+
+        if(item?.item is NavigationItem){
+            item.view.svMarker.visibility = if(show) View.VISIBLE else View.GONE
+            if(shape!=null)
+            item.view.svMarker.setShape(shape)
+            if(color!=null)
+            item.view.svMarker.setShapeColor(color)
+        }
+
+    }
 
 
     private fun inflateCustomItem(it: CustomViewItem) {
@@ -103,10 +123,10 @@ class CozyNavigateView : FrameLayout {
     fun setIconSize(dpSize: Int) {
         itemList.forEach {
             if (it.item is NavigationItem) {
-                val lp = it.view.ivIcon.layoutParams as LinearLayout.LayoutParams
+                val lp = it.view.flSize.layoutParams
                 lp.height = dpToPx(dpSize.toFloat())
                 lp.width = dpToPx(dpSize.toFloat())
-                it.view.ivIcon.layoutParams = lp
+                it.view.flSize.layoutParams = lp
             }
 
         }
