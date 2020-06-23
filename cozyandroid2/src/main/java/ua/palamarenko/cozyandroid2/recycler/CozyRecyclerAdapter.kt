@@ -34,6 +34,16 @@ class CozyRecyclerAdapter() : RecyclerView.Adapter<CozyViewHolder<CozyCell>>(), 
         list[position].bind(holder.itemView)
     }
 
+    override fun onBindViewHolder(
+        holder: CozyViewHolder<CozyCell>,
+        position: Int,
+        payloads: MutableList<Any>) {
+
+        list[position].position = position
+        list[position].bind(holder.itemView)
+
+    }
+
     override fun getItemId(position: Int): Long {
         return list[position].data.hashCode().toLong()
     }

@@ -21,6 +21,6 @@ class CozyDiffCallBack(
 
     @Nullable
     override fun getChangePayload(oldPosition: Int, newPosition: Int): Any? {
-        return super.getChangePayload(oldPosition, newPosition)
+        return newList.get(newPosition)
     }
 }
