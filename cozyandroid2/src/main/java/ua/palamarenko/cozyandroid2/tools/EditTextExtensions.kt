@@ -306,7 +306,7 @@ val text = "[\n" +
         "  { \"mask\": \"+260-##-###-####\", \"cc\": \"ZM\", \"name_en\": \"Zambia\", \"desc_en\": \"\", \"name_ru\": \"Замбия\", \"desc_ru\": \"\" },\n" +
         "  { \"mask\": \"+263-#-######\", \"cc\": \"ZW\", \"name_en\": \"Zimbabwe\", \"desc_en\": \"\", \"name_ru\": \"Зимбабве\", \"desc_ru\": \"\" },\n" +
         "  { \"mask\": \"+1(###)###-####\", \"cc\": \"CA\", \"name_en\": \"Canada\", \"desc_en\": \"\", \"name_ru\": \"Канада\", \"desc_ru\": \"\" },\n" +
-        "  { \"mask\": \"+1(###)###-####\", \"cc\": \"US\", \"name_en\": \"USA\", \"desc_en\": \"\", \"name_ru\": \"США\", \"desc_ru\": \"\" }\n" +
+        "  { \"mask\": \"+1(###)###-####\", \"cc\": \"US\", \"name_en\": \"united-states-of-america\", \"desc_en\": \"\", \"name_ru\": \"США\", \"desc_ru\": \"\" }\n" +
         "]\n"
 
 
