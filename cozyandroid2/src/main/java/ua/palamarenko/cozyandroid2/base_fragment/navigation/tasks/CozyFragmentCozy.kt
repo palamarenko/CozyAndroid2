@@ -18,12 +18,8 @@ import ua.palamarenko.cozyandroid2.CozyLibrarySettings
 import ua.palamarenko.cozyandroid2.base_fragment.navigation.*
 import ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks.activity.HostActivity
 import ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks.popups.PopupCell
-import ua.palamarenko.cozyandroid2.image_picker.FilePicker
-import ua.palamarenko.cozyandroid2.image_picker.PickFileRequest
-import ua.palamarenko.cozyandroid2.image_picker.PickMultipleImageRequest
-import ua.palamarenko.cozyandroid2.image_picker.PickSingleImageRequest
+import ua.palamarenko.cozyandroid2.image_picker.*
 import ua.palamarenko.cozyandroid2.tools.click
-import ua.palamarenko.cozyandroid2.tools.image_viewer.ImageViewerActivity
 import ua.palamarenko.cozyandroid2.tools.image_viewer.getImageViewBundle
 
 
@@ -72,7 +68,7 @@ abstract class CozyFragment<T : CozyViewModel> : CozyBaseFragment<T>(), BackPres
                 FragmentManager.POP_BACK_STACK_INCLUSIVE
             )
             OPEN_LINK -> openLink(data as String)
-            PICK_FILE -> pickFile(data)
+            PICK_FILE -> pickFile(data as ImageRequest)
             IMAGE_VIEWER -> {
                 startActivity(
                     getImageViewBundle(
@@ -87,10 +83,10 @@ abstract class CozyFragment<T : CozyViewModel> : CozyBaseFragment<T>(), BackPres
     }
 
 
-    private fun pickFile(data: Any) {
+    private fun pickFile(data: ImageRequest) {
 
         when (data) {
-            is PickSingleImageRequest -> {
+            is PickSingleImagePopupRequest -> {
                 FilePicker.pickSingleImage(
                     this,
                     data.strings,
@@ -103,6 +99,9 @@ abstract class CozyFragment<T : CozyViewModel> : CozyBaseFragment<T>(), BackPres
             }
             is PickFileRequest -> {
                 activityResultCallBack = FilePicker.pickFile(this, data)
+            }
+            is PickPhotoRequest -> {
+                FilePicker.pickJustPhoto(this,data.cropMode,data.callback)
             }
         }
 

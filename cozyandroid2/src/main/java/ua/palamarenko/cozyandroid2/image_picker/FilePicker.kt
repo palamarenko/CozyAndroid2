@@ -27,20 +27,25 @@ import java.io.FileOutputStream
 enum class CROP_MODE { NONE, AVATAR, CUSTOM }
 
 
-class PickSingleImageRequest(
+class PickSingleImagePopupRequest(
     val strings: ImagePickPopupStrings = ImagePickPopupStrings(),
     val callback: (File) -> Unit,
     val cropMode: CROP_MODE = CROP_MODE.AVATAR
-)
+) : ImageRequest()
 
-class PickMultipleImageRequest(val callback: (List<File>) -> Unit)
-class PickFileRequest(val callback: (File) -> Unit, val type : String = "*/*")
+class PickMultipleImageRequest(val callback: (List<File>) -> Unit) : ImageRequest()
+class PickFileRequest(val callback: (File) -> Unit, val type: String = "*/*") : ImageRequest()
+class PickPhotoRequest(val callback: (File) -> Unit, val cropMode: CROP_MODE = CROP_MODE.AVATAR) :
+    ImageRequest()
+
+
+sealed class ImageRequest
 
 
 object FilePicker {
 
-    private fun convertUriToFile(uri : Uri,name : String) : File {
-        val tmpFile = File(CozyLibrarySettings.appContext!!.cacheDir,name)
+    private fun convertUriToFile(uri: Uri, name: String): File {
+        val tmpFile = File(CozyLibrarySettings.appContext!!.cacheDir, name)
         val os = FileOutputStream(tmpFile)
         val iss = CozyLibrarySettings.appContext!!.contentResolver.openInputStream(uri)
         iss?.copyTo(os)
@@ -51,7 +56,10 @@ object FilePicker {
     }
 
 
-    fun pickFile(cozyFragment: CozyFragment<*>, pickFileRequest  : PickFileRequest) : ((requestCode: Int, resultCode: Int, data: Intent?) -> Unit){
+    fun pickFile(
+        cozyFragment: CozyFragment<*>,
+        pickFileRequest: PickFileRequest
+    ): ((requestCode: Int, resultCode: Int, data: Intent?) -> Unit) {
         val intent = Intent(Intent.ACTION_GET_CONTENT)
         intent.addCategory(Intent.CATEGORY_OPENABLE)
         intent.type = pickFileRequest.type
@@ -60,18 +68,24 @@ object FilePicker {
 
         val activityResultCallBack: ((requestCode: Int, resultCode: Int, data: Intent?) -> Unit) =
             { i: Int, i1: Int, intent: Intent? ->
-                pickFileRequest.callback.invoke(convertUriToFile(intent!!.data!!,dumpImageMetaData(intent.data!!)))
+                pickFileRequest.callback.invoke(
+                    convertUriToFile(
+                        intent!!.data!!,
+                        dumpImageMetaData(intent.data!!)
+                    )
+                )
             }
 
-       return activityResultCallBack
+        return activityResultCallBack
     }
 
-    fun dumpImageMetaData(uri: Uri) : String {
+    fun dumpImageMetaData(uri: Uri): String {
         val cursor: Cursor = CozyLibrarySettings.appContext!!.contentResolver
             .query(uri, null, null, null, null, null)!!
         cursor.use { cursor ->
             if (cursor.moveToFirst()) {
-               return  cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+                return cursor.getString(
+                    cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
                 )
 
             }
@@ -107,7 +121,10 @@ object FilePicker {
                             callback.invoke(imageFiles.map { it.file })
                         }
 
-                        override fun onImagePickerError(@NonNull error: Throwable, @NonNull source: MediaSource) {
+                        override fun onImagePickerError(
+                            @NonNull error: Throwable,
+                            @NonNull source: MediaSource
+                        ) {
                             error.printStackTrace()
                         }
 
@@ -119,6 +136,33 @@ object FilePicker {
         easyImage.openGallery(cozyFragment)
 
         return activityResultCallBack
+    }
+
+
+    fun pickJustPhoto(
+        cozyFragment: CozyFragment<*>,
+        cropMode: CROP_MODE,
+        callback: (File) -> Unit
+    ) {
+        val picker = ImagePicker.Companion.with(cozyFragment)
+            .cameraOnly()
+            .compress(1024)
+            .maxResultSize(1080, 1080)
+
+        when (cropMode) {
+            CROP_MODE.AVATAR -> picker.crop(1f, 1f)
+            CROP_MODE.CUSTOM -> picker.crop()
+        }
+
+
+        picker.start(cozyFragment.RESULT_ACTIVITY_CODE)
+
+
+        cozyFragment.activityResultCallBack = { i, i1, data ->
+            ImagePicker.getFile(data)?.apply {
+                callback.invoke(this)
+            }
+        }
     }
 
 
