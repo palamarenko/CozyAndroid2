@@ -5,12 +5,14 @@ import android.os.Bundle
 import androidx.fragment.app.FragmentActivity
 import ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks.CozyPopup
 import ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks.popups.CozyReusePopup
+import java.util.*
 
 
 object CozyLibrarySettings {
     var appContext: Context? = null
     var popupMaker: () -> CozyReusePopup = { CozyPopup() }
     var customListener : CustomTasksListener? = null
+    var applocale : Locale? = null
 
 
     fun setPopupRealization(popupClass: Class<out CozyReusePopup>): CozyLibrarySettings {
@@ -21,6 +23,10 @@ object CozyLibrarySettings {
     fun setCustomTasksListener(listener: CustomTasksListener): CozyLibrarySettings {
         customListener = listener
         return this
+    }
+
+    fun setLocale(locale : Locale){
+        this.applocale = locale
     }
 }
 

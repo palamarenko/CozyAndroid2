@@ -1,7 +1,9 @@
 package ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks
 
 import android.content.ComponentName
+import android.content.Context
 import android.content.Intent
+import android.content.res.Configuration
 import android.os.Bundle
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -11,11 +13,33 @@ import ua.palamarenko.cozyandroid2.CozyLibrarySettings
 import ua.palamarenko.cozyandroid2.base_fragment.navigation.NavigateActivity
 import ua.palamarenko.cozyandroid2.base_fragment.navigation.ReflectionUtils
 import ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks.activity.HostActivity
+import ua.palamarenko.cozyandroid2.tools.PreferencesProvider
+import ua.palamarenko.cozyandroid2.tools.locale.updateResources
+import java.util.*
 
 open class CozyActivity<T : CozyViewModel> : NavigateActivity() {
 
 
+    override fun attachBaseContext(newBase: Context) {
+        if (CozyLibrarySettings.applocale != null) {
+            super.attachBaseContext(updateResources(newBase, CozyLibrarySettings.applocale!!))
+        } else {
+            super.attachBaseContext(newBase)
+        }
+    }
 
+
+    override fun applyOverrideConfiguration(overrideConfiguration: Configuration?) {
+        if (CozyLibrarySettings.applocale != null) {
+            val config = Configuration(resources.configuration);
+            Locale.setDefault(CozyLibrarySettings.applocale!!);
+            config.setLocale(CozyLibrarySettings.applocale);
+            super.applyOverrideConfiguration(config)
+        } else {
+            super.applyOverrideConfiguration(overrideConfiguration)
+        }
+
+    }
 
 
     private val POPUP_TAG = "POPUP_TAG"
