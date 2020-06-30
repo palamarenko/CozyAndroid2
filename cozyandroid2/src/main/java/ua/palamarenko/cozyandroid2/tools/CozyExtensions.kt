@@ -425,6 +425,10 @@ fun getString(id: Int): String {
     return CozyLibrarySettings.appContext!!.getString(id)
 }
 
+fun getAppString(id: Int): String {
+    return CozyLibrarySettings.appContext!!.getString(id)
+}
+
 fun getColor(id: Int): Int {
     return ContextCompat.getColor(CozyLibrarySettings.appContext!!, id)
 }
