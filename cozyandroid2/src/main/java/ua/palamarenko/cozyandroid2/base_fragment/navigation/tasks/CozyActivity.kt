@@ -13,6 +13,11 @@ import ua.palamarenko.cozyandroid2.base_fragment.navigation.ReflectionUtils
 import ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks.activity.HostActivity
 
 open class CozyActivity<T : CozyViewModel> : NavigateActivity() {
+
+
+
+
+
     private val POPUP_TAG = "POPUP_TAG"
 
     override fun onCreate(savedInstanceState: Bundle?) {
