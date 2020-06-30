@@ -43,7 +43,8 @@ fun ImageView.load(
     viewSize: Int? = null,
     errorIcon: Any? = null,
     placeholder: Any? = null,
-    policy: MemoryPolicy? = null
+    policy: MemoryPolicy? = null,
+    needCenterCrop : Boolean = true
 ) {
     if (url.isNullOrEmpty()) {
 
@@ -62,8 +63,11 @@ fun ImageView.load(
         try {
             val pick = getPicassoClient()
                 .load(url)
-                .centerCrop()
-                .resize(viewSize ?: width, viewSize ?: height)
+
+            if(needCenterCrop){
+                pick.centerCrop()
+                    .resize(viewSize ?: width, viewSize ?: height)
+            }
 
             if (transformation != null) {
                 pick.transform(transformation)
