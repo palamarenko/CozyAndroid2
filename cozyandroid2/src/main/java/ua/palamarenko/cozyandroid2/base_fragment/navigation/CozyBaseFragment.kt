@@ -13,6 +13,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import com.google.gson.Gson
 import com.tbruyelle.rxpermissions2.RxPermissions
+import java.io.Serializable
+import kotlin.reflect.KClass
 
 abstract class CozyBaseFragment<T : CozyBaseViewModel> : Fragment() {
 
@@ -62,7 +64,6 @@ abstract class CozyBaseFragment<T : CozyBaseViewModel> : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         if (!callViewCreated) {
-            onViewCreated()
             onStartScreen()
         } else {
             onRestartScreen()
@@ -139,9 +140,6 @@ abstract class CozyBaseFragment<T : CozyBaseViewModel> : Fragment() {
             })
     }
 
-    @Deprecated("")
-    open fun onViewCreated() {
-    }
 
     open fun onStartScreen() {}
 
@@ -171,6 +169,11 @@ abstract class CozyBaseFragment<T : CozyBaseViewModel> : Fragment() {
         if (value == 0.0 && fromActivity) {
             value = activity?.intent?.getDoubleExtra(key, 0.0) ?: 0.0
         }
+        return value
+    }
+
+    fun getArgumentSerializable(key: String) : Any? {
+        var value = arguments?.getSerializable(key)
         return value
     }
 
@@ -239,6 +242,15 @@ fun <B : CozyBaseViewModel, T : CozyBaseFragment<B>> T.putInt(key: String, value
     }
 
     arguments?.putInt(key, value)
+    return this
+}
+
+fun <B : CozyBaseViewModel, T : CozyBaseFragment<B>> T.putSerializable(key: String, value: Serializable): T {
+    if (arguments == null) {
+        arguments = Bundle()
+    }
+
+    arguments?.putSerializable(key, value)
     return this
 }
 

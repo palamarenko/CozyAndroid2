@@ -20,7 +20,7 @@ abstract class PaginationController(
 ) {
 
     var needLoadNewPage: Boolean = true
-
+    var currentPage = firstPage
     var lastLoadSize = -1
 
 
@@ -42,14 +42,19 @@ abstract class PaginationController(
 
         lastLoadSize = recycler.baseRecycler.layoutManager?.itemCount ?: 0
 
-        loadPage(firstPage, pageSize).observe(fragment, Observer {
+        loadPage(currentPage, pageSize).observe(fragment, Observer {
             recycler.removeProgressCell()
-            recycler.addCell(it.second)
+            if (firstPage == currentPage) {
+                recycler.setCell(it.second)
+            } else {
+                recycler.addCell(it.second)
+            }
+
             needLoadNewPage = it.first
             if (needLoadNewPage) {
                 recycler.addProgressCell()
             }
-            firstPage += 1
+            currentPage += 1
 
             Handler().postDelayed({
                 if (recycler.isVisibleLastItem()) {
@@ -61,9 +66,9 @@ abstract class PaginationController(
     }
 
 
-    fun restart(firstPage : Int = 0) {
+    fun restart(currentPage: Int = 0) {
         needLoadNewPage = true
-        this.firstPage = firstPage
+        this.currentPage = currentPage
         lastLoadSize = -1
     }
 
