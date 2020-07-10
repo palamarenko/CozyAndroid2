@@ -29,9 +29,9 @@ class MockApiFactory<T : Any>(mockClass: T) : ApiFactory<T>("", apiGet = mockCla
 
 open class ApiFactory<T>(private val BASE_URL: String, open val apiGet: Class<out T>) {
 
-    private val connectTimeOut = 30L
-    private val writeTimeOut = 30L
-    private val timeOut = 30L
+    open val connectTimeOut = 30L
+    open val writeTimeOut = 30L
+    open val timeOut = 30L
 
     private var client: OkHttpClient? = null
 
