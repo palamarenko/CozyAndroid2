@@ -8,6 +8,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import androidx.paging.PagedList
 import androidx.recyclerview.widget.*
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.view_recycler.view.*
@@ -16,6 +17,7 @@ import ua.palamarenko.cozyandroid2.recycler.ButtonSwipeCallBack
 import ua.palamarenko.cozyandroid2.recycler.CozyRecyclerAdapter
 import ua.palamarenko.cozyandroid2.recycler.DragAndDropCallbackListener
 import ua.palamarenko.cozyandroid2.recycler.layout_manager.CozyLinearLayoutManager
+import ua.palamarenko.cozyandroid2.recycler.pagination.PagedCozyListAdapter
 import ua.palamarenko.cozyandroid2.tools.LOG_EVENT
 import ua.palamarenko.cozyandroid2.tools.inflateView
 
@@ -31,8 +33,26 @@ fun RecyclerView.setCell(list: List<CozyCell>, layoutManager: RecyclerView.Layou
 
     this.adapter = adapter
     adapter.updateList(list)
-
 }
+
+
+fun RecyclerView.submitList(list: PagedList<CozyCell>, layoutManager: RecyclerView.LayoutManager? = null) {
+
+    if (layoutManager != null) {
+        this.layoutManager = layoutManager
+    } else {
+        this.layoutManager = LinearLayoutManager(this.context)
+    }
+    val adapter = PagedCozyListAdapter()
+
+    this.adapter = adapter
+    adapter.submitList(list)
+}
+
+
+
+
+
 
 
 class CozyRecyclerView : FrameLayout {

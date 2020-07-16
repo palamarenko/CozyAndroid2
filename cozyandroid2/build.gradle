@@ -24,7 +24,7 @@ ext {
     siteUrl = 'https://github.com/palamarenko/CozyAndroid2'
     gitUrl = 'https://github.com/palamarenko/CozyAndroid2'
 
-    libraryVersion = '0.5.35'
+    libraryVersion = '0.5.36'
 
     developerId = 'lissf'
     developerName = 'Andrey Palamarenko'
@@ -88,6 +88,7 @@ dependencies {
     api 'com.github.freeze-frames:SlidingItemMenuRecyclerView:1.0.5'
     api 'androidx.recyclerview:recyclerview:1.1.0'
 
+    api "android.arch.paging:runtime:1.0.1"
 
     //for load and view image
     api 'com.squareup.picasso:picasso:2.71828'

@@ -11,6 +11,7 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 class CozyRecyclerAdapter() : RecyclerView.Adapter<CozyViewHolder<CozyCell>>(), DragAndDropCallbackListener.Listener {
+
     var list = ArrayList<CozyCell>()
     private var listViewBuilder = ArrayList<ViewBuilder>()
 

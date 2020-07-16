@@ -24,6 +24,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.viewpager.widget.ViewPager
@@ -486,6 +487,14 @@ fun Completable.setSchedulers(
 
 
 fun <T> MutableLiveData<T>.listen(owner: LifecycleOwner, observe: (T) -> Unit) {
+    observe(owner, Observer {
+        if (it != null) {
+            observe.invoke(it)
+        }
+    })
+}
+
+fun <T> LiveData<T>.listen(owner: LifecycleOwner, observe: (T) -> Unit) {
     observe(owner, Observer {
         if (it != null) {
             observe.invoke(it)
