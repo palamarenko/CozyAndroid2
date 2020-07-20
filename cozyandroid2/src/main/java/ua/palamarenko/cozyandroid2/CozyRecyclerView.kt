@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.paging.PagedList
+import androidx.paging.PagingData
 import androidx.recyclerview.widget.*
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.view_recycler.view.*
@@ -17,7 +18,8 @@ import ua.palamarenko.cozyandroid2.recycler.ButtonSwipeCallBack
 import ua.palamarenko.cozyandroid2.recycler.CozyRecyclerAdapter
 import ua.palamarenko.cozyandroid2.recycler.DragAndDropCallbackListener
 import ua.palamarenko.cozyandroid2.recycler.layout_manager.CozyLinearLayoutManager
-import ua.palamarenko.cozyandroid2.recycler.pagination.PagedCozyListAdapter
+import ua.palamarenko.cozyandroid2.recycler.pagination.CozyPaginationAdapter
+
 import ua.palamarenko.cozyandroid2.tools.LOG_EVENT
 import ua.palamarenko.cozyandroid2.tools.inflateView
 
@@ -36,19 +38,6 @@ fun RecyclerView.setCell(list: List<CozyCell>, layoutManager: RecyclerView.Layou
 }
 
 
-fun RecyclerView.submitList(list: PagedList<CozyCell>, layoutManager: RecyclerView.LayoutManager? = null) {
-
-    if (layoutManager != null) {
-        this.layoutManager = layoutManager
-    } else {
-        this.layoutManager = LinearLayoutManager(this.context)
-    }
-    val adapter = PagedCozyListAdapter()
-
-    this.adapter = adapter
-    adapter.submitList(list)
-}
-
 
 
 
@@ -58,7 +47,6 @@ fun RecyclerView.submitList(list: PagedList<CozyCell>, layoutManager: RecyclerVi
 class CozyRecyclerView : FrameLayout {
 
     lateinit var adapter: CozyRecyclerAdapter
-
 
     private lateinit var view: View
 
@@ -272,7 +260,7 @@ class CozyRecyclerView : FrameLayout {
     var loading = false
     var enableLoading = false
     var endlessListener: () -> Unit = {}
-
+    @Deprecated("")
     fun checkForEndlessScroll() {
         if (loading) {
             return
@@ -289,7 +277,7 @@ class CozyRecyclerView : FrameLayout {
             endlessListener.invoke()
         }
     }
-
+    @Deprecated("")
     fun loadMoreCallBack(listener: () -> Unit) {
         this.endlessListener = listener
 
@@ -320,7 +308,7 @@ class CozyRecyclerView : FrameLayout {
         })
     }
 
-
+    @Deprecated("")
     fun isVisibleLastItem(): Boolean {
         val visibleItemCount = view.baseRecycler.layoutManager!!.childCount
         val totalItemCount = getItemCount()
@@ -332,7 +320,7 @@ class CozyRecyclerView : FrameLayout {
         return visibleItemCount + pastVisiblesItems >= totalItemCount
     }
 
-
+    @Deprecated("")
     fun listenEndList(listener: () -> Unit) {
 
         var pastVisiblesItems: Int
