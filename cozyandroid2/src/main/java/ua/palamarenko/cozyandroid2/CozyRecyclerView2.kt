@@ -7,25 +7,16 @@ import android.widget.FrameLayout
 import androidx.lifecycle.Lifecycle
 import androidx.paging.PagingData
 import androidx.recyclerview.widget.*
-import kotlinx.android.synthetic.main.view_cozy_recycler.view.*
-import kotlinx.android.synthetic.main.view_recycler.view.*
 import kotlinx.android.synthetic.main.view_recycler.view.baseRecycler
 import kotlinx.android.synthetic.main.view_recycler.view.flPlaceHolder
 import kotlinx.android.synthetic.main.view_recycler.view.flRoot
 import kotlinx.android.synthetic.main.view_recycler.view.progress
 import kotlinx.android.synthetic.main.view_recycler.view.srRefresh
 import kotlinx.android.synthetic.main.view_recycler_place_holder.view.*
-import kotlinx.android.synthetic.main.view_recycler_sliding.view.*
-import ua.palamarenko.cozyandroid2.CozyCell
-import ua.palamarenko.cozyandroid2.CozyRecyclerView
-import ua.palamarenko.cozyandroid2.R
 import ua.palamarenko.cozyandroid2.recycler.CozyRecyclerAdapter
-import ua.palamarenko.cozyandroid2.recycler.CozyViewHolder
 import ua.palamarenko.cozyandroid2.recycler.layout_manager.CozyLinearLayoutManager
-import ua.palamarenko.cozyandroid2.recycler.pagination.CozyPaginationAdapter
 import ua.palamarenko.cozyandroid2.recycler.pagination.CozyPagingLoadState
 import ua.palamarenko.cozyandroid2.tools.inflateView
-import java.lang.IllegalStateException
 
 class CozyRecyclerView2 : FrameLayout {
 
@@ -106,7 +97,7 @@ class CozyRecyclerView2 : FrameLayout {
     }
 
 
-    fun getPagingAdapter(): CozyRecyclerAdapter {
+    fun getAdapter(): CozyRecyclerAdapter {
         return cozyAdapter
     }
 
