@@ -1,4 +1,4 @@
-package ua.palamarenko.cozyandroid2.recycler.adapter
+package ua.palamarenko.cozyandroid2
 
 import android.content.Context
 import android.util.AttributeSet
@@ -28,7 +28,7 @@ import java.lang.IllegalStateException
 
 class CozyRecyclerView2 : FrameLayout {
 
-    lateinit var cozyAdapter: RecyclerView.Adapter<CozyViewHolder<CozyCell>>
+    private val cozyAdapter = CozyRecyclerAdapter()
 
     private lateinit var view: View
 
@@ -87,8 +87,7 @@ class CozyRecyclerView2 : FrameLayout {
     }
 
     fun submitData(data: List<CozyCell>) {
-        cozyAdapter = CozyRecyclerAdapter()
-        (cozyAdapter as CozyRecyclerAdapter).updateList(data)
+        cozyAdapter.updateList(data)
 
         if (cozyAdapter.itemCount == 0 && needPlaceHolder) {
             view.flPlaceHolder.visibility = View.VISIBLE
@@ -100,11 +99,9 @@ class CozyRecyclerView2 : FrameLayout {
         refreshHide()
     }
 
-    fun pagingSupportEnable(){
-        cozyAdapter = CozyPaginationAdapter()
-    }
-    fun getPagingAdapter(): CozyPaginationAdapter? {
-        return cozyAdapter as? CozyPaginationAdapter
+
+    fun getPagingAdapter(): CozyRecyclerAdapter {
+        return cozyAdapter
     }
 
 
@@ -115,12 +112,12 @@ class CozyRecyclerView2 : FrameLayout {
     ) {
 
         if (state != null) {
-            view.baseRecycler.adapter = (cozyAdapter as CozyPaginationAdapter).withLoadStateFooter(footer = state)
+            view.baseRecycler.adapter = cozyAdapter.withLoadStateFooter(footer = state)
         } else {
             view.baseRecycler.adapter = cozyAdapter
         }
 
-        (cozyAdapter as CozyPaginationAdapter).submitData(lifecycle, pagingData)
+        cozyAdapter.submitData(lifecycle, pagingData)
 
 
         if (cozyAdapter.itemCount == 0 && needPlaceHolder) {
