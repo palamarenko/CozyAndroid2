@@ -15,6 +15,7 @@ import ua.palamarenko.cozyandroid2.CozyCell
 import ua.palamarenko.cozyandroid2.DefaultProgressCell
 import ua.palamarenko.cozyandroid2.ViewBuilder
 import ua.palamarenko.cozyandroid2.recycler.pagination.CozyPaginationAdapter.Companion.CozyDiffCallback
+import ua.palamarenko.cozyandroid2.tools.LOG_EVENT
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashSet
@@ -23,7 +24,7 @@ class CozyRecyclerAdapter() : RecyclerView.Adapter<CozyViewHolder<CozyCell>>(),
     DragAndDropCallbackListener.Listener {
 
 
-    var differ = AsyncPagingDataDiffer(CozyDiffCallback, AdapterListUpdateCallback(this))
+    lateinit var differ = AsyncPagingDataDiffer(CozyDiffCallback, AdapterListUpdateCallback(this))
 
     var pagingMode: Boolean = false
 
@@ -45,6 +46,7 @@ class CozyRecyclerAdapter() : RecyclerView.Adapter<CozyViewHolder<CozyCell>>(),
     }
 
     override fun getItemCount(): Int {
+        LOG_EVENT("HELLO",if (pagingMode) differ.itemCount else list.size)
         return if (pagingMode) differ.itemCount else list.size
     }
 

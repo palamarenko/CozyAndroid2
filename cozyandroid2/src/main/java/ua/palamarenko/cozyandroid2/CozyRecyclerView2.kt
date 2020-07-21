@@ -108,7 +108,7 @@ class CozyRecyclerView2 : FrameLayout {
     fun submitData(
         lifecycle: Lifecycle,
         pagingData: PagingData<CozyCell>,
-        state: CozyPagingLoadState?
+        state: CozyPagingLoadState? = null
     ) {
 
         if (state != null) {
