@@ -15,6 +15,7 @@ import kotlinx.android.synthetic.main.view_recycler.view.flRoot
 import kotlinx.android.synthetic.main.view_recycler.view.progress
 import kotlinx.android.synthetic.main.view_recycler.view.srRefresh
 import kotlinx.android.synthetic.main.view_recycler_place_holder.view.*
+import kotlinx.android.synthetic.main.view_recycler_sliding.view.*
 import ua.palamarenko.cozyandroid2.CozyCell
 import ua.palamarenko.cozyandroid2.CozyRecyclerView
 import ua.palamarenko.cozyandroid2.R
@@ -87,6 +88,11 @@ class CozyRecyclerView2 : FrameLayout {
     }
 
     fun submitData(data: List<CozyCell>) {
+        if(view.baseRecycler.adapter==null){
+            view.baseRecycler.adapter = cozyAdapter
+        }
+
+
         cozyAdapter.updateList(data)
 
         if (cozyAdapter.itemCount == 0 && needPlaceHolder) {
@@ -110,7 +116,6 @@ class CozyRecyclerView2 : FrameLayout {
         pagingData: PagingData<CozyCell>,
         state: CozyPagingLoadState? = null
     ) {
-
         if (state != null) {
             view.baseRecycler.adapter = cozyAdapter.withLoadStateFooter(footer = state)
         } else {
@@ -118,7 +123,6 @@ class CozyRecyclerView2 : FrameLayout {
         }
 
         cozyAdapter.submitData(lifecycle, pagingData)
-
 
         if (cozyAdapter.itemCount == 0 && needPlaceHolder) {
             view.flPlaceHolder.visibility = View.VISIBLE

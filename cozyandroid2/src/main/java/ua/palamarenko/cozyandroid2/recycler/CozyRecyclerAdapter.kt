@@ -24,7 +24,7 @@ class CozyRecyclerAdapter() : RecyclerView.Adapter<CozyViewHolder<CozyCell>>(),
     DragAndDropCallbackListener.Listener {
 
 
-    lateinit var differ = AsyncPagingDataDiffer(CozyDiffCallback, AdapterListUpdateCallback(this))
+    var differ = AsyncPagingDataDiffer(CozyDiffCallback, AdapterListUpdateCallback(this))
 
     var pagingMode: Boolean = false
 
