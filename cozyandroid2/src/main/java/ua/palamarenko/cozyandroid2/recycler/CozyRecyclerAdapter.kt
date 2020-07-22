@@ -14,13 +14,32 @@ import androidx.recyclerview.widget.RecyclerView
 import ua.palamarenko.cozyandroid2.CozyCell
 import ua.palamarenko.cozyandroid2.DefaultProgressCell
 import ua.palamarenko.cozyandroid2.ViewBuilder
-import ua.palamarenko.cozyandroid2.recycler.pagination.CozyPaginationAdapter.Companion.CozyDiffCallback
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashSet
 
+
+
+
+
 class CozyRecyclerAdapter() : RecyclerView.Adapter<CozyViewHolder<CozyCell>>(),
     DragAndDropCallbackListener.Listener {
+
+    companion object {
+        val CozyDiffCallback = object : DiffUtil.ItemCallback<CozyCell>() {
+            override fun areItemsTheSame(oldItem: CozyCell, newItem: CozyCell): Boolean {
+                return oldItem.getIdentifier() == newItem.getIdentifier()
+            }
+
+            override fun areContentsTheSame(oldItem: CozyCell, newItem: CozyCell): Boolean {
+                return oldItem.getContentHash() == newItem.getContentHash()
+            }
+
+            override fun getChangePayload(oldItem: CozyCell, newItem: CozyCell): Any? {
+                return newItem
+            }
+        }
+    }
 
 
     var differ = AsyncPagingDataDiffer(CozyDiffCallback, AdapterListUpdateCallback(this))

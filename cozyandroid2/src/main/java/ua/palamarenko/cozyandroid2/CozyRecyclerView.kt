@@ -8,8 +8,6 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
-import androidx.paging.PagedList
-import androidx.paging.PagingData
 import androidx.recyclerview.widget.*
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.view_recycler.view.*
@@ -18,9 +16,7 @@ import ua.palamarenko.cozyandroid2.recycler.ButtonSwipeCallBack
 import ua.palamarenko.cozyandroid2.recycler.CozyRecyclerAdapter
 import ua.palamarenko.cozyandroid2.recycler.DragAndDropCallbackListener
 import ua.palamarenko.cozyandroid2.recycler.layout_manager.CozyLinearLayoutManager
-import ua.palamarenko.cozyandroid2.recycler.pagination.CozyPaginationAdapter
 
-import ua.palamarenko.cozyandroid2.tools.LOG_EVENT
 import ua.palamarenko.cozyandroid2.tools.inflateView
 
 
