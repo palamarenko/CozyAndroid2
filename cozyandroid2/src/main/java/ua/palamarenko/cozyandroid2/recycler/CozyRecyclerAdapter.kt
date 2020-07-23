@@ -3,7 +3,10 @@ package ua.palamarenko.cozyandroid2.recycler
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Lifecycle
-import androidx.paging.*
+import androidx.paging.AsyncPagingDataDiffer
+import androidx.paging.CombinedLoadStates
+import androidx.paging.LoadStateAdapter
+import androidx.paging.PagingData
 import androidx.recyclerview.widget.AdapterListUpdateCallback
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.DiffUtil
@@ -11,8 +14,6 @@ import androidx.recyclerview.widget.RecyclerView
 import ua.palamarenko.cozyandroid2.CozyCell
 import ua.palamarenko.cozyandroid2.DefaultProgressCell
 import ua.palamarenko.cozyandroid2.ViewBuilder
-import ua.palamarenko.cozyandroid2.recycler.pagination.CozyPaginationAdapter.Companion.CozyDiffCallback
-import ua.palamarenko.cozyandroid2.tools.LOG_EVENT
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashSet
@@ -20,8 +21,25 @@ import kotlin.collections.HashSet
 
 
 
+
 class CozyRecyclerAdapter() : RecyclerView.Adapter<CozyViewHolder<CozyCell>>(),
     DragAndDropCallbackListener.Listener {
+
+    companion object {
+        val CozyDiffCallback = object : DiffUtil.ItemCallback<CozyCell>() {
+            override fun areItemsTheSame(oldItem: CozyCell, newItem: CozyCell): Boolean {
+                return oldItem.getIdentifier() == newItem.getIdentifier()
+            }
+
+            override fun areContentsTheSame(oldItem: CozyCell, newItem: CozyCell): Boolean {
+                return oldItem.getContentHash() == newItem.getContentHash()
+            }
+
+            override fun getChangePayload(oldItem: CozyCell, newItem: CozyCell): Any? {
+                return newItem
+            }
+        }
+    }
 
 
     var differ = AsyncPagingDataDiffer(CozyDiffCallback, AdapterListUpdateCallback(this))
@@ -46,7 +64,6 @@ class CozyRecyclerAdapter() : RecyclerView.Adapter<CozyViewHolder<CozyCell>>(),
     }
 
     override fun getItemCount(): Int {
-        LOG_EVENT("HELLO",if (pagingMode) differ.itemCount else list.size)
         return if (pagingMode) differ.itemCount else list.size
     }
 

@@ -95,12 +95,6 @@ dependencies {
     api "androidx.paging:paging-runtime:$paging_version"
     api "androidx.paging:paging-rxjava2:$paging_version"
 
-    def paging_version = "3.0.0-alpha02"
-
-    // android paging library
-    api "androidx.paging:paging-runtime:$paging_version"
-    api "androidx.paging:paging-rxjava2:$paging_version"
-
     //for load and view image
     api 'com.squareup.picasso:picasso:2.71828'
     api 'com.github.chrisbanes:PhotoView:2.3.0'

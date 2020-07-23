@@ -22,7 +22,6 @@ import kotlinx.coroutines.launch
 import ua.palamarenko.cozyandroid2.recycler.CozyRecyclerAdapter
 import ua.palamarenko.cozyandroid2.recycler.layout_manager.CozyLinearLayoutManager
 import ua.palamarenko.cozyandroid2.recycler.pagination.CozyPagingLoadState
-import ua.palamarenko.cozyandroid2.tools.LOG_EVENT
 import ua.palamarenko.cozyandroid2.tools.inflateView
 
 class CozyRecyclerView2 : FrameLayout {
@@ -52,7 +51,7 @@ class CozyRecyclerView2 : FrameLayout {
 
 
     private fun init(context: Context, attrs: AttributeSet?) {
-        view = View.inflate(context, R.layout.view_cozy_recycler, null)
+        view =  View.inflate(context, R.layout.view_cozy_recycler, null)
 
         addView(view)
         view.baseRecycler.layoutManager = LinearLayoutManager(this.context)
