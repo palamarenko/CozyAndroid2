@@ -5,6 +5,9 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.coroutineScope
+import androidx.paging.ExperimentalPagingApi
+import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.recyclerview.widget.*
 import kotlinx.android.synthetic.main.view_recycler.view.baseRecycler
@@ -13,9 +16,13 @@ import kotlinx.android.synthetic.main.view_recycler.view.flRoot
 import kotlinx.android.synthetic.main.view_recycler.view.progress
 import kotlinx.android.synthetic.main.view_recycler.view.srRefresh
 import kotlinx.android.synthetic.main.view_recycler_place_holder.view.*
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import ua.palamarenko.cozyandroid2.recycler.CozyRecyclerAdapter
 import ua.palamarenko.cozyandroid2.recycler.layout_manager.CozyLinearLayoutManager
 import ua.palamarenko.cozyandroid2.recycler.pagination.CozyPagingLoadState
+import ua.palamarenko.cozyandroid2.tools.LOG_EVENT
 import ua.palamarenko.cozyandroid2.tools.inflateView
 
 class CozyRecyclerView2 : FrameLayout {
@@ -45,7 +52,7 @@ class CozyRecyclerView2 : FrameLayout {
 
 
     private fun init(context: Context, attrs: AttributeSet?) {
-        view =  View.inflate(context, R.layout.view_cozy_recycler, null)
+        view = View.inflate(context, R.layout.view_cozy_recycler, null)
 
         addView(view)
         view.baseRecycler.layoutManager = LinearLayoutManager(this.context)
@@ -79,7 +86,7 @@ class CozyRecyclerView2 : FrameLayout {
     }
 
     fun submitData(data: List<CozyCell>) {
-        if(view.baseRecycler.adapter==null){
+        if (view.baseRecycler.adapter == null) {
             view.baseRecycler.adapter = cozyAdapter
         }
 
@@ -102,6 +109,8 @@ class CozyRecyclerView2 : FrameLayout {
     }
 
 
+
+    @OptIn(ExperimentalPagingApi::class)
     fun submitData(
         lifecycle: Lifecycle,
         pagingData: PagingData<CozyCell>,
@@ -114,15 +123,26 @@ class CozyRecyclerView2 : FrameLayout {
         }
 
         cozyAdapter.submitData(lifecycle, pagingData)
-
-        if (cozyAdapter.itemCount == 0 && needPlaceHolder) {
-            view.flPlaceHolder.visibility = View.VISIBLE
-        } else {
-            view.flPlaceHolder.visibility = View.GONE
+        lifecycle.coroutineScope.launch {
+            cozyAdapter.differ.dataRefreshFlow.collect {
+                view.progress.visibility = View.GONE
+                if (it) {
+                    view.flPlaceHolder.visibility = View.VISIBLE
+                } else {
+                    view.flPlaceHolder.visibility = View.GONE
+                }
+            }
         }
 
-        view.progress.visibility = View.GONE
         refreshHide()
+    }
+
+    fun pagingRefresh() {
+        cozyAdapter.differ.refresh()
+    }
+
+    fun pagingRetry() {
+        cozyAdapter.differ.retry()
     }
 
 

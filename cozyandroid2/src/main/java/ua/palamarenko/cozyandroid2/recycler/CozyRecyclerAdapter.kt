@@ -3,10 +3,7 @@ package ua.palamarenko.cozyandroid2.recycler
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Lifecycle
-import androidx.paging.AsyncPagingDataDiffer
-import androidx.paging.CombinedLoadStates
-import androidx.paging.LoadStateAdapter
-import androidx.paging.PagingData
+import androidx.paging.*
 import androidx.recyclerview.widget.AdapterListUpdateCallback
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.DiffUtil
@@ -19,6 +16,9 @@ import ua.palamarenko.cozyandroid2.tools.LOG_EVENT
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashSet
+
+
+
 
 class CozyRecyclerAdapter() : RecyclerView.Adapter<CozyViewHolder<CozyCell>>(),
     DragAndDropCallbackListener.Listener {
@@ -78,6 +78,11 @@ class CozyRecyclerAdapter() : RecyclerView.Adapter<CozyViewHolder<CozyCell>>(),
     fun submitData(lifecycle: Lifecycle, pagingData: PagingData<CozyCell>) {
         pagingMode = true
         differ.submitData(lifecycle, pagingData)
+    }
+
+    suspend fun submitData(pagingData: PagingData<CozyCell>) {
+        pagingMode = true
+        differ.submitData(pagingData)
     }
 
     fun addLoadStateListener(listener: (CombinedLoadStates) -> Unit) {
