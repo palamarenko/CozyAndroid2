@@ -11,7 +11,7 @@ import ua.palamarenko.cozyandroid2.CozyRecyclerView
 import ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks.CozyFragment
 import ua.palamarenko.cozyandroid2.tools.LOG_EVENT
 
-
+@Deprecated("")
 abstract class PaginationController(
     val fragment: CozyFragment<*>,
     val recycler: CozyRecyclerView,
