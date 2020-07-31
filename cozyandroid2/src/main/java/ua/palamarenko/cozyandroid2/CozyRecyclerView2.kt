@@ -145,8 +145,7 @@ class CozyRecyclerView2 : FrameLayout {
         cozyAdapter.submitData(lifecycle, pagingData)
         cozyAdapter.addLoadStateListener { loadState ->
             if (loadState.source.refresh is LoadState.NotLoading) {
-
-//                view.baseRecycler.visibility = View.VISIBLE
+                view.baseRecycler.visibility = View.VISIBLE
             }
             if (view.srRefresh.isRefreshing) {
                 view.srRefresh.isRefreshing = loadState.source.refresh is LoadState.Loading
@@ -160,7 +159,7 @@ class CozyRecyclerView2 : FrameLayout {
             if (loadState.source.refresh is LoadState.Error) {
                 view.flError.visibility = View.VISIBLE
                 errorCallBack(loadState.source.refresh as LoadState.Error)
-//                view.baseRecycler.visibility = View.GONE
+                view.baseRecycler.visibility = View.GONE
             } else {
                 view.flError.visibility = View.GONE
             }
