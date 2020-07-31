@@ -113,8 +113,14 @@ class CozyRecyclerView2 : FrameLayout {
     fun submitData(
         lifecycle: Lifecycle,
         pagingData: PagingData<CozyCell>,
-        state: CozyPagingLoadState? = null
+        state: CozyPagingLoadState? = null,
+        errorCallBack : (LoadState.Error) -> Unit = {}
     ) {
+
+        if(needPlaceHolder){
+            view.flPlaceHolder.visibility = View.VISIBLE
+        }
+
         if (state != null) {
             view.baseRecycler.adapter = cozyAdapter.withLoadStateFooter(footer = state)
         } else {
@@ -122,16 +128,20 @@ class CozyRecyclerView2 : FrameLayout {
         }
 
         cozyAdapter.submitData(lifecycle, pagingData)
-        lifecycle.coroutineScope.launch {
-            cozyAdapter.differ.dataRefreshFlow.collect {
-                view.progress.visibility = View.GONE
-                if (it) {
-                    view.flPlaceHolder.visibility = View.VISIBLE
-                } else {
-                    view.flPlaceHolder.visibility = View.GONE
-                }
+        cozyAdapter.addLoadStateListener {loadState ->
+
+            if(loadState.source.refresh is LoadState.NotLoading){
+                view.flPlaceHolder.visibility = View.GONE
             }
+
+            view.progress.visibility = if(loadState.source.refresh is LoadState.Loading) View.VISIBLE else View.GONE
+
+            if(loadState.source.refresh is LoadState.Error){
+                errorCallBack(loadState.source.refresh as LoadState.Error)
+            }
+
         }
+
 
         refreshHide()
     }
