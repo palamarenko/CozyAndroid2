@@ -14,10 +14,7 @@ import ua.palamarenko.cozyandroid2.base_fragment.navigation.putString
 import ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks.BACK_PRESS
 import ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks.CozyFragment
 import ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks.EmptyViewModel
-import ua.palamarenko.cozyandroid2.tools.LOG_EVENT
-import ua.palamarenko.cozyandroid2.tools.click
-import ua.palamarenko.cozyandroid2.tools.initSimple
-import ua.palamarenko.cozyandroid2.tools.listen
+import ua.palamarenko.cozyandroid2.tools.*
 
 class ImageViewerFragment : CozyFragment<EmptyViewModel>() {
 
@@ -79,11 +76,7 @@ class ImageViewerFragment : CozyFragment<EmptyViewModel>() {
                 return
             }
 
-            imageView.post {
-                val pick = Picasso.get()
-                    .load(url)
-                pick.into(imageView)
-            }
+            imageView.load(url,needCenterCrop = false)
         }
     }
 
