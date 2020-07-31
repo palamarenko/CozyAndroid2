@@ -1,6 +1,8 @@
 package ua.palamarenko.cozyandroid2
 
 import android.content.Context
+import android.content.res.ColorStateList
+import android.graphics.PorterDuff
 import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
@@ -10,6 +12,10 @@ import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.recyclerview.widget.*
+import kotlinx.android.synthetic.main.cell_default_loader.view.*
+import kotlinx.android.synthetic.main.cell_default_loader.view.btRetry
+import kotlinx.android.synthetic.main.view_cozy_recycler.view.*
+import kotlinx.android.synthetic.main.view_error_state.view.*
 import kotlinx.android.synthetic.main.view_recycler.view.baseRecycler
 import kotlinx.android.synthetic.main.view_recycler.view.flPlaceHolder
 import kotlinx.android.synthetic.main.view_recycler.view.flRoot
@@ -19,9 +25,14 @@ import kotlinx.android.synthetic.main.view_recycler_place_holder.view.*
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import org.w3c.dom.Text
 import ua.palamarenko.cozyandroid2.recycler.CozyRecyclerAdapter
 import ua.palamarenko.cozyandroid2.recycler.layout_manager.CozyLinearLayoutManager
+import ua.palamarenko.cozyandroid2.recycler.pagination.CozyDefaultLoaderView
+import ua.palamarenko.cozyandroid2.recycler.pagination.CozyDefaultLoaderViewSettings
 import ua.palamarenko.cozyandroid2.recycler.pagination.CozyPagingLoadState
+import ua.palamarenko.cozyandroid2.tools.click
+import ua.palamarenko.cozyandroid2.tools.getColor
 import ua.palamarenko.cozyandroid2.tools.inflateView
 
 class CozyRecyclerView2 : FrameLayout {
@@ -51,7 +62,7 @@ class CozyRecyclerView2 : FrameLayout {
 
 
     private fun init(context: Context, attrs: AttributeSet?) {
-        view =  View.inflate(context, R.layout.view_cozy_recycler, null)
+        view = View.inflate(context, R.layout.view_cozy_recycler, null)
 
         addView(view)
         view.baseRecycler.layoutManager = LinearLayoutManager(this.context)
@@ -70,6 +81,13 @@ class CozyRecyclerView2 : FrameLayout {
             refreshListener.invoke()
         }
     }
+
+    fun setRefreshForPagingEnable() {
+        refreshListener {
+            pagingRefresh()
+        }
+    }
+
 
     fun refreshHide() {
         view.srRefresh.isRefreshing = false
@@ -108,18 +126,15 @@ class CozyRecyclerView2 : FrameLayout {
     }
 
 
-
     @OptIn(ExperimentalPagingApi::class)
     fun submitData(
         lifecycle: Lifecycle,
         pagingData: PagingData<CozyCell>,
-        state: CozyPagingLoadState? = null,
-        errorCallBack : (LoadState.Error) -> Unit = {}
+        state: CozyPagingLoadState? = CozyDefaultLoaderView {
+            pagingRetry()
+        },
+        errorCallBack: (LoadState.Error) -> Unit = {}
     ) {
-
-        if(needPlaceHolder){
-            view.flPlaceHolder.visibility = View.VISIBLE
-        }
 
         if (state != null) {
             view.baseRecycler.adapter = cozyAdapter.withLoadStateFooter(footer = state)
@@ -128,22 +143,59 @@ class CozyRecyclerView2 : FrameLayout {
         }
 
         cozyAdapter.submitData(lifecycle, pagingData)
-        cozyAdapter.addLoadStateListener {loadState ->
+        cozyAdapter.addLoadStateListener { loadState ->
+            if (loadState.source.refresh is LoadState.NotLoading) {
 
-            if(loadState.source.refresh is LoadState.NotLoading){
-                view.flPlaceHolder.visibility = View.GONE
+//                view.baseRecycler.visibility = View.VISIBLE
+            }
+            if (view.srRefresh.isRefreshing) {
+                view.srRefresh.isRefreshing = loadState.source.refresh is LoadState.Loading
+            } else {
+                view.progress.visibility =
+                    if (loadState.source.refresh is LoadState.Loading) View.VISIBLE else View.GONE
             }
 
-            view.progress.visibility = if(loadState.source.refresh is LoadState.Loading) View.VISIBLE else View.GONE
 
-            if(loadState.source.refresh is LoadState.Error){
+
+            if (loadState.source.refresh is LoadState.Error) {
+                view.flError.visibility = View.VISIBLE
                 errorCallBack(loadState.source.refresh as LoadState.Error)
+//                view.baseRecycler.visibility = View.GONE
+            } else {
+                view.flError.visibility = View.GONE
             }
-
         }
 
+        lifecycle.coroutineScope.launch {
+            cozyAdapter.differ.dataRefreshFlow.collect {
+                if (it) {
+                    view.flPlaceHolder.visibility = View.VISIBLE
+                } else {
+                    view.flPlaceHolder.visibility = View.GONE
+                }
+            }
+        }
 
-        refreshHide()
+    }
+
+
+    fun setErrorState(view: View) {
+        view.flError.addView(view)
+    }
+
+    fun setErrorState(settings: CozyDefaultLoaderViewSettings? = null) {
+        val view = View.inflate(context, R.layout.view_error_state, null)
+        if (settings != null) {
+            view.btRetry.backgroundTintList = ColorStateList.valueOf(settings.mainColor)
+            view.btRetry.setTextColor(settings.textColor)
+            view.btRetry.text = settings.retryButtonText
+        }
+
+        view.btRetry.click {
+            pagingRetry()
+        }
+
+        this.view.flError.addView(view)
     }
 
     fun pagingRefresh() {
