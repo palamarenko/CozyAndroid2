@@ -2,7 +2,6 @@ package ua.palamarenko.cozyandroid2
 
 import android.content.Context
 import android.content.res.ColorStateList
-import android.graphics.PorterDuff
 import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
@@ -12,10 +11,8 @@ import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.recyclerview.widget.*
-import kotlinx.android.synthetic.main.cell_default_loader.view.*
 import kotlinx.android.synthetic.main.cell_default_loader.view.btRetry
 import kotlinx.android.synthetic.main.view_cozy_recycler.view.*
-import kotlinx.android.synthetic.main.view_error_state.view.*
 import kotlinx.android.synthetic.main.view_recycler.view.baseRecycler
 import kotlinx.android.synthetic.main.view_recycler.view.flPlaceHolder
 import kotlinx.android.synthetic.main.view_recycler.view.flRoot
@@ -23,16 +20,14 @@ import kotlinx.android.synthetic.main.view_recycler.view.progress
 import kotlinx.android.synthetic.main.view_recycler.view.srRefresh
 import kotlinx.android.synthetic.main.view_recycler_place_holder.view.*
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import org.w3c.dom.Text
 import ua.palamarenko.cozyandroid2.recycler.CozyRecyclerAdapter
 import ua.palamarenko.cozyandroid2.recycler.layout_manager.CozyLinearLayoutManager
 import ua.palamarenko.cozyandroid2.recycler.pagination.CozyDefaultLoaderView
+import ua.palamarenko.cozyandroid2.recycler.pagination.CozyDefaultLoaderViewHeader
 import ua.palamarenko.cozyandroid2.recycler.pagination.CozyDefaultLoaderViewSettings
 import ua.palamarenko.cozyandroid2.recycler.pagination.CozyPagingLoadState
 import ua.palamarenko.cozyandroid2.tools.click
-import ua.palamarenko.cozyandroid2.tools.getColor
 import ua.palamarenko.cozyandroid2.tools.inflateView
 
 class CozyRecyclerView2 : FrameLayout {
@@ -107,7 +102,6 @@ class CozyRecyclerView2 : FrameLayout {
             view.baseRecycler.adapter = cozyAdapter
         }
 
-
         cozyAdapter.updateList(data)
 
         if (cozyAdapter.itemCount == 0 && needPlaceHolder) {
@@ -130,17 +124,29 @@ class CozyRecyclerView2 : FrameLayout {
     fun submitData(
         lifecycle: Lifecycle,
         pagingData: PagingData<CozyCell>,
-        state: CozyPagingLoadState? = CozyDefaultLoaderView {
+        footer: CozyPagingLoadState? = CozyDefaultLoaderView {
+            pagingRetry()
+        },
+        header: CozyPagingLoadState? = CozyDefaultLoaderViewHeader {
             pagingRetry()
         },
         errorCallBack: (LoadState.Error) -> Unit = {}
     ) {
 
-        if (state != null) {
-            view.baseRecycler.adapter = cozyAdapter.withLoadStateFooter(footer = state)
-        } else {
-            view.baseRecycler.adapter = cozyAdapter
+        when{
+            footer != null && header !=null ->{
+                view.baseRecycler.adapter =
+                    cozyAdapter.withLoadStateHeaderAndFooter(footer = footer, header = header)
+            }
+            footer !=null ->{
+                view.baseRecycler.adapter =
+                    cozyAdapter.withLoadStateFooter(footer = footer)
+            }
+            else ->{
+                view.baseRecycler.adapter = cozyAdapter
+            }
         }
+
 
         cozyAdapter.submitData(lifecycle, pagingData)
         cozyAdapter.addLoadStateListener { loadState ->
@@ -153,8 +159,6 @@ class CozyRecyclerView2 : FrameLayout {
                 view.progress.visibility =
                     if (loadState.source.refresh is LoadState.Loading) View.VISIBLE else View.GONE
             }
-
-
 
             if (loadState.source.refresh is LoadState.Error) {
                 view.flError.visibility = View.VISIBLE
@@ -175,165 +179,165 @@ class CozyRecyclerView2 : FrameLayout {
             }
         }
 
+}
+
+
+fun setErrorState(view: View) {
+    view.flError.addView(view)
+}
+
+fun setErrorState(settings: CozyDefaultLoaderViewSettings? = null) {
+    val view = View.inflate(context, R.layout.view_error_state, null)
+    if (settings != null) {
+        view.btRetry.backgroundTintList = ColorStateList.valueOf(settings.mainColor)
+        view.btRetry.setTextColor(settings.textColor)
+        view.btRetry.text = settings.retryButtonText
     }
 
-
-    fun setErrorState(view: View) {
-        view.flError.addView(view)
+    view.btRetry.click {
+        pagingRetry()
     }
 
-    fun setErrorState(settings: CozyDefaultLoaderViewSettings? = null) {
-        val view = View.inflate(context, R.layout.view_error_state, null)
-        if (settings != null) {
-            view.btRetry.backgroundTintList = ColorStateList.valueOf(settings.mainColor)
-            view.btRetry.setTextColor(settings.textColor)
-            view.btRetry.text = settings.retryButtonText
-        }
+    this.view.flError.addView(view)
+}
 
-        view.btRetry.click {
-            pagingRetry()
-        }
+fun pagingRefresh() {
+    cozyAdapter.differ.refresh()
+}
 
-        this.view.flError.addView(view)
+fun pagingRetry() {
+    cozyAdapter.differ.retry()
+}
+
+
+fun getFrameLayout(): FrameLayout {
+    return view.flRoot
+}
+
+
+fun setPlaceHolder(view: View) {
+    needPlaceHolder = true
+    view.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
+    this.view.flPlaceHolder.addView(view)
+}
+
+fun setPlaceHolder(charSequence: CharSequence) {
+    needPlaceHolder = true
+    val view = inflateView(R.layout.view_recycler_place_holder)
+    view.tvHolder.text = charSequence
+    view.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
+    this.view.flPlaceHolder.addView(view)
+}
+
+
+fun setPlaceHolder(viewId: Int) {
+    needPlaceHolder = true
+    val view = View.inflate(context, viewId, null)
+    view.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
+    this.view.flPlaceHolder.addView(view)
+}
+
+fun getPlaceHolder(): FrameLayout {
+    return view.flPlaceHolder
+}
+
+fun removePlaceHolder() {
+    view.flPlaceHolder.removeAllViews()
+}
+
+
+fun setDivider(
+    need: Boolean = true,
+    decorator: RecyclerView.ItemDecoration = DividerItemDecoration(
+        this.context,
+        DividerItemDecoration.VERTICAL
+    )
+) {
+    while (view.baseRecycler.itemDecorationCount > 0) {
+        view.baseRecycler.removeItemDecorationAt(0)
     }
+    if (need) {
 
-    fun pagingRefresh() {
-        cozyAdapter.differ.refresh()
+        view.baseRecycler.addItemDecoration(decorator)
     }
+}
 
-    fun pagingRetry() {
-        cozyAdapter.differ.retry()
-    }
+fun firstProgressEnable() {
+    view.progress.visibility = View.VISIBLE
+}
 
+fun setHorizontalLayoutManager(reverseLayout: Boolean = false) {
+    view.baseRecycler.layoutManager =
+        CozyLinearLayoutManager(view.context, LinearLayoutManager.HORIZONTAL, reverseLayout)
+}
 
-    fun getFrameLayout(): FrameLayout {
-        return view.flRoot
-    }
+fun setVerticalLayoutManager(reverseLayout: Boolean = false) {
+    view.baseRecycler.layoutManager =
+        CozyLinearLayoutManager(view.context, LinearLayoutManager.VERTICAL, reverseLayout)
+}
 
+fun setGridLayoutManager(spanCount: Int) {
+    view.baseRecycler.layoutManager = GridLayoutManager(view.context, spanCount)
 
-    fun setPlaceHolder(view: View) {
-        needPlaceHolder = true
-        view.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
-        this.view.flPlaceHolder.addView(view)
-    }
+}
 
-    fun setPlaceHolder(charSequence: CharSequence) {
-        needPlaceHolder = true
-        val view = inflateView(R.layout.view_recycler_place_holder)
-        view.tvHolder.text = charSequence
-        view.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
-        this.view.flPlaceHolder.addView(view)
-    }
+fun setLayoutManager(layoutManager: RecyclerView.LayoutManager) {
+    view.baseRecycler.layoutManager = layoutManager
+}
 
+fun scrollToPosition(position: Int) {
 
-    fun setPlaceHolder(viewId: Int) {
-        needPlaceHolder = true
-        val view = View.inflate(context, viewId, null)
-        view.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
-        this.view.flPlaceHolder.addView(view)
-    }
+    if (view.baseRecycler.layoutManager is LinearLayoutManager) {
 
-    fun getPlaceHolder(): FrameLayout {
-        return view.flPlaceHolder
-    }
-
-    fun removePlaceHolder() {
-        view.flPlaceHolder.removeAllViews()
-    }
-
-
-    fun setDivider(
-        need: Boolean = true,
-        decorator: RecyclerView.ItemDecoration = DividerItemDecoration(
-            this.context,
-            DividerItemDecoration.VERTICAL
-        )
-    ) {
-        while (view.baseRecycler.itemDecorationCount > 0) {
-            view.baseRecycler.removeItemDecorationAt(0)
-        }
-        if (need) {
-
-            view.baseRecycler.addItemDecoration(decorator)
-        }
-    }
-
-    fun firstProgressEnable() {
-        view.progress.visibility = View.VISIBLE
-    }
-
-    fun setHorizontalLayoutManager(reverseLayout: Boolean = false) {
-        view.baseRecycler.layoutManager =
-            CozyLinearLayoutManager(view.context, LinearLayoutManager.HORIZONTAL, reverseLayout)
-    }
-
-    fun setVerticalLayoutManager(reverseLayout: Boolean = false) {
-        view.baseRecycler.layoutManager =
-            CozyLinearLayoutManager(view.context, LinearLayoutManager.VERTICAL, reverseLayout)
-    }
-
-    fun setGridLayoutManager(spanCount: Int) {
-        view.baseRecycler.layoutManager = GridLayoutManager(view.context, spanCount)
-
-    }
-
-    fun setLayoutManager(layoutManager: RecyclerView.LayoutManager) {
-        view.baseRecycler.layoutManager = layoutManager
-    }
-
-    fun scrollToPosition(position: Int) {
-
-        if (view.baseRecycler.layoutManager is LinearLayoutManager) {
-
-            val smoothScroller =
-                object : androidx.recyclerview.widget.LinearSmoothScroller(context) {
-                    override fun getVerticalSnapPreference(): Int {
-                        return SNAP_TO_START
-                    }
+        val smoothScroller =
+            object : androidx.recyclerview.widget.LinearSmoothScroller(context) {
+                override fun getVerticalSnapPreference(): Int {
+                    return SNAP_TO_START
                 }
-            smoothScroller.targetPosition = position
+            }
+        smoothScroller.targetPosition = position
 
 
-            (view.baseRecycler.layoutManager as LinearLayoutManager).startSmoothScroll(
-                smoothScroller
-            )
-        }
-
-
-        if (view.baseRecycler.layoutManager is GridLayoutManager) {
-            (view.baseRecycler.layoutManager as GridLayoutManager).smoothScrollToPosition(
-                view.baseRecycler,
-                RecyclerView.State(),
-                0
-            )
-        }
-
-
-        if (view.baseRecycler.layoutManager is StaggeredGridLayoutManager) {
-            (view.baseRecycler.layoutManager as StaggeredGridLayoutManager).smoothScrollToPosition(
-                view.baseRecycler,
-                RecyclerView.State(),
-                0
-            )
-        }
-
+        (view.baseRecycler.layoutManager as LinearLayoutManager).startSmoothScroll(
+            smoothScroller
+        )
     }
 
-    fun moveToPosition(position: Int) {
 
-        if (view.baseRecycler.layoutManager is LinearLayoutManager) {
-            (view.baseRecycler.layoutManager as LinearLayoutManager).scrollToPosition(position)
-        }
-
-        if (view.baseRecycler.layoutManager is GridLayoutManager) {
-            (view.baseRecycler.layoutManager as GridLayoutManager).scrollToPosition(position)
-        }
-
-        if (view.baseRecycler.layoutManager is StaggeredGridLayoutManager) {
-            (view.baseRecycler.layoutManager as StaggeredGridLayoutManager).scrollToPosition(
-                position
-            )
-        }
-
+    if (view.baseRecycler.layoutManager is GridLayoutManager) {
+        (view.baseRecycler.layoutManager as GridLayoutManager).smoothScrollToPosition(
+            view.baseRecycler,
+            RecyclerView.State(),
+            0
+        )
     }
+
+
+    if (view.baseRecycler.layoutManager is StaggeredGridLayoutManager) {
+        (view.baseRecycler.layoutManager as StaggeredGridLayoutManager).smoothScrollToPosition(
+            view.baseRecycler,
+            RecyclerView.State(),
+            0
+        )
+    }
+
+}
+
+fun moveToPosition(position: Int) {
+
+    if (view.baseRecycler.layoutManager is LinearLayoutManager) {
+        (view.baseRecycler.layoutManager as LinearLayoutManager).scrollToPosition(position)
+    }
+
+    if (view.baseRecycler.layoutManager is GridLayoutManager) {
+        (view.baseRecycler.layoutManager as GridLayoutManager).scrollToPosition(position)
+    }
+
+    if (view.baseRecycler.layoutManager is StaggeredGridLayoutManager) {
+        (view.baseRecycler.layoutManager as StaggeredGridLayoutManager).scrollToPosition(
+            position
+        )
+    }
+
+}
 }
