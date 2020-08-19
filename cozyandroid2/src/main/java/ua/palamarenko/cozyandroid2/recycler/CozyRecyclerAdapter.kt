@@ -115,6 +115,18 @@ class CozyRecyclerAdapter() : RecyclerView.Adapter<CozyViewHolder<CozyCell>>(),
         return ConcatAdapter(this, footer)
     }
 
+    fun withLoadStateHeaderAndFooter(
+        header: LoadStateAdapter<*>,
+        footer: LoadStateAdapter<*>
+    ): ConcatAdapter {
+        addLoadStateListener { loadStates ->
+            header.loadState = loadStates.prepend
+            footer.loadState = loadStates.append
+        }
+        return ConcatAdapter(header, this, footer)
+    }
+
+
 
     override fun getItemId(position: Int): Long {
         return if (pagingMode) {
