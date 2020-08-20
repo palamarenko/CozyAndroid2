@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import android.os.Handler
+import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,6 +14,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import com.google.gson.Gson
 import com.tbruyelle.rxpermissions2.RxPermissions
+import ua.palamarenko.cozyandroid2.tools.LOG_EVENT
 import java.io.Serializable
 import kotlin.reflect.KClass
 
@@ -38,6 +40,8 @@ abstract class CozyBaseFragment<T : CozyBaseViewModel> : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
+        LOG_EVENT("FRAGMENT_VIEW",fragmentView == null)
         if (fragmentView == null) {
             fragmentView = inflater.inflate(layout, null)
         }
@@ -174,6 +178,11 @@ abstract class CozyBaseFragment<T : CozyBaseViewModel> : Fragment() {
 
     fun getArgumentSerializable(key: String) : Any? {
         var value = arguments?.getSerializable(key)
+        return value
+    }
+
+    fun <T : Parcelable> getArgumentParcelable(key: String, clazz: Class<T>) : T? {
+        var value = arguments?.getParcelable<T>(key)
         return value
     }
 

@@ -11,7 +11,16 @@ import ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks.popups.CozyBot
 import ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks.popups.CozyFullPopup
 
 
+
+var hasView : Boolean = false
+
+
 fun AppCompatActivity.simpleInit(id : Int){
+    if(hasView){
+        return
+    }
+    hasView = true
+
     val frameLayout = FrameLayout(this)
     frameLayout.id = View.generateViewId()
     this.setContentView(frameLayout)
@@ -31,7 +40,7 @@ fun CozyViewModel.taskNavigate(fragment: NavigateNewActivity, bundle: Bundle) {
     task(NAVIGATE, fragment, bundle)
 }
 
-fun CozyViewModel.taskNavigate(fragment: Int, bundle: Bundle) {
+fun CozyViewModel.taskNavigate(fragment: Int, bundle: Bundle = Bundle()) {
     task(NAVIGATE, fragment, bundle)
 }
 
