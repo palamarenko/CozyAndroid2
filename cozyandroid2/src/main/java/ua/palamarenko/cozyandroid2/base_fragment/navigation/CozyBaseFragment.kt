@@ -81,10 +81,10 @@ abstract class CozyBaseFragment<T : CozyBaseViewModel> : Fragment() {
 
 
     protected fun hideKeyboard() {
-        val view = activity!!.currentFocus
+        val view = requireActivity().currentFocus
         if (view != null) {
             val imm =
-                activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             imm.hideSoftInputFromWindow(view.windowToken, 0)
         }
     }
@@ -93,7 +93,7 @@ abstract class CozyBaseFragment<T : CozyBaseViewModel> : Fragment() {
     protected fun hideKeyboardAndFocus() {
 
 
-        val view = activity!!.currentFocus
+        val view = requireActivity().currentFocus
         if (view != null) {
             try {
                 if (view.rootView != null && view.rootView is ViewGroup) {
@@ -116,7 +116,7 @@ abstract class CozyBaseFragment<T : CozyBaseViewModel> : Fragment() {
                     }, 300)
                 }
                 val imm =
-                    activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                    requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                 imm.hideSoftInputFromWindow(view.windowToken, 0)
             } catch (e: Exception) {
             }
