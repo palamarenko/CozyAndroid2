@@ -13,6 +13,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import com.google.gson.Gson
 import ua.palamarenko.cozyandroid2.CozyLibrarySettings
 import ua.palamarenko.cozyandroid2.base_fragment.navigation.*
@@ -157,6 +158,7 @@ abstract class CozyFragment<T : CozyViewModel> : CozyBaseFragment<T>(), BackPres
 
         when (fragment) {
             is Fragment -> getNavigator().replaceFragment(fragment, bundle)
+            is Int -> findNavController().navigate(fragment,bundle)
             is NavigateNewActivity -> {
                 val intent = Intent(Intent.ACTION_VIEW)
                 intent.component = ComponentName(

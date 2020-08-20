@@ -2,9 +2,25 @@ package ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
+import android.widget.FrameLayout
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.NavHostFragment
 import ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks.popups.CozyBottomSheets
 import ua.palamarenko.cozyandroid2.base_fragment.navigation.tasks.popups.CozyFullPopup
+
+
+fun AppCompatActivity.simpleInit(id : Int){
+    val frameLayout = FrameLayout(this)
+    frameLayout.id = View.generateViewId()
+    this.setContentView(frameLayout)
+    val finalHost = NavHostFragment.create(id)
+    supportFragmentManager.beginTransaction()
+        .replace(frameLayout.id, finalHost)
+        .setPrimaryNavigationFragment(finalHost)
+        .commit()
+}
 
 
 fun CozyViewModel.taskNavigate(fragment: Fragment, bundle: Bundle) {
@@ -12,6 +28,10 @@ fun CozyViewModel.taskNavigate(fragment: Fragment, bundle: Bundle) {
 }
 
 fun CozyViewModel.taskNavigate(fragment: NavigateNewActivity, bundle: Bundle) {
+    task(NAVIGATE, fragment, bundle)
+}
+
+fun CozyViewModel.taskNavigate(fragment: Int, bundle: Bundle) {
     task(NAVIGATE, fragment, bundle)
 }
 
@@ -68,6 +88,10 @@ fun CozyViewModel.taskBackPress(fragment: Class<*>? = null) {
  * CozyFragment Extensions
  */
 
+
+fun CozyFragment<*>.taskNavigate(fragment: Int, bundle: Bundle) {
+    task(NAVIGATE, fragment, bundle)
+}
 
 fun CozyFragment<*>.taskNavigate(fragment: Fragment, bundle: Bundle) {
     task(NAVIGATE, fragment, bundle)

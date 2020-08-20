@@ -74,6 +74,8 @@ android {
 }
 
 dependencies {
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.3.0'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.3.0'
     def retrofit_version = '2.3.0'
     def daggerVersion = "2.15"
     def okHttpVersion = "3.8.1"
