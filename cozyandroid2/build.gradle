@@ -92,7 +92,7 @@ dependencies {
     api 'com.github.freeze-frames:SlidingItemMenuRecyclerView:1.0.5'
     api 'androidx.recyclerview:recyclerview:1.1.0'
 
-    def paging_version = "3.0.0-alpha03"
+    def paging_version = "3.0.0-alpha05"
 
     // android paging library
     api "androidx.paging:paging-runtime:$paging_version"

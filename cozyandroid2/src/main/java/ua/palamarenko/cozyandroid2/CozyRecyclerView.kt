@@ -372,13 +372,9 @@ class CozyRecyclerView : FrameLayout {
         refreshHide()
     }
 
-    fun addProgressCell() {
-        adapter.addProgressCell(DefaultProgressCell())
-    }
+    fun addProgressCell() {}
 
-    fun removeProgressCell() {
-        adapter.removeProgressCell()
-    }
+    fun removeProgressCell() {}
 
 
     fun getItemCount(): Int {

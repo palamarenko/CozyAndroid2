@@ -19,33 +19,8 @@ import kotlin.collections.ArrayList
 import kotlin.collections.HashSet
 
 
-
-
-
 class CozyRecyclerAdapter() : RecyclerView.Adapter<CozyViewHolder<CozyCell>>(),
     DragAndDropCallbackListener.Listener {
-
-    companion object {
-        val CozyDiffCallback = object : DiffUtil.ItemCallback<CozyCell>() {
-            override fun areItemsTheSame(oldItem: CozyCell, newItem: CozyCell): Boolean {
-                return oldItem.getIdentifier() == newItem.getIdentifier()
-            }
-
-            override fun areContentsTheSame(oldItem: CozyCell, newItem: CozyCell): Boolean {
-                return oldItem.getContentHash() == newItem.getContentHash()
-            }
-
-            override fun getChangePayload(oldItem: CozyCell, newItem: CozyCell): Any? {
-                return newItem
-            }
-        }
-    }
-
-
-    var differ = AsyncPagingDataDiffer(CozyDiffCallback, AdapterListUpdateCallback(this))
-
-    var pagingMode: Boolean = false
-
 
     var list = ArrayList<CozyCell>()
 
@@ -64,17 +39,13 @@ class CozyRecyclerAdapter() : RecyclerView.Adapter<CozyViewHolder<CozyCell>>(),
     }
 
     override fun getItemCount(): Int {
-        return if (pagingMode) differ.itemCount else list.size
+        return list.size
     }
 
     override fun onBindViewHolder(holder: CozyViewHolder<CozyCell>, position: Int) {
-        if (pagingMode) {
-            differ.getItem(position)?.position = position
-            differ.getItem(position)?.bind(holder.itemView)
-        } else {
-            list[position].position = position
-            list[position].bind(holder.itemView)
-        }
+        list[position].position = position
+        list[position].bind(holder.itemView)
+
     }
 
     override fun onBindViewHolder(
@@ -82,68 +53,20 @@ class CozyRecyclerAdapter() : RecyclerView.Adapter<CozyViewHolder<CozyCell>>(),
         position: Int,
         payloads: MutableList<Any>
     ) {
-        if (pagingMode) {
-            differ.getItem(position)?.position = position
-            differ.getItem(position)?.bind(holder.itemView)
-        } else {
-            list[position].position = position
-            list[position].bind(holder.itemView)
-        }
+        list[position].position = position
+        list[position].bind(holder.itemView)
     }
-
-
-    fun submitData(lifecycle: Lifecycle, pagingData: PagingData<CozyCell>) {
-        pagingMode = true
-        differ.submitData(lifecycle, pagingData)
-    }
-
-    suspend fun submitData(pagingData: PagingData<CozyCell>) {
-        pagingMode = true
-        differ.submitData(pagingData)
-    }
-
-    fun addLoadStateListener(listener: (CombinedLoadStates) -> Unit) {
-        differ.addLoadStateListener(listener)
-    }
-
-    fun withLoadStateFooter(
-        footer: LoadStateAdapter<*>
-    ): ConcatAdapter {
-        addLoadStateListener { loadStates ->
-            footer.loadState = loadStates.append
-        }
-        return ConcatAdapter(this, footer)
-    }
-
-    fun withLoadStateHeaderAndFooter(
-        header: LoadStateAdapter<*>,
-        footer: LoadStateAdapter<*>
-    ): ConcatAdapter {
-        addLoadStateListener { loadStates ->
-            header.loadState = loadStates.prepend
-            footer.loadState = loadStates.append
-        }
-        return ConcatAdapter(header, this, footer)
-    }
-
 
 
     override fun getItemId(position: Int): Long {
-        return if (pagingMode) {
-            super.getItemId(position)
-        } else {
-            list[position].data.hashCode().toLong()
-        }
+        return list[position].data.hashCode().toLong()
+
     }
 
     override fun getItemViewType(position: Int): Int {
-        return if(pagingMode){
-            listViewBuilder.add(differ.getItem(position)!!.getViewBuilder())
-            differ.getItem(position)!!.getViewBuilder().viewType
-        }else{
-            listViewBuilder.add(list[position].getViewBuilder())
-            list[position].getViewBuilder().viewType
-        }
+        listViewBuilder.add(list[position].getViewBuilder())
+        return list[position].getViewBuilder().viewType
+
     }
 
 
@@ -167,36 +90,6 @@ class CozyRecyclerAdapter() : RecyclerView.Adapter<CozyViewHolder<CozyCell>>(),
         diffResult.dispatchUpdatesTo(this)
     }
 
-
-    @Deprecated("")
-    fun addProgressCell(cell: CozyCell) {
-        val newList = ArrayList<CozyCell>()
-        newList.addAll(list)
-        newList.add(cell)
-        val callBack = CozyDiffCallBack(list, newList)
-        val diffResult = DiffUtil.calculateDiff(callBack)
-        this.list.clear()
-        this.list.addAll(newList)
-        diffResult.dispatchUpdatesTo(this)
-    }
-
-    @Deprecated("")
-    fun removeProgressCell() {
-        if (list.isEmpty()) {
-            return
-        }
-
-        if (list[list.lastIndex] is DefaultProgressCell) {
-            val newList = ArrayList<CozyCell>()
-            newList.addAll(list)
-            newList.removeAt(newList.size - 1)
-            val callBack = CozyDiffCallBack(list, newList)
-            val diffResult = DiffUtil.calculateDiff(callBack)
-            this.list.clear()
-            this.list.addAll(newList)
-            diffResult.dispatchUpdatesTo(this)
-        }
-    }
 
     override fun onRowMoved(fromPosition: Int, toPosition: Int) {
         if (fromPosition < toPosition) {
