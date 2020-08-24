@@ -154,17 +154,24 @@ class CozyRecyclerPagingView : FrameLayout {
                 view.flError.visibility = View.GONE
             }
         }
-//
-//        lifecycle.coroutineScope.launch {
-//            cozyAdapter.dataRefreshFlow.collect {
-//                if (it) {
-//                    view.flPlaceHolder.visibility = View.VISIBLE
-//                } else {
-//                    view.flPlaceHolder.visibility = View.GONE
-//                }
-//            }
-//        }
 
+        lifecycle.coroutineScope.launch {
+            cozyAdapter.dataRefreshFlow.collect {
+                if (it) {
+                    view.flPlaceHolder.visibility = View.VISIBLE
+                } else {
+                    view.flPlaceHolder.visibility = View.GONE
+                }
+            }
+        }
+
+    }
+
+    @OptIn(ExperimentalPagingApi::class)
+    suspend fun submitData(
+        pagingData: PagingData<CozyCell>) {
+        view.baseRecycler.adapter = cozyAdapter
+        cozyAdapter.submitData(pagingData)
     }
 
 
