@@ -26,6 +26,13 @@
     </declare-styleable>
 
 
+
+    <declare-styleable name="CozyRatingView">
+        <attr name="empty_color" format="color" />
+        <attr name="full_color" format="color" />
+    </declare-styleable>
+
+
     <declare-styleable name="ShapeTextView">
         <attr name="back_shape"/>
         <attr name="corners_radius"/>
