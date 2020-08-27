@@ -16,16 +16,16 @@ import ua.palamarenko.cozyandroid2.tools.shape_view.factory.ShapeDrawableFactory
 class ShapeTextView : AppCompatTextView {
     private var drawable: ShapeDrawableFactory? = null
 
-    constructor(context: Context?) : super(context) {
+    constructor(context: Context?) : super(context!!) {
         init(null)
     }
 
-    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs) {
+    constructor(context: Context?, attrs: AttributeSet?) : super(context!!, attrs) {
         init(attrs)
     }
 
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(
-        context,
+        context!!,
         attrs,
         defStyleAttr
     ) {

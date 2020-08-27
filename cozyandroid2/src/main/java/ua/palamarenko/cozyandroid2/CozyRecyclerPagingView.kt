@@ -39,6 +39,7 @@ class CozyRecyclerPagingView : FrameLayout {
     private lateinit var view: View
 
     var needPlaceHolder = false
+    var showRefresh: Boolean = false
 
 
     constructor(context: Context) : this(context, null) {
@@ -62,8 +63,7 @@ class CozyRecyclerPagingView : FrameLayout {
         view = View.inflate(context, R.layout.view_cozy_recycler, null)
 
         addView(view)
-        view.baseRecycler.layoutManager = LinearLayoutManager(this.context)
-
+        view.baseRecycler.adapter = cozyAdapter
         view.srRefresh.isRefreshing = false
         view.srRefresh.isEnabled = false
     }
@@ -81,18 +81,11 @@ class CozyRecyclerPagingView : FrameLayout {
 
     fun setRefreshForPagingEnable() {
         refreshListener {
+            showRefresh = true
             pagingRefresh()
         }
     }
 
-
-    fun refreshHide() {
-        view.srRefresh.isRefreshing = false
-    }
-
-    fun refreshShow() {
-        view.srRefresh.isRefreshing = true
-    }
 
 
     fun getRecyclerView(): RecyclerView {
@@ -105,72 +98,53 @@ class CozyRecyclerPagingView : FrameLayout {
     }
 
 
-    @OptIn(ExperimentalPagingApi::class)
-    fun submitData(
-        lifecycle: Lifecycle,
-        pagingData: PagingData<CozyCell>,
-        footer: CozyPagingLoadState? = CozyDefaultLoaderView {
-            pagingRetry()
-        },
-        header: CozyPagingLoadState? = CozyDefaultLoaderViewHeader {
-            pagingRetry()
-        },
-        errorCallBack: (LoadState.Error) -> Unit = {}
-    ) {
-
+    fun initPagingList(footer: CozyPagingLoadState? = CozyDefaultLoaderView { pagingRetry() },
+                       header: CozyPagingLoadState? = null,
+                       errorCallBack: (LoadState.Error) -> Unit = {}) {
         when {
             footer != null && header != null -> {
                 view.baseRecycler.adapter =
                     cozyAdapter.withLoadStateHeaderAndFooter(footer = footer, header = header)
             }
             footer != null -> {
-                view.baseRecycler.adapter =
-                    cozyAdapter.withLoadStateFooter(footer = footer)
+                view.baseRecycler.adapter = cozyAdapter.withLoadStateFooter(footer = footer)
             }
             else -> {
                 view.baseRecycler.adapter = cozyAdapter
             }
         }
-
-
-        cozyAdapter.submitData(lifecycle, pagingData)
         cozyAdapter.addLoadStateListener { loadState ->
-            LOG_EVENT("HELLO",loadState)
-            if (loadState.source.refresh is LoadState.NotLoading) {
-                view.baseRecycler.visibility = View.VISIBLE
+            if (loadState.refresh is LoadState.NotLoading) {
+                view.progress.visibility = View.GONE
             }
-            if (view.srRefresh.isRefreshing) {
-                view.srRefresh.isRefreshing = loadState.source.refresh is LoadState.Loading
-            } else {
-                view.progress.visibility =
-                    if (loadState.source.refresh is LoadState.Loading) View.VISIBLE else View.GONE
-            }
+
+            if(showRefresh)
+                view.srRefresh.isRefreshing = loadState.refresh is LoadState.Loading
 
             if (loadState.source.refresh is LoadState.Error) {
                 view.flError.visibility = View.VISIBLE
                 errorCallBack(loadState.source.refresh as LoadState.Error)
-                view.baseRecycler.visibility = View.GONE
             } else {
                 view.flError.visibility = View.GONE
             }
         }
 
-        lifecycle.coroutineScope.launch {
-            cozyAdapter.dataRefreshFlow.collect {
-                if (it) {
-                    view.flPlaceHolder.visibility = View.VISIBLE
-                } else {
-                    view.flPlaceHolder.visibility = View.GONE
-                }
-            }
-        }
+    }
+
+
+    @OptIn(ExperimentalPagingApi::class)
+    fun submitData(
+        lifecycle: Lifecycle,
+        pagingData: PagingData<CozyCell>) {
+
+        cozyAdapter.submitData(lifecycle, pagingData)
 
     }
+
 
     @OptIn(ExperimentalPagingApi::class)
     suspend fun submitData(
         pagingData: PagingData<CozyCell>) {
-        view.baseRecycler.adapter = cozyAdapter
         cozyAdapter.submitData(pagingData)
     }
 
@@ -179,20 +153,6 @@ class CozyRecyclerPagingView : FrameLayout {
         view.flError.addView(view)
     }
 
-    fun setErrorState(settings: CozyDefaultLoaderViewSettings? = null) {
-        val view = View.inflate(context, R.layout.view_error_state, null)
-        if (settings != null) {
-            view.btRetry.backgroundTintList = ColorStateList.valueOf(settings.mainColor)
-            view.btRetry.setTextColor(settings.textColor)
-            view.btRetry.text = settings.retryButtonText
-        }
-
-        view.btRetry.click {
-            pagingRetry()
-        }
-
-        this.view.flError.addView(view)
-    }
 
     fun pagingRefresh() {
         cozyAdapter.refresh()
@@ -214,14 +174,6 @@ class CozyRecyclerPagingView : FrameLayout {
         this.view.flPlaceHolder.addView(view)
     }
 
-    fun setPlaceHolder(charSequence: CharSequence) {
-        needPlaceHolder = true
-        val view = inflateView(R.layout.view_recycler_place_holder)
-        view.tvHolder.text = charSequence
-        view.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
-        this.view.flPlaceHolder.addView(view)
-    }
-
 
     fun setPlaceHolder(viewId: Int) {
         needPlaceHolder = true
@@ -238,22 +190,6 @@ class CozyRecyclerPagingView : FrameLayout {
         view.flPlaceHolder.removeAllViews()
     }
 
-
-    fun setDivider(
-        need: Boolean = true,
-        decorator: RecyclerView.ItemDecoration = DividerItemDecoration(
-            this.context,
-            DividerItemDecoration.VERTICAL
-        )
-    ) {
-        while (view.baseRecycler.itemDecorationCount > 0) {
-            view.baseRecycler.removeItemDecorationAt(0)
-        }
-        if (need) {
-
-            view.baseRecycler.addItemDecoration(decorator)
-        }
-    }
 
     fun firstProgressEnable() {
         view.progress.visibility = View.VISIBLE
@@ -278,59 +214,4 @@ class CozyRecyclerPagingView : FrameLayout {
         view.baseRecycler.layoutManager = layoutManager
     }
 
-    fun scrollToPosition(position: Int) {
-
-        if (view.baseRecycler.layoutManager is LinearLayoutManager) {
-
-            val smoothScroller =
-                object : androidx.recyclerview.widget.LinearSmoothScroller(context) {
-                    override fun getVerticalSnapPreference(): Int {
-                        return SNAP_TO_START
-                    }
-                }
-            smoothScroller.targetPosition = position
-
-
-            (view.baseRecycler.layoutManager as LinearLayoutManager).startSmoothScroll(
-                smoothScroller
-            )
-        }
-
-
-        if (view.baseRecycler.layoutManager is GridLayoutManager) {
-            (view.baseRecycler.layoutManager as GridLayoutManager).smoothScrollToPosition(
-                view.baseRecycler,
-                RecyclerView.State(),
-                0
-            )
-        }
-
-
-        if (view.baseRecycler.layoutManager is StaggeredGridLayoutManager) {
-            (view.baseRecycler.layoutManager as StaggeredGridLayoutManager).smoothScrollToPosition(
-                view.baseRecycler,
-                RecyclerView.State(),
-                0
-            )
-        }
-
-    }
-
-    fun moveToPosition(position: Int) {
-
-        if (view.baseRecycler.layoutManager is LinearLayoutManager) {
-            (view.baseRecycler.layoutManager as LinearLayoutManager).scrollToPosition(position)
-        }
-
-        if (view.baseRecycler.layoutManager is GridLayoutManager) {
-            (view.baseRecycler.layoutManager as GridLayoutManager).scrollToPosition(position)
-        }
-
-        if (view.baseRecycler.layoutManager is StaggeredGridLayoutManager) {
-            (view.baseRecycler.layoutManager as StaggeredGridLayoutManager).scrollToPosition(
-                position
-            )
-        }
-
-    }
 }

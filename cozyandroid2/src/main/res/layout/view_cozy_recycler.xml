@@ -11,7 +11,7 @@
         android:layout_height="match_parent">
 
 
-        <com.liuzhenlin.simrv.SlidingItemMenuRecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/baseRecycler"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
