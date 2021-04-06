@@ -138,7 +138,6 @@ abstract class CozyBaseFragment<T : CozyBaseViewModel> : Fragment() {
         requestPermission().request(*permissions)
             .subscribe({
                 listener.invoke(it)
-
             }, {
                 listener.invoke(false)
             })
